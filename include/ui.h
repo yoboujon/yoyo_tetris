@@ -3,6 +3,6 @@
 
 #include "lib.h"
 
-void initUI();
+Rectangle* initUI(Rectangle* gameRectangle);
 
 #endif // HEADER_UI

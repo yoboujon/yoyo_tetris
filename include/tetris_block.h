@@ -10,16 +10,30 @@
 #define BASE_X 254
 #define BASE_Y 44
 
-class tetrisBlock {
+class floatTetrisBlock {
     public:
-        tetrisBlock();
-        ~tetrisBlock();
+        floatTetrisBlock(Rectangle* screen);
+        ~floatTetrisBlock();
         void Move();
+        bool Placed();
+        Rectangle* getRectangle(int index);
+        const std::vector<Rectangle>& getRectangles();
     private:
         bool canMove();
+        Rectangle* _screen;
         std::vector<Rectangle> _object;
         Vector2 _position;
         int _height;
+};
+
+class staticTetrisBlocks {
+    public:
+        staticTetrisBlocks();
+        ~staticTetrisBlocks();
+        void Add(floatTetrisBlock& tetrisBlock);
+        void Display();
+    private:
+        std::vector<Rectangle> _tetrisblocks;
 };
 
 #endif // HEADER_TETRIS_BLOCK
