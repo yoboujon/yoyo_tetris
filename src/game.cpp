@@ -1,4 +1,5 @@
 #include "ui.h"
+#include "tetris_block.h"
 
 int main(void)
 {
@@ -7,9 +8,11 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "yoyoTetris");
     SetTargetFPS(60);
+    auto actualBlock = new tetrisBlock;
     while (!WindowShouldClose()) {
         BeginDrawing();
         initUI();
+        actualBlock->Move();
         EndDrawing();
     }
     CloseWindow();

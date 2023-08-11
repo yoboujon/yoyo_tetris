@@ -45,7 +45,7 @@ endif()
 
 # Adding compilation option depending on the OS 
 if(MSVC)
-    target_compile_options(${TARGET_NAME} PRIVATE /W3 /WX /DEBUG)
+    target_compile_options(${TARGET_NAME} PUBLIC /W3 /WX /DEBUG)
 else()
-    target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(${TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror)
 endif()
