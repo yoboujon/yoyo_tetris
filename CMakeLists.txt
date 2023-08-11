@@ -24,8 +24,10 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
   endif()
 endif()
 
-# Sources
-set(SOURCES "src/main.cpp")
+#Setting up the sources directory
+file(GLOB SOURCES
+        "${PROJECT_SOURCE_DIR}/src/*.cpp"
+        )
 
 # yoyoTetris Project (source, header)
 add_executable(${TARGET_NAME} ${SOURCES})
