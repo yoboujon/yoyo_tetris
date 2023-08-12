@@ -14,6 +14,7 @@ class floatTetrisBlock {
 public:
     floatTetrisBlock(Rectangle* screen);
     ~floatTetrisBlock();
+    void Fall(const std::vector<Rectangle>& tetrisBlock);
     void Move(const std::vector<Rectangle>& tetrisBlock);
     bool Placed();
     Rectangle* getRectangle(int index);

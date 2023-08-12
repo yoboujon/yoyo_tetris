@@ -24,6 +24,7 @@ int main(void)
 
         // Game Update
         staticBlocks.Display();
+        actualBlock->Fall(staticBlocks.getRectangles());
         actualBlock->Move(staticBlocks.getRectangles());
         if (actualBlock->Placed()) {
             staticBlocks.Add(*actualBlock);

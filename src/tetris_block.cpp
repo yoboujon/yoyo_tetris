@@ -22,7 +22,7 @@ floatTetrisBlock::~floatTetrisBlock()
 {
 }
 
-void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
+void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
 {
     if (!canMove() || collideWith(tetrisBlock)) {
         _position.y = _position.y - 1;
@@ -37,6 +37,30 @@ void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
         recVec.y = recVec.y + 1;
     }
     _position.y = _position.y + 1;
+}
+
+void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
+{
+    if (!canMove() || collideWith(tetrisBlock)) {
+        printRec();
+        return;
+    }
+    int offset(0);
+    if(IsKeyPressed(KEY_LEFT))
+    {
+        offset = -BLOCK_SIZE;
+    }
+    else if(IsKeyPressed(KEY_RIGHT))
+    {
+        offset = BLOCK_SIZE;
+    }
+    for (auto& recVec : _object)
+    {
+        // We draw rectangles first because when colliding we want them to stop.
+        DrawRectangleRec(recVec, BLUE);
+        recVec.x = recVec.x + offset;
+    }
+    _position.x = _position.x + offset;
 }
 
 bool floatTetrisBlock::canMove()
