@@ -19,14 +19,19 @@ int main(void)
     // Step
     while (!WindowShouldClose()) {
         BeginDrawing();
+        // Init base element
         uiRectangle = initUI(gameRectangle);
-        actualBlock->Move(staticBlocks.getRectangles());
+
+        // Game Update
         staticBlocks.Display();
+        actualBlock->Move(staticBlocks.getRectangles());
         if (actualBlock->Placed()) {
             staticBlocks.Add(*actualBlock);
             delete actualBlock;
             actualBlock = new floatTetrisBlock(gameRectangle);
         }
+
+        // End
         EndDrawing();
     }
 

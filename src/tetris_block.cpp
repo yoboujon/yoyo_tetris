@@ -25,12 +25,14 @@ floatTetrisBlock::~floatTetrisBlock()
 void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
 {
     if (!canMove() || collideWith(tetrisBlock)) {
+        _position.y = _position.y - 1;
         _placed = true;
         printRec();
         return;
     }
     for (auto& recVec : _object)
     {
+        // We draw rectangles first because when colliding we want them to stop.
         DrawRectangleRec(recVec, BLUE);
         recVec.y = recVec.y + 1;
     }
@@ -97,7 +99,9 @@ staticTetrisBlocks::~staticTetrisBlocks()
 
 void staticTetrisBlocks::Add(floatTetrisBlock& tetrisBlock)
 {
-    for (auto& recVec : tetrisBlock.getRectangles()) {
+    for (auto recVec : tetrisBlock.getRectangles()) {
+        // When colliding the rectangles are actually too below
+        recVec.y = recVec.y - 1;
         _tetrisblocks.push_back(recVec);
     }
 }
