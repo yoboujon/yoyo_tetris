@@ -11,29 +11,35 @@
 #define BASE_Y 44
 
 class floatTetrisBlock {
-    public:
-        floatTetrisBlock(Rectangle* screen);
-        ~floatTetrisBlock();
-        void Move();
-        bool Placed();
-        Rectangle* getRectangle(int index);
-        const std::vector<Rectangle>& getRectangles();
-    private:
-        bool canMove();
-        Rectangle* _screen;
-        std::vector<Rectangle> _object;
-        Vector2 _position;
-        int _height;
+public:
+    floatTetrisBlock(Rectangle* screen);
+    ~floatTetrisBlock();
+    void Move(const std::vector<Rectangle>& tetrisBlock);
+    bool Placed();
+    Rectangle* getRectangle(int index);
+    const std::vector<Rectangle>& getRectangles();
+
+private:
+    void printRec();
+    bool canMove();
+    bool collideWith(const std::vector<Rectangle>& tetrisBlock);
+    Rectangle* _screen;
+    bool _placed;
+    std::vector<Rectangle> _object;
+    Vector2 _position;
+    int _height;
 };
 
 class staticTetrisBlocks {
-    public:
-        staticTetrisBlocks();
-        ~staticTetrisBlocks();
-        void Add(floatTetrisBlock& tetrisBlock);
-        void Display();
-    private:
-        std::vector<Rectangle> _tetrisblocks;
+public:
+    staticTetrisBlocks();
+    ~staticTetrisBlocks();
+    void Add(floatTetrisBlock& tetrisBlock);
+    void Display();
+    const std::vector<Rectangle>& getRectangles();
+
+private:
+    std::vector<Rectangle> _tetrisblocks;
 };
 
 #endif // HEADER_TETRIS_BLOCK

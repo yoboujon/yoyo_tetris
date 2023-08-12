@@ -20,7 +20,7 @@ int main(void)
     while (!WindowShouldClose()) {
         BeginDrawing();
         uiRectangle = initUI(gameRectangle);
-        actualBlock->Move();
+        actualBlock->Move(staticBlocks.getRectangles());
         staticBlocks.Display();
         if (actualBlock->Placed()) {
             staticBlocks.Add(*actualBlock);
