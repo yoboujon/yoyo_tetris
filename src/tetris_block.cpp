@@ -10,6 +10,8 @@
 floatTetrisBlock::floatTetrisBlock(Rectangle* gameRectangle)
     : _placed(false)
     , _gameRectangle(gameRectangle)
+    , _timingCommand(0.0f)
+    , _elapsed(0.0f)
 {
     _area_object = 0;
     _object.push_back({ BASE_X, BASE_Y, BLOCK_SIZE, BLOCK_SIZE });
@@ -28,22 +30,33 @@ void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
     int fallSpeed(1);
     if (IsKeyDown(KEY_DOWN))
         fallSpeed = 5;
-    auto newObject = moveY(fallSpeed); // the speed
-    bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
-    if (canBePlaced)
-        _placed = true;
-    else
-        _object = newObject;
-    printRec();
+    for(int i=0; i<fallSpeed; i++)
+    {
+        auto newObject = moveY(1); // the speed
+        bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
+        if (canBePlaced)
+            _placed = true;
+        else
+            _object = newObject;
+        printRec();
+    }
 }
 
 void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
 {
     int offset(0);
+    _elapsed += GetFrameTime();
+    if(_elapsed <= _timingCommand) return;
     if (IsKeyDown(KEY_LEFT))
+    {
         offset = -BLOCK_SIZE;
+        _timingCommand = _elapsed + 0.025;
+    }
     else if (IsKeyDown(KEY_RIGHT))
+    {
         offset = BLOCK_SIZE;
+        _timingCommand = _elapsed + 0.025;
+    }
     std::vector<Rectangle> gameRectangleVec = { *_gameRectangle };
     auto newObject = moveX(offset); // the speed
     bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));

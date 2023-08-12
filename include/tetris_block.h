@@ -31,6 +31,8 @@ private:
     std::vector<Rectangle> _object;
     float _area_object;
     Rectangle* _gameRectangle;
+    float _timingCommand;
+    float _elapsed;
 };
 
 class staticTetrisBlocks {
