@@ -3,7 +3,8 @@
 
 Rectangle* initUI(Rectangle* gameRectangle)
 {
-    Rectangle* UIrectangle = new Rectangle({250, 40, 300, 460});
+    
+    Rectangle* UIrectangle = new Rectangle({(gameRectangle->x)-4, (gameRectangle->y)-4, (gameRectangle->width)+8, (gameRectangle->height)+8});
     ClearBackground(RAYWHITE);
     DrawText("YoyoTetris", 40, 40, 30, DARKGRAY);
     DrawText("Score", 40, 120, 20, DARKGRAY);

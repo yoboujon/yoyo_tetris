@@ -12,7 +12,7 @@ int main(void)
     // Init
     InitWindow(screenWidth, screenHeight, "yoyoTetris");
     SetTargetFPS(60);
-    Rectangle* gameRectangle = new Rectangle({ 254, 44, 292, 452 });
+    Rectangle* gameRectangle = new Rectangle({ 250, 40, 300, 450 });
     Rectangle* uiRectangle;
     auto actualBlock = new floatTetrisBlock(gameRectangle);
     staticTetrisBlocks staticBlocks;

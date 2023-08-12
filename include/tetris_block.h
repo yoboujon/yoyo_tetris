@@ -8,18 +8,8 @@
 #include <vector>
 
 #define BLOCK_SIZE 20
-#define BASE_X 254
-#define BASE_Y 45
-
-#define SIDECAST(side) static_cast<uint8_t>(side)
-
-enum class tetrisSide {
-    NONE,
-    TOP = 0b1,
-    LEFT = 0b10,
-    BOTTOM = 0b100,
-    RIGHT = 0b1000
-};
+#define BASE_X 250
+#define BASE_Y 40
 
 class floatTetrisBlock {
 public:
