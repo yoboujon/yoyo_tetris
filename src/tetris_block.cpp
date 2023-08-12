@@ -1,21 +1,21 @@
 #include "tetris_block.h"
 #include "raylib.h"
 #include <iostream>
+#include <stdint.h>
 
 /* ========================== */
 /*     FLOAT Tetris Block     */
 /* ========================== */
 
-floatTetrisBlock::floatTetrisBlock(Rectangle* screen)
-    : _screen(screen)
-    , _placed(false)
-    , _position({ BASE_X, BASE_Y })
+floatTetrisBlock::floatTetrisBlock(Rectangle* gameRectangle)
+    : _placed(false)
+    , _gameRectangle(gameRectangle)
 {
+    _area_object = 0;
     _object.push_back({ BASE_X, BASE_Y, BLOCK_SIZE, BLOCK_SIZE });
-    _object.push_back({ BASE_X + BLOCK_SIZE, BASE_Y, BLOCK_SIZE, BLOCK_SIZE });
-    _object.push_back({ BASE_X + BLOCK_SIZE, BASE_Y + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE });
-    _object.push_back({ BASE_X + BLOCK_SIZE, BASE_Y + (BLOCK_SIZE * 2), BLOCK_SIZE, BLOCK_SIZE });
-    _height = 3 * BLOCK_SIZE;
+    _area_object += BLOCK_SIZE * BLOCK_SIZE;
+    _object.push_back({ BASE_X + BLOCK_SIZE, BASE_Y, BLOCK_SIZE, BLOCK_SIZE * 3 });
+    _area_object += BLOCK_SIZE * (BLOCK_SIZE * 3);
 }
 
 floatTetrisBlock::~floatTetrisBlock()
@@ -24,55 +24,29 @@ floatTetrisBlock::~floatTetrisBlock()
 
 void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
 {
-    if (!canMove() || collideWith(tetrisBlock)) {
-        _position.y = _position.y - 1;
+    std::vector<Rectangle> gameRectangleVec = { *_gameRectangle };
+    auto newObject = moveY(1); // the speed
+    bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
+    if (canBePlaced)
         _placed = true;
-        printRec();
-        return;
-    }
-    for (auto& recVec : _object)
-    {
-        // We draw rectangles first because when colliding we want them to stop.
-        DrawRectangleRec(recVec, BLUE);
-        recVec.y = recVec.y + 1;
-    }
-    _position.y = _position.y + 1;
+    else
+        _object = newObject;
+    printRec();
 }
 
 void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
 {
-    if (!canMove() || collideWith(tetrisBlock)) {
-        printRec();
-        return;
-    }
     int offset(0);
-    if(IsKeyPressed(KEY_LEFT))
-    {
+    if (IsKeyPressed(KEY_LEFT))
         offset = -BLOCK_SIZE;
-    }
-    else if(IsKeyPressed(KEY_RIGHT))
-    {
+    else if (IsKeyPressed(KEY_RIGHT))
         offset = BLOCK_SIZE;
-    }
-    for (auto& recVec : _object)
-    {
-        // We draw rectangles first because when colliding we want them to stop.
-        DrawRectangleRec(recVec, BLUE);
-        recVec.x = recVec.x + offset;
-    }
-    _position.x = _position.x + offset;
-}
-
-bool floatTetrisBlock::canMove()
-{
-    for (auto& recVec : _object) {
-        auto rectangleCollision = GetCollisionRec(recVec, *_screen);
-        float area = rectangleCollision.width * rectangleCollision.height;
-        if (area < 400) {
-            return false;
-        }
-    };
-    return true;
+    std::vector<Rectangle> gameRectangleVec = { *_gameRectangle };
+    auto newObject = moveX(offset); // the speed
+    bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
+    if (!canBePlaced)
+        _object = newObject;
+    printRec();
 }
 
 void floatTetrisBlock::printRec(void)
@@ -82,16 +56,43 @@ void floatTetrisBlock::printRec(void)
     }
 }
 
-bool floatTetrisBlock::collideWith(const std::vector<Rectangle>& tetrisBlock)
+bool floatTetrisBlock::checkGameRectangle(const std::vector<Rectangle>& newRectangles)
 {
-    for (auto& recVecFloat : _object) {
-        for (auto& recVecStatic : tetrisBlock) {
-            if (CheckCollisionRecs(recVecFloat, recVecStatic)) {
+    float area(0);
+    for (auto& newRect : newRectangles) {
+        auto rectCollide = GetCollisionRec(newRect, *_gameRectangle);
+        area += rectCollide.height * rectCollide.width;
+    }
+    return (area == _area_object);
+}
+
+bool floatTetrisBlock::checkCollisionWith(const std::vector<Rectangle>& newRectangles, const std::vector<Rectangle>& collideRectangles)
+{
+    for (auto& newRect : newRectangles) {
+        for (auto& collideRect : collideRectangles) {
+            if (CheckCollisionRecs(newRect, collideRect))
                 return true;
-            }
         }
     }
     return false;
+}
+
+std::vector<Rectangle> floatTetrisBlock::moveX(int x)
+{
+    std::vector<Rectangle> newRec(_object);
+    for (auto& rect : newRec) {
+        rect.x = rect.x + x;
+    }
+    return newRec;
+}
+
+std::vector<Rectangle> floatTetrisBlock::moveY(int y)
+{
+    std::vector<Rectangle> newRec(_object);
+    for (auto& rect : newRec) {
+        rect.y = rect.y + y;
+    }
+    return newRec;
 }
 
 Rectangle* floatTetrisBlock::getRectangle(int index)
@@ -124,8 +125,6 @@ staticTetrisBlocks::~staticTetrisBlocks()
 void staticTetrisBlocks::Add(floatTetrisBlock& tetrisBlock)
 {
     for (auto recVec : tetrisBlock.getRectangles()) {
-        // When colliding the rectangles are actually too below
-        recVec.y = recVec.y - 1;
         _tetrisblocks.push_back(recVec);
     }
 }
