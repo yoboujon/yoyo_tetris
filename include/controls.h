@@ -13,7 +13,6 @@ class controlsTetris {
     private:
         float _timingCommand;
         float _elapsed;
-        //std::map<int,bool> _buffer;
 };
 
 #endif // HEADER_CONTROLS

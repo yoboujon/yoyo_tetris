@@ -1,13 +1,17 @@
 #include "controls.h"
 #include "tetris_block.h"
+#include "tetromino.h"
 #include "ui.h"
 #include <iostream>
+
+using namespace tetromino;
 
 int main(void)
 {
     // Constants
     const int screenWidth = 760;
     const int screenHeight = 540;
+    std::map<tetrominoNames, tetrominoBlock> tetrominoMap;
 
     // Init
     InitWindow(screenWidth, screenHeight, "yoyoTetris");
@@ -17,7 +21,7 @@ int main(void)
     controlsTetris gameControls;
     staticTetrisBlocks staticBlocks;
 
-    auto actualBlock = new floatTetrisBlock(gameRectangle, &gameControls);
+    auto actualBlock = new floatTetrisBlock(tetrominoNames::LightBlue_I, gameRectangle, &gameControls);
     // Step
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -31,7 +35,7 @@ int main(void)
         if (actualBlock->Placed()) {
             staticBlocks.Add(*actualBlock);
             delete actualBlock;
-            actualBlock = new floatTetrisBlock(gameRectangle, &gameControls);
+            actualBlock = new floatTetrisBlock(tetrominoNames::Yellow_O, gameRectangle, &gameControls);
         }
 
         // End
