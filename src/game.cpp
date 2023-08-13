@@ -3,6 +3,7 @@
 #include "tetromino.h"
 #include "ui.h"
 #include <iostream>
+#include <stdint.h>
 
 using namespace tetromino;
 
@@ -20,8 +21,9 @@ int main(void)
     Rectangle* uiRectangle;
     controlsTetris gameControls;
     staticTetrisBlocks staticBlocks;
+    uint8_t name = 0;
 
-    auto actualBlock = new floatTetrisBlock(tetrominoNames::LightBlue_I, gameRectangle, &gameControls);
+    auto actualBlock = new floatTetrisBlock(static_cast<tetrominoNames>(name), gameRectangle, &gameControls);
     // Step
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -29,13 +31,19 @@ int main(void)
         uiRectangle = initUI(gameRectangle);
 
         // Game Update
+
+        // Falling block + static display
         staticBlocks.Display();
         actualBlock->Fall(staticBlocks.getRectangles());
         actualBlock->Move(staticBlocks.getRectangles());
+
+        // Checking for collision
         if (actualBlock->Placed()) {
+            // TODO : Random Block created
+            (name == 6) ? name = 0 : name++;
             staticBlocks.Add(*actualBlock, actualBlock->getColor());
             delete actualBlock;
-            actualBlock = new floatTetrisBlock(tetrominoNames::Yellow_O, gameRectangle, &gameControls);
+            actualBlock = new floatTetrisBlock(static_cast<tetrominoNames>(name), gameRectangle, &gameControls);
         }
 
         // End

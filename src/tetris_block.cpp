@@ -11,11 +11,11 @@ using namespace tetromino;
 const std::map<tetromino::tetrominoNames, tetromino::tetrominoBlock> tetrominoMap = {
     { tetrominoNames::LightBlue_I, tetrominoBlock(initArray({ 0, 1 }, { 3, 1 }), emptyArray(), SKYBLUE) },
     { tetrominoNames::Yellow_O, tetrominoBlock(initArray({ 0, 0 }, { 1, 1 }), emptyArray(), GOLD) },
-    { tetrominoNames::Purple_T, tetrominoBlock(initArray({ 0, 0 }, { 0, 0 }), initArray({ 10, 20 }, { 10, 20 }), PURPLE) },
-    { tetrominoNames::Green_S, tetrominoBlock(initArray({ 0, 0 }, { 0, 0 }), initArray({ 10, 20 }, { 10, 20 }), GREEN) },
-    { tetrominoNames::Red_Z, tetrominoBlock(initArray({ 0, 0 }, { 0, 0 }), initArray({ 10, 20 }, { 10, 20 }), RED) },
-    { tetrominoNames::Blue_J, tetrominoBlock(initArray({ 0, 0 }, { 0, 0 }), initArray({ 10, 20 }, { 10, 20 }), BLUE) },
-    { tetrominoNames::Orange_L, tetrominoBlock(initArray({ 0, 0 }, { 0, 0 }), initArray({ 10, 20 }, { 10, 20 }), ORANGE) }
+    { tetrominoNames::Purple_T, tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 1, 0 }, { 1, 0 }), PURPLE) },
+    { tetrominoNames::Green_S, tetrominoBlock(initArray({ 0, 1 }, { 1, 1 }), initArray({ 1, 0 }, { 2, 0 }), GREEN) },
+    { tetrominoNames::Red_Z, tetrominoBlock(initArray({ 0, 0 }, { 1, 0 }), initArray({ 1, 1 }, { 2, 1 }), RED) },
+    { tetrominoNames::Blue_J, tetrominoBlock(initArray({ 0, 0 }, { 0, 0 }), initArray({ 0, 1 }, { 2, 1 }), BLUE) },
+    { tetrominoNames::Orange_L, tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 2, 0 }, { 2, 0 }), ORANGE) }
 };
 
 /* ========================== */
@@ -29,20 +29,27 @@ floatTetrisBlock::floatTetrisBlock(tetromino::tetrominoNames name, Rectangle* ga
     , _gameControls(gameControls)
     , _color(tetrominoMap.at(name).color)
 {
-    std::cout << "tetrominoMap size: " << tetrominoMap.size() << std::endl;
     _area_object = 0;
     for (int i = 0; i < 2; i++) {
         if (TETROMINO_MAP_RECT(name, i, 1).x == -1)
             continue;
         auto widthObject = ((TETROMINO_MAP_RECT(name, i, 1).x - TETROMINO_MAP_RECT(name, i, 0).x) + 1) * BLOCK_SIZE;
         auto heightObject = ((TETROMINO_MAP_RECT(name, i, 1).y - TETROMINO_MAP_RECT(name, i, 0).y) + 1) * BLOCK_SIZE;
-        _object.push_back({ BASE_X, BASE_Y, widthObject, heightObject });
-        std::cout << "TETROMINO_MAP_RECT: 1: " << TETROMINO_MAP_RECT(name, i, 1).x
+        auto xObject = BASE_X + (TETROMINO_MAP_RECT(name, i, 0).x)*BLOCK_SIZE;
+        auto yObject = BASE_Y + (TETROMINO_MAP_RECT(name, i, 0).y)*BLOCK_SIZE;
+        
+        #if _DEBUG
+        std::cout << "\tTETROMINO_MAP_RECT: 1: " << TETROMINO_MAP_RECT(name, i, 1).x
                   << ", " << TETROMINO_MAP_RECT(name, i, 1).y
                   << "\t0: " << TETROMINO_MAP_RECT(name, i, 0).x
                   << ", " << TETROMINO_MAP_RECT(name, i, 0).y;
+        #endif
+        
+        _object.push_back({ xObject, yObject, widthObject, heightObject });
         _area_object += widthObject * heightObject;
     }
+    std::cout << std::endl;
+    std::cout << "Created floatTetrisBlock with objectSize: " << _object.size() << std::endl;
 }
 
 floatTetrisBlock::~floatTetrisBlock()
@@ -169,8 +176,8 @@ void staticTetrisBlocks::Add(floatTetrisBlock& tetrisBlock, Color tetrisColor)
 {
     for (auto recVec : tetrisBlock.getRectangles()) {
         _tetrisBlocks.push_back(recVec);
+        _tetrisColors.push_back(tetrisColor);
     }
-    _tetrisColors.push_back(tetrisColor);
 }
 
 void staticTetrisBlocks::Display()
