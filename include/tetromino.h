@@ -2,7 +2,6 @@
 #define HEADER_TETROMINO
 
 #include "lib.h"
-#include <array>
 #include <map>
 
 namespace tetromino {
@@ -31,6 +30,6 @@ struct tetrominoBlock {
 
 };
 
-extern std::map<tetromino::tetrominoNames, tetromino::tetrominoBlock> tetrominoMap;
+extern const std::map<tetromino::tetrominoNames, tetromino::tetrominoBlock> tetrominoMap;
 
 #endif // HEADER_TETROMINO

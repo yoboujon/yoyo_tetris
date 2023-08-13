@@ -33,7 +33,7 @@ int main(void)
         actualBlock->Fall(staticBlocks.getRectangles());
         actualBlock->Move(staticBlocks.getRectangles());
         if (actualBlock->Placed()) {
-            staticBlocks.Add(*actualBlock);
+            staticBlocks.Add(*actualBlock, actualBlock->getColor());
             delete actualBlock;
             actualBlock = new floatTetrisBlock(tetrominoNames::Yellow_O, gameRectangle, &gameControls);
         }

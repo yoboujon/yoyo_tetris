@@ -22,6 +22,7 @@ public:
     bool Placed();
     Rectangle* getRectangle(int index);
     const std::vector<Rectangle>& getRectangles();
+    Color getColor();
     tetromino::tetrominoNames getName();
 
 private:
@@ -43,12 +44,13 @@ class staticTetrisBlocks {
 public:
     staticTetrisBlocks();
     ~staticTetrisBlocks();
-    void Add(floatTetrisBlock& tetrisBlock);
+    void Add(floatTetrisBlock& tetrisBlock, Color tetrisColor);
     void Display();
     const std::vector<Rectangle>& getRectangles();
 
 private:
-    std::vector<Rectangle> _tetrisblocks;
+    std::vector<Rectangle> _tetrisBlocks;
+    std::vector<Color> _tetrisColors;
 };
 
 #endif // HEADER_TETRIS_BLOCK
