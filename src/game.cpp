@@ -1,4 +1,4 @@
-#include "raylib.h"
+#include "controls.h"
 #include "tetris_block.h"
 #include "ui.h"
 #include <iostream>
@@ -14,8 +14,10 @@ int main(void)
     SetTargetFPS(60);
     Rectangle* gameRectangle = new Rectangle({ 250, 40, 300, 450 });
     Rectangle* uiRectangle;
-    auto actualBlock = new floatTetrisBlock(gameRectangle);
+    controlsTetris gameControls;
     staticTetrisBlocks staticBlocks;
+
+    auto actualBlock = new floatTetrisBlock(gameRectangle, &gameControls);
     // Step
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -29,7 +31,7 @@ int main(void)
         if (actualBlock->Placed()) {
             staticBlocks.Add(*actualBlock);
             delete actualBlock;
-            actualBlock = new floatTetrisBlock(gameRectangle);
+            actualBlock = new floatTetrisBlock(gameRectangle, &gameControls);
         }
 
         // End

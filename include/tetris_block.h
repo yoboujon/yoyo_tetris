@@ -2,8 +2,8 @@
 #define HEADER_TETRIS_BLOCK
 
 #include "lib.h"
-#include "raylib.h"
 
+#include "controls.h"
 #include <stdint.h>
 #include <vector>
 
@@ -13,7 +13,7 @@
 
 class floatTetrisBlock {
 public:
-    floatTetrisBlock(Rectangle* gameRectangle);
+    floatTetrisBlock(Rectangle* gameRectangle, controlsTetris* gameControls);
     ~floatTetrisBlock();
     void Fall(const std::vector<Rectangle>& tetrisBlock);
     void Move(const std::vector<Rectangle>& tetrisBlock);
@@ -31,8 +31,7 @@ private:
     std::vector<Rectangle> _object;
     float _area_object;
     Rectangle* _gameRectangle;
-    float _timingCommand;
-    float _elapsed;
+    controlsTetris* _gameControls;
 };
 
 class staticTetrisBlocks {

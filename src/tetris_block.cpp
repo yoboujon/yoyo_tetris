@@ -1,4 +1,5 @@
 #include "tetris_block.h"
+#include "controls.h"
 #include "raylib.h"
 #include <iostream>
 #include <stdint.h>
@@ -7,11 +8,10 @@
 /*     FLOAT Tetris Block     */
 /* ========================== */
 
-floatTetrisBlock::floatTetrisBlock(Rectangle* gameRectangle)
+floatTetrisBlock::floatTetrisBlock(Rectangle* gameRectangle, controlsTetris* gameControls)
     : _placed(false)
     , _gameRectangle(gameRectangle)
-    , _timingCommand(0.0f)
-    , _elapsed(0.0f)
+    , _gameControls(gameControls)
 {
     _area_object = 0;
     _object.push_back({ BASE_X, BASE_Y, BLOCK_SIZE, BLOCK_SIZE });
@@ -28,7 +28,7 @@ void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
 {
     std::vector<Rectangle> gameRectangleVec = { *_gameRectangle };
     int fallSpeed(1);
-    if (IsKeyDown(KEY_DOWN))
+    if (_gameControls->IsKeyDown(KEY_DOWN))
         fallSpeed = 5;
     for(int i=0; i<fallSpeed; i++)
     {
@@ -45,17 +45,13 @@ void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
 void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
 {
     int offset(0);
-    _elapsed += GetFrameTime();
-    if(_elapsed <= _timingCommand) return;
-    if (IsKeyDown(KEY_LEFT))
+    if (_gameControls->IsKeyDownTiming(KEY_LEFT, 0.075))
     {
         offset = -BLOCK_SIZE;
-        _timingCommand = _elapsed + 0.025;
     }
-    else if (IsKeyDown(KEY_RIGHT))
+    else if (_gameControls->IsKeyDownTiming(KEY_RIGHT, 0.075))
     {
         offset = BLOCK_SIZE;
-        _timingCommand = _elapsed + 0.025;
     }
     std::vector<Rectangle> gameRectangleVec = { *_gameRectangle };
     auto newObject = moveX(offset); // the speed
