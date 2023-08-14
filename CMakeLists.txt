@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 # Global Variables
 set(TARGET_NAME yoyoTetris)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(${TARGET_NAME} VERSION 1.0 LANGUAGES C CXX)
 

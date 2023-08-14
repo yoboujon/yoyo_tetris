@@ -40,15 +40,6 @@ floatTetrisBlock::floatTetrisBlock(tetromino::tetrominoNames name, Rectangle* ga
 {
     _area_object = 0;
     constructReactangle(name);
-    Vector2 originalVector = {2, 0};
-    Vector2 rotate = Vector2Rotate(originalVector, (3*PI)/2);   // * COUNTER_CLOCKWISE (270)
-    rotate = Vector2Rotate(originalVector, PI);             // * INVERTED
-    rotate = Vector2Rotate(originalVector, (PI)/2);      // * CLOCKWISE
-    std::cout << "x: " << round(rotate.x) << "\ty: " << round(rotate.y) << std::endl;
-    //std::cout << "<NONE> x: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), 0).x << "\ty: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), 0).y << std::endl;
-    //std::cout << "<CLOCKWISE> x: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -90).x << "\ty: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -90).y << std::endl;
-    //std::cout << "<INVERTED> x: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -180).x << "\ty: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -180).y << std::endl;
-    //std::cout << "<COUNTER_CLOCKWISE> x: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -270).x << "\ty: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -270).y << std::endl;
 }
 
 floatTetrisBlock::~floatTetrisBlock()
@@ -96,8 +87,7 @@ void floatTetrisBlock::Rotate()
 {
     std::vector<Rectangle> newRec;
     if (IsKeyPressed(KEY_UP)) {
-        _rotation = (_rotation == floatTetrisRotation::COUNTER_CLOCKWISE ?  floatTetrisRotation::NONE : static_cast<floatTetrisRotation>(static_cast<int>(_rotation) + 90));
-        std::cout << "rotation: " << static_cast<int>(_rotation) << std::endl;
+        _rotation = (_rotation == floatTetrisRotation::COUNTER_CLOCKWISE ?  floatTetrisRotation::NONE : static_cast<floatTetrisRotation>(static_cast<int>(_rotation) + 1));
         constructReactangle(_name, _rotation, false);
     }
 }
@@ -151,26 +141,61 @@ std::vector<Rectangle> floatTetrisBlock::moveY(int y)
 void floatTetrisBlock::constructReactangle(tetromino::tetrominoNames name, floatTetrisRotation rotation, bool calculateArea)
 {
     std::vector<Rectangle> newObject;
-    double floatRotate = static_cast<int>(rotation)*DEG_TO_RAD;
-    std::cout << "floatRotate: " << floatRotate << std::endl;
+    double floatRotate = getRotationAngle(rotation)*DEG_TO_RAD;
+    float xObject, yObject;
     for (int i = 0; i < 2; i++) {
         if (TETROMINO_MAP_RECT(name, i, 1).x == -1)
             continue;
         auto vectorStart = Vector2Rotate( (TETROMINO_MAP_RECT(name, i, 0)), floatRotate);
         auto vectorEnd = Vector2Rotate( (TETROMINO_MAP_RECT(name, i, 1)), floatRotate);
-        auto widthObject = (abs(round(vectorEnd.x)) - abs(round(vectorStart.x)) + 1) * BLOCK_SIZE;
-        auto heightObject = (abs(round(vectorEnd.y)) - abs(round(vectorStart.y)) + 1) * BLOCK_SIZE;
-        auto xObject = _position.x + (round(vectorStart.x) * BLOCK_SIZE);
-        auto yObject = _position.y + (round(vectorStart.y) * BLOCK_SIZE);
-        /*
-        std::cout << "<VectorStart> x: " <<  vectorStart.x << "\ty: " << vectorStart.y << std::endl;
-        std::cout << "<vectorEnd> x: " <<  vectorEnd.x << "\ty: " << vectorEnd.y << std::endl;
-        */
-        newObject.push_back({ xObject, yObject, widthObject, heightObject });
+        auto widthObject = round(vectorEnd.x) - round(vectorStart.x);
+        auto heightObject = round(vectorEnd.y) - round(vectorStart.y);
+        auto xObjectStart = _position.x + (round(vectorStart.x) * BLOCK_SIZE);
+        auto yObjectStart = _position.y + (round(vectorStart.y) * BLOCK_SIZE);
+        auto xObjectEnd = _position.x + (round(vectorEnd.x) * BLOCK_SIZE);
+        auto yObjectEnd = _position.y + (round(vectorEnd.y) * BLOCK_SIZE);
+        
+        if (widthObject < 0)
+        {
+            xObject = xObjectEnd;
+            widthObject = (widthObject-1)*BLOCK_SIZE;
+        }
+        else {
+            xObject = xObjectStart;
+            widthObject = (widthObject+1)*BLOCK_SIZE;
+        }
+
+        if (heightObject < 0)
+        {
+            yObject = yObjectEnd;
+            heightObject = (heightObject-1)*BLOCK_SIZE;
+        }
+        else {
+            yObject = yObjectStart;
+            heightObject = (heightObject+1)*BLOCK_SIZE;
+        }
+
+        newObject.push_back({ xObject, yObject, abs(widthObject), abs(heightObject) });
         if (calculateArea)
-            _area_object += widthObject * heightObject;
+            _area_object += abs(widthObject) * abs(heightObject);
     }
     _object = newObject;
+}
+
+int floatTetrisBlock::getRotationAngle(floatTetrisRotation rotation)
+{
+    switch(rotation)
+    {
+        case floatTetrisRotation::CLOCKWISE:
+            return 90;
+        case floatTetrisRotation::INVERTED:
+            return 180;
+        case floatTetrisRotation::COUNTER_CLOCKWISE:
+            return 270;
+        [[likely]]
+        default:
+            return 0;
+    }
 }
 
 Rectangle* floatTetrisBlock::getRectangle(int index)

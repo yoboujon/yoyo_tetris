@@ -17,9 +17,9 @@ constexpr double DEG_TO_RAD = PI/180;
 
 enum class floatTetrisRotation {
     NONE,
-    CLOCKWISE = 90,
-    INVERTED = 180,
-    COUNTER_CLOCKWISE = 270
+    CLOCKWISE,
+    INVERTED,
+    COUNTER_CLOCKWISE
 };
 
 class floatTetrisBlock {
@@ -44,6 +44,7 @@ private:
     std::vector<Rectangle> moveX(int x);
     std::vector<Rectangle> moveY(int y);
     void constructReactangle(tetromino::tetrominoNames name, floatTetrisRotation rotation=floatTetrisRotation::NONE, bool calculateArea=true);
+    int getRotationAngle(floatTetrisRotation rotation);
 
     // Properties
     std::vector<Rectangle> _object;
