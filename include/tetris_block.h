@@ -14,7 +14,6 @@ constexpr int BLOCK_SIZE = 20;
 constexpr int BASE_X = 250;
 constexpr int BASE_Y = 40;
 constexpr double DEG_TO_RAD = PI/180;
-constexpr Vector2 NULL_VECTOR2 = {-1,-1};
 
 enum class floatTetrisRotation {
     NONE,

@@ -17,7 +17,7 @@ using namespace tetromino;
 
 const std::map<tetromino::tetrominoNames, tetromino::tetrominoBlock> tetrominoMap = {
     { tetrominoNames::LightBlue_I, tetrominoBlock(initArray({ 0, 1 }, { 3, 1 }), emptyArray(), SKYBLUE, {1,1}) },
-    { tetrominoNames::Yellow_O, tetrominoBlock(initArray({ 0, 0 }, { 1, 1 }), emptyArray(), GOLD, {-1,-1}) },
+    { tetrominoNames::Yellow_O, tetrominoBlock(initArray({ 0, 0 }, { 1, 1 }), emptyArray(), GOLD, NULL_VECTOR2) },
     { tetrominoNames::Purple_T, tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 1, 0 }, { 1, 0 }), PURPLE, {1,1}) },
     { tetrominoNames::Green_S, tetrominoBlock(initArray({ 0, 1 }, { 1, 1 }), initArray({ 1, 0 }, { 2, 0 }), GREEN, {1,1}) },
     { tetrominoNames::Red_Z, tetrominoBlock(initArray({ 1, 1 }, { 2, 1 }), initArray({ 0, 0 }, { 1, 0 }), RED, {1,1}) },
@@ -146,7 +146,7 @@ std::vector<Rectangle> floatTetrisBlock::constructReactangle(tetromino::tetromin
 {
     std::vector<Rectangle> newObject;
     const auto floatRotate = (Vector2Equals(tetrominoMap.at(name).center, NULL_VECTOR2) ? 0 : getRotationAngle(rotation) * DEG_TO_RAD);
-    int XSquareSize(1), YSquareSize(1);
+    Vector2 SquareSize{1,1};
 
     for (int i = 0; i < 2; i++) {
         if (Vector2Equals(TETROMINO_MAP_RECT(name, i, 1), NULL_VECTOR2))
@@ -172,17 +172,17 @@ std::vector<Rectangle> floatTetrisBlock::constructReactangle(tetromino::tetromin
         // In Raylib, width and height cannot be negative, so we adjust the base position accordingly.
         if ((xEnd - xStart) < 0) {
             xObject = (xEnd * BLOCK_SIZE) + _position.x;
-            XSquareSize = -1;
+            SquareSize.x = -1;
         }
         if ((yEnd - yStart) < 0) {
             yObject = (yEnd * BLOCK_SIZE) + _position.y;
-            YSquareSize = -1;
+            SquareSize.y = -1;
         }
 
         // The formula sqrt((xb-xa)² + (yb-ya)² calculates the Euclidean distance between two vectors.
         // In this case, we're using the absolute difference in x or y coordinates, and then adding the size of a square since it's a 2D shape.
-        const auto widthObject = abs(((xEnd - xStart) + XSquareSize) * BLOCK_SIZE);
-        const auto heightObject = abs(((yEnd - yStart) + YSquareSize) * BLOCK_SIZE);
+        const auto widthObject = abs(((xEnd - xStart) + SquareSize.x) * BLOCK_SIZE);
+        const auto heightObject = abs(((yEnd - yStart) + SquareSize.y) * BLOCK_SIZE);
 
         // Adding the rectangle to the object and calculate area if needed.
         newObject.push_back({ xObject, yObject, widthObject, heightObject });
