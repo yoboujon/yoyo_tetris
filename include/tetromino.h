@@ -19,11 +19,13 @@ enum class tetrominoNames {
 struct tetrominoBlock {
     std::array<VectorMaths, 2> rectangles;
     Color color;
+    Vector2 center;
 
     // Constructor
-    constexpr tetrominoBlock(const VectorMaths& rect1, const VectorMaths& rect2, const Color& c)
+    constexpr tetrominoBlock(const VectorMaths& rect1, const VectorMaths& rect2, const Color& c, const Vector2& cVect)
         : rectangles({ rect1, rect2 })
         , color(c)
+        , center(cVect)
     {
     }
 };

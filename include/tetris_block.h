@@ -14,6 +14,7 @@ constexpr int BLOCK_SIZE = 20;
 constexpr int BASE_X = 250;
 constexpr int BASE_Y = 40;
 constexpr double DEG_TO_RAD = PI/180;
+constexpr Vector2 NULL_VECTOR2 = {-1,-1};
 
 enum class floatTetrisRotation {
     NONE,
@@ -45,7 +46,7 @@ private:
     std::vector<Rectangle> moveY(int y);
     std::vector<Rectangle> constructReactangle(tetromino::tetrominoNames name, floatTetrisRotation rotation=floatTetrisRotation::NONE, bool calculateArea=true);
     int getRotationAngle(floatTetrisRotation rotation);
-
+    
     // Properties
     std::vector<Rectangle> _object;
     float _area_object;
