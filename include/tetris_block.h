@@ -70,6 +70,7 @@ public:
     const std::vector<Rectangle>& getRectangles();
 
 private:
+    std::map<float, int> updateLineMap();
     std::vector<Rectangle> _tetrisBlocks;
     std::vector<Color> _tetrisColors;
     std::map<float, int> _lineMap;

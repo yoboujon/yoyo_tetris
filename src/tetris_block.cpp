@@ -3,8 +3,8 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#include <corecrt_math.h>
 #include <iostream>
+#include <corecrt_math.h>
 #include <stdint.h>
 #include <vcruntime.h>
 
@@ -285,13 +285,14 @@ void staticTetrisBlocks::Display()
 
 void staticTetrisBlocks::checkLine()
 {
-    for(auto& map : _lineMap )
+    for (auto it = _lineMap.begin(); it != _lineMap.end();)
     {
-        if(map.second == 15)    // For now 15 is the size of game area
+        if(it->second == 15)    // For now 15 is the size of game area
         {
-            for (size_t i=0; i < _tetrisBlocks.size() ; i++)
+            // TODO : Play animation
+            for (size_t i=0; i < _tetrisBlocks.size();)
             {
-                if(_tetrisBlocks.at(i).y == map.first)
+                if(_tetrisBlocks.at(i).y == it->first)
                 {
                     _tetrisBlocks.erase(_tetrisBlocks.begin() + i);
                     _tetrisColors.erase(_tetrisColors.begin() + i);
@@ -300,8 +301,34 @@ void staticTetrisBlocks::checkLine()
                 else
                     i++;
             }
+            // For every blocks that are higher than the destroyed block, update its position to fall.
+            // Reseting the linemap for the selected y coordonate
+            for (auto& block :_tetrisBlocks)
+            {
+                if(block.y < it->first)
+                    block.y = block.y + BLOCK_SIZE;
+            }
+            _lineMap = updateLineMap();
+            it = _lineMap.begin();
+        }
+        else {
+            it++;
         }
     }
+}
+
+std::map<float, int> staticTetrisBlocks::updateLineMap()
+{
+    std::map<float, int> newMap;
+    for(const auto& block : _tetrisBlocks)
+    {
+        if (newMap.find(block.y) == newMap.end()) {
+            newMap[block.y] = 1;
+        } else {
+            newMap[block.y] += 1;
+        }
+    }
+    return newMap;
 }
 
 const std::vector<Rectangle>& staticTetrisBlocks::getRectangles()
