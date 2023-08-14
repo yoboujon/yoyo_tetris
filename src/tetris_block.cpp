@@ -1,10 +1,17 @@
 #include "tetris_block.h"
 #include "controls.h"
+#include "raylib.h"
+#include "raymath.h"
+
+#include <corecrt_math.h>
 #include <iostream>
 #include <stdint.h>
 #include <vcruntime.h>
 
-#define TETROMINO_MAP_RECT(name, i, num) tetrominoMap.at(name).rectangles.at(i).at(num)
+inline Vector2 TETROMINO_MAP_RECT(tetromino::tetrominoNames name, int i, int num)
+{
+    return tetrominoMap.at(name).rectangles[i][num];
+}
 
 using namespace tetromino;
 
@@ -24,32 +31,24 @@ const std::map<tetromino::tetrominoNames, tetromino::tetrominoBlock> tetrominoMa
 
 floatTetrisBlock::floatTetrisBlock(tetromino::tetrominoNames name, Rectangle* gameRectangle, controlsTetris* gameControls)
     : _name(name)
+    , _color(tetrominoMap.at(name).color)
+    , _position({ BASE_X, BASE_Y })
     , _placed(false)
+    , _rotation(floatTetrisRotation::NONE)
     , _gameRectangle(gameRectangle)
     , _gameControls(gameControls)
-    , _color(tetrominoMap.at(name).color)
 {
     _area_object = 0;
-    for (int i = 0; i < 2; i++) {
-        if (TETROMINO_MAP_RECT(name, i, 1).x == -1)
-            continue;
-        auto widthObject = ((TETROMINO_MAP_RECT(name, i, 1).x - TETROMINO_MAP_RECT(name, i, 0).x) + 1) * BLOCK_SIZE;
-        auto heightObject = ((TETROMINO_MAP_RECT(name, i, 1).y - TETROMINO_MAP_RECT(name, i, 0).y) + 1) * BLOCK_SIZE;
-        auto xObject = BASE_X + (TETROMINO_MAP_RECT(name, i, 0).x)*BLOCK_SIZE;
-        auto yObject = BASE_Y + (TETROMINO_MAP_RECT(name, i, 0).y)*BLOCK_SIZE;
-        
-        #if _DEBUG
-        std::cout << "\tTETROMINO_MAP_RECT: 1: " << TETROMINO_MAP_RECT(name, i, 1).x
-                  << ", " << TETROMINO_MAP_RECT(name, i, 1).y
-                  << "\t0: " << TETROMINO_MAP_RECT(name, i, 0).x
-                  << ", " << TETROMINO_MAP_RECT(name, i, 0).y;
-        #endif
-        
-        _object.push_back({ xObject, yObject, widthObject, heightObject });
-        _area_object += widthObject * heightObject;
-    }
-    std::cout << std::endl;
-    std::cout << "Created floatTetrisBlock with objectSize: " << _object.size() << std::endl;
+    constructReactangle(name);
+    Vector2 originalVector = {2, 0};
+    Vector2 rotate = Vector2Rotate(originalVector, (3*PI)/2);   // * COUNTER_CLOCKWISE (270)
+    rotate = Vector2Rotate(originalVector, PI);             // * INVERTED
+    rotate = Vector2Rotate(originalVector, (PI)/2);      // * CLOCKWISE
+    std::cout << "x: " << round(rotate.x) << "\ty: " << round(rotate.y) << std::endl;
+    //std::cout << "<NONE> x: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), 0).x << "\ty: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), 0).y << std::endl;
+    //std::cout << "<CLOCKWISE> x: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -90).x << "\ty: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -90).y << std::endl;
+    //std::cout << "<INVERTED> x: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -180).x << "\ty: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -180).y << std::endl;
+    //std::cout << "<COUNTER_CLOCKWISE> x: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -270).x << "\ty: " << Vector2Rotate(TETROMINO_MAP_RECT(name,0,0), -270).y << std::endl;
 }
 
 floatTetrisBlock::~floatTetrisBlock()
@@ -65,10 +64,12 @@ void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
     for (int i = 0; i < fallSpeed; i++) {
         auto newObject = moveY(1); // the speed
         bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
-        if (canBePlaced)
+        if (canBePlaced) {
             _placed = true;
-        else
+        } else {
             _object = newObject;
+            _position.y = _position.y + 1;
+        }
         printRec();
     }
 }
@@ -84,9 +85,21 @@ void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
     std::vector<Rectangle> gameRectangleVec = { *_gameRectangle };
     auto newObject = moveX(offset); // the speed
     bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
-    if (!canBePlaced)
+    if (!canBePlaced) {
         _object = newObject;
+        _position.x = _position.x + offset;
+    }
     printRec();
+}
+
+void floatTetrisBlock::Rotate()
+{
+    std::vector<Rectangle> newRec;
+    if (IsKeyPressed(KEY_UP)) {
+        _rotation = (_rotation == floatTetrisRotation::COUNTER_CLOCKWISE ?  floatTetrisRotation::NONE : static_cast<floatTetrisRotation>(static_cast<int>(_rotation) + 90));
+        std::cout << "rotation: " << static_cast<int>(_rotation) << std::endl;
+        constructReactangle(_name, _rotation, false);
+    }
 }
 
 void floatTetrisBlock::printRec(void)
@@ -133,6 +146,31 @@ std::vector<Rectangle> floatTetrisBlock::moveY(int y)
         rect.y = rect.y + y;
     }
     return newRec;
+}
+
+void floatTetrisBlock::constructReactangle(tetromino::tetrominoNames name, floatTetrisRotation rotation, bool calculateArea)
+{
+    std::vector<Rectangle> newObject;
+    double floatRotate = static_cast<int>(rotation)*DEG_TO_RAD;
+    std::cout << "floatRotate: " << floatRotate << std::endl;
+    for (int i = 0; i < 2; i++) {
+        if (TETROMINO_MAP_RECT(name, i, 1).x == -1)
+            continue;
+        auto vectorStart = Vector2Rotate( (TETROMINO_MAP_RECT(name, i, 0)), floatRotate);
+        auto vectorEnd = Vector2Rotate( (TETROMINO_MAP_RECT(name, i, 1)), floatRotate);
+        auto widthObject = (abs(round(vectorEnd.x)) - abs(round(vectorStart.x)) + 1) * BLOCK_SIZE;
+        auto heightObject = (abs(round(vectorEnd.y)) - abs(round(vectorStart.y)) + 1) * BLOCK_SIZE;
+        auto xObject = _position.x + (round(vectorStart.x) * BLOCK_SIZE);
+        auto yObject = _position.y + (round(vectorStart.y) * BLOCK_SIZE);
+        /*
+        std::cout << "<VectorStart> x: " <<  vectorStart.x << "\ty: " << vectorStart.y << std::endl;
+        std::cout << "<vectorEnd> x: " <<  vectorEnd.x << "\ty: " << vectorEnd.y << std::endl;
+        */
+        newObject.push_back({ xObject, yObject, widthObject, heightObject });
+        if (calculateArea)
+            _area_object += widthObject * heightObject;
+    }
+    _object = newObject;
 }
 
 Rectangle* floatTetrisBlock::getRectangle(int index)
@@ -182,7 +220,7 @@ void staticTetrisBlocks::Add(floatTetrisBlock& tetrisBlock, Color tetrisColor)
 
 void staticTetrisBlocks::Display()
 {
-    for (size_t i=0; i<_tetrisBlocks.size(); i++) {
+    for (size_t i = 0; i < _tetrisBlocks.size(); i++) {
         DrawRectangleRec(_tetrisBlocks.at(i), _tetrisColors.at(i));
     }
 }

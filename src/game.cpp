@@ -35,6 +35,7 @@ int main(void)
         // Falling block + static display
         staticBlocks.Display();
         actualBlock->Fall(staticBlocks.getRectangles());
+        actualBlock->Rotate();
         actualBlock->Move(staticBlocks.getRectangles());
 
         // Checking for collision

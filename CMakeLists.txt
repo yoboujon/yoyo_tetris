@@ -45,7 +45,7 @@ endif()
 
 # Adding compilation option depending on the OS 
 if(MSVC)
-    target_compile_options(${TARGET_NAME} PUBLIC /W3 /WX /DEBUG)
+    target_compile_options(${TARGET_NAME} PUBLIC /W3 /WX /DEBUG "-Wno-missing-field-initializers")
 else()
-    target_compile_options(${TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(${TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror "-Wno-missing-field-initializers")
 endif()
