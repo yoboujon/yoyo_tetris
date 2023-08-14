@@ -66,11 +66,13 @@ public:
     ~staticTetrisBlocks();
     void Add(floatTetrisBlock& tetrisBlock, Color tetrisColor);
     void Display();
+    void checkLine();
     const std::vector<Rectangle>& getRectangles();
 
 private:
     std::vector<Rectangle> _tetrisBlocks;
     std::vector<Color> _tetrisColors;
+    std::map<float, int> _lineMap;
 };
 
 #endif // HEADER_TETRIS_BLOCK

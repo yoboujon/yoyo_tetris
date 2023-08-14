@@ -34,6 +34,7 @@ int main(void)
 
         // Falling block + static display
         staticBlocks.Display();
+        staticBlocks.checkLine();
         const auto& collisionStatic = staticBlocks.getRectangles();
         actualBlock->Fall(collisionStatic);
         actualBlock->Rotate(collisionStatic);

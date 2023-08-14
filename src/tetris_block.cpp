@@ -16,13 +16,13 @@ inline Vector2 TETROMINO_MAP_RECT(tetromino::tetrominoNames name, int i, int num
 using namespace tetromino;
 
 const std::map<tetromino::tetrominoNames, tetromino::tetrominoBlock> tetrominoMap = {
-    { tetrominoNames::LightBlue_I, tetrominoBlock(initArray({ 0, 1 }, { 3, 1 }), emptyArray(), SKYBLUE, {1,1}) },
+    { tetrominoNames::LightBlue_I, tetrominoBlock(initArray({ 0, 1 }, { 3, 1 }), emptyArray(), SKYBLUE, { 1, 1 }) },
     { tetrominoNames::Yellow_O, tetrominoBlock(initArray({ 0, 0 }, { 1, 1 }), emptyArray(), GOLD, NULL_VECTOR2) },
-    { tetrominoNames::Purple_T, tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 1, 0 }, { 1, 0 }), PURPLE, {1,1}) },
-    { tetrominoNames::Green_S, tetrominoBlock(initArray({ 0, 1 }, { 1, 1 }), initArray({ 1, 0 }, { 2, 0 }), GREEN, {1,1}) },
-    { tetrominoNames::Red_Z, tetrominoBlock(initArray({ 1, 1 }, { 2, 1 }), initArray({ 0, 0 }, { 1, 0 }), RED, {1,1}) },
-    { tetrominoNames::Blue_J, tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 0, 0 }, { 0, 0 }), BLUE, {1,1}) },
-    { tetrominoNames::Orange_L, tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 2, 0 }, { 2, 0 }), ORANGE, {1,1}) }
+    { tetrominoNames::Purple_T, tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 1, 0 }, { 1, 0 }), PURPLE, { 1, 1 }) },
+    { tetrominoNames::Green_S, tetrominoBlock(initArray({ 0, 1 }, { 1, 1 }), initArray({ 1, 0 }, { 2, 0 }), GREEN, { 1, 1 }) },
+    { tetrominoNames::Red_Z, tetrominoBlock(initArray({ 1, 1 }, { 2, 1 }), initArray({ 0, 0 }, { 1, 0 }), RED, { 1, 1 }) },
+    { tetrominoNames::Blue_J, tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 0, 0 }, { 0, 0 }), BLUE, { 1, 1 }) },
+    { tetrominoNames::Orange_L, tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 2, 0 }, { 2, 0 }), ORANGE, { 1, 1 }) }
 };
 
 /* ========================== */
@@ -146,7 +146,7 @@ std::vector<Rectangle> floatTetrisBlock::constructReactangle(tetromino::tetromin
 {
     std::vector<Rectangle> newObject;
     const auto floatRotate = (Vector2Equals(tetrominoMap.at(name).center, NULL_VECTOR2) ? 0 : getRotationAngle(rotation) * DEG_TO_RAD);
-    Vector2 SquareSize{1,1};
+    Vector2 SquareSize { 1, 1 };
 
     for (int i = 0; i < 2; i++) {
         if (Vector2Equals(TETROMINO_MAP_RECT(name, i, 1), NULL_VECTOR2))
@@ -156,9 +156,9 @@ std::vector<Rectangle> floatTetrisBlock::constructReactangle(tetromino::tetromin
         // We create separate variables to facilitate coordinate calculations.
         // Each vector is rotated based on the specified angle (90°, 180°, and 270°).
         // Substracting the center when rotating then adding it again to actually rotate around a point.
-        const auto vectorStart = Vector2Add( Vector2Rotate( Vector2Subtract(TETROMINO_MAP_RECT(name, i, 0), center) , floatRotate) , center );
-        const auto vectorEnd = Vector2Add( Vector2Rotate( Vector2Subtract(TETROMINO_MAP_RECT(name, i, 1), center) , floatRotate) , center );
-        //const auto offsetRotate = getOffsetAngle(rotation,i);
+        const auto vectorStart = Vector2Add(Vector2Rotate(Vector2Subtract(TETROMINO_MAP_RECT(name, i, 0), center), floatRotate), center);
+        const auto vectorEnd = Vector2Add(Vector2Rotate(Vector2Subtract(TETROMINO_MAP_RECT(name, i, 1), center), floatRotate), center);
+        // const auto offsetRotate = getOffsetAngle(rotation,i);
         const auto xStart = round(vectorStart.x);
         const auto yStart = round(vectorStart.y);
         const auto xEnd = round(vectorEnd.x);
@@ -245,9 +245,34 @@ staticTetrisBlocks::~staticTetrisBlocks()
 
 void staticTetrisBlocks::Add(floatTetrisBlock& tetrisBlock, Color tetrisColor)
 {
+    Vector2 increment, otherIncrement;
+    float RectangleSize, OtherSize;
     for (auto recVec : tetrisBlock.getRectangles()) {
-        _tetrisBlocks.push_back(recVec);
-        _tetrisColors.push_back(tetrisColor);
+        if (recVec.width > recVec.height) {
+            increment = { 1, 0 };
+            otherIncrement = { 0, 1 };
+            RectangleSize = recVec.width / BLOCK_SIZE;
+            OtherSize = recVec.height / BLOCK_SIZE;
+        } else {
+            increment = { 0, 1 };
+            otherIncrement = { 1, 0 };
+            RectangleSize = recVec.height / BLOCK_SIZE;
+            OtherSize = recVec.width / BLOCK_SIZE;
+        }
+        for (float i = 0.0f; i < OtherSize; i++) {
+            for (float j = 0.0f; j < RectangleSize; j++) {
+                const auto yCoord = (recVec.y + (j * increment.y * BLOCK_SIZE) + (i * otherIncrement.y * BLOCK_SIZE));
+                _tetrisBlocks.push_back({ (recVec.x + (j * increment.x * BLOCK_SIZE) + (i * otherIncrement.x * BLOCK_SIZE)),
+                    yCoord,
+                    BLOCK_SIZE, BLOCK_SIZE });
+                _tetrisColors.push_back(tetrisColor);
+                if (_lineMap.find(yCoord) == _lineMap.end()) {
+                    _lineMap[yCoord] = 1;
+                } else {
+                    _lineMap[yCoord] += 1;
+                }
+            }
+        }
     }
 }
 
@@ -255,6 +280,27 @@ void staticTetrisBlocks::Display()
 {
     for (size_t i = 0; i < _tetrisBlocks.size(); i++) {
         DrawRectangleRec(_tetrisBlocks.at(i), _tetrisColors.at(i));
+    }
+}
+
+void staticTetrisBlocks::checkLine()
+{
+    for(auto& map : _lineMap )
+    {
+        if(map.second == 15)    // For now 15 is the size of game area
+        {
+            for (size_t i=0; i < _tetrisBlocks.size() ; i++)
+            {
+                if(_tetrisBlocks.at(i).y == map.first)
+                {
+                    _tetrisBlocks.erase(_tetrisBlocks.begin() + i);
+                    _tetrisColors.erase(_tetrisColors.begin() + i);
+                    i = 0;
+                }
+                else
+                    i++;
+            }
+        }
     }
 }
 
