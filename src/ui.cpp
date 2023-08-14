@@ -1,5 +1,4 @@
 #include "ui.h"
-#include "raylib.h"
 
 Rectangle* initUI(Rectangle* gameRectangle)
 {

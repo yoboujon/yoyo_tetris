@@ -1,7 +1,11 @@
+#include "lib.h"
+
+#include "rayui_impl.h"
 #include "controls.h"
-#include "tetris_block.h"
 #include "tetromino.h"
+#include "tetris_block.h"
 #include "ui.h"
+
 #include <iostream>
 #include <stdint.h>
 
@@ -47,6 +51,11 @@ int main(void)
             staticBlocks.Add(*actualBlock, actualBlock->getColor());
             delete actualBlock;
             actualBlock = new floatTetrisBlock(static_cast<tetrominoNames>(name), gameRectangle, &gameControls);
+            if (actualBlock->GameEnded(staticBlocks.getRectangles()))
+            {
+                std::cout << "Game Over." << std::endl;
+                break;
+            }
         }
 
         // End

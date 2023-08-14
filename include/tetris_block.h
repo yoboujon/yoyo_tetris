@@ -4,7 +4,6 @@
 #include "lib.h"
 
 #include "controls.h"
-#include "raylib.h"
 #include "tetromino.h"
 #include <array>
 #include <stdint.h>
@@ -36,6 +35,7 @@ public:
     const std::vector<Rectangle>& getRectangles();
     Color getColor();
     tetromino::tetrominoNames getName();
+    bool GameEnded(const std::vector<Rectangle>& tetrisBlock);
 
 private:
     void printRec();

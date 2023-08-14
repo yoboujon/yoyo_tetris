@@ -1,6 +1,5 @@
 #include "tetris_block.h"
 #include "controls.h"
-#include "raylib.h"
 #include "raymath.h"
 
 #include <iostream>
@@ -201,7 +200,8 @@ int floatTetrisBlock::getRotationAngle(floatTetrisRotation rotation)
         return 180;
     case floatTetrisRotation::COUNTER_CLOCKWISE:
         return 270;
-    [[likely]] default:
+    //[[likely]]
+    default:
         return 0;
     }
 }
@@ -229,6 +229,11 @@ tetromino::tetrominoNames floatTetrisBlock::getName()
 Color floatTetrisBlock::getColor()
 {
     return _color;
+}
+
+bool floatTetrisBlock::GameEnded(const std::vector<Rectangle>& tetrisBlock)
+{
+    return checkCollisionWith(tetrisBlock, _object);
 }
 
 /* ========================== */
