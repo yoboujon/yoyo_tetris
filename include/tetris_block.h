@@ -29,7 +29,7 @@ public:
     // Movement
     void Fall(const std::vector<Rectangle>& tetrisBlock);
     void Move(const std::vector<Rectangle>& tetrisBlock);
-    void Rotate();
+    void Rotate(const std::vector<Rectangle>& tetrisBlock);
     // Getter
     bool Placed();
     Rectangle* getRectangle(int index);
@@ -43,7 +43,7 @@ private:
     bool checkGameRectangle(const std::vector<Rectangle>& newRectangles);
     std::vector<Rectangle> moveX(int x);
     std::vector<Rectangle> moveY(int y);
-    void constructReactangle(tetromino::tetrominoNames name, floatTetrisRotation rotation=floatTetrisRotation::NONE, bool calculateArea=true);
+    std::vector<Rectangle> constructReactangle(tetromino::tetrominoNames name, floatTetrisRotation rotation=floatTetrisRotation::NONE, bool calculateArea=true);
     int getRotationAngle(floatTetrisRotation rotation);
 
     // Properties

@@ -39,7 +39,7 @@ floatTetrisBlock::floatTetrisBlock(tetromino::tetrominoNames name, Rectangle* ga
     , _gameControls(gameControls)
 {
     _area_object = 0;
-    constructReactangle(name);
+    _object = constructReactangle(name);
 }
 
 floatTetrisBlock::~floatTetrisBlock()
@@ -54,7 +54,7 @@ void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
         fallSpeed = 5;
     for (int i = 0; i < fallSpeed; i++) {
         auto newObject = moveY(1); // the speed
-        bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
+        const bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
         if (canBePlaced) {
             _placed = true;
         } else {
@@ -75,7 +75,7 @@ void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
     }
     std::vector<Rectangle> gameRectangleVec = { *_gameRectangle };
     auto newObject = moveX(offset); // the speed
-    bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
+    const bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
     if (!canBePlaced) {
         _object = newObject;
         _position.x = _position.x + offset;
@@ -83,12 +83,17 @@ void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
     printRec();
 }
 
-void floatTetrisBlock::Rotate()
+void floatTetrisBlock::Rotate(const std::vector<Rectangle>& tetrisBlock)
 {
     std::vector<Rectangle> newRec;
     if (IsKeyPressed(KEY_UP)) {
-        _rotation = (_rotation == floatTetrisRotation::COUNTER_CLOCKWISE ?  floatTetrisRotation::NONE : static_cast<floatTetrisRotation>(static_cast<int>(_rotation) + 1));
-        constructReactangle(_name, _rotation, false);
+        _rotation = (_rotation == floatTetrisRotation::COUNTER_CLOCKWISE ? floatTetrisRotation::NONE : static_cast<floatTetrisRotation>(static_cast<int>(_rotation) + 1));
+        auto newObject = constructReactangle(_name,_rotation,false);
+        const bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
+        if (!canBePlaced) {
+
+            _object = newObject;
+        }
     }
 }
 
@@ -138,63 +143,63 @@ std::vector<Rectangle> floatTetrisBlock::moveY(int y)
     return newRec;
 }
 
-void floatTetrisBlock::constructReactangle(tetromino::tetrominoNames name, floatTetrisRotation rotation, bool calculateArea)
+std::vector<Rectangle> floatTetrisBlock::constructReactangle(tetromino::tetrominoNames name, floatTetrisRotation rotation, bool calculateArea)
 {
     std::vector<Rectangle> newObject;
-    double floatRotate = getRotationAngle(rotation)*DEG_TO_RAD;
-    float xObject, yObject;
+    const double floatRotate = getRotationAngle(rotation) * DEG_TO_RAD;
+    int XSquareSize(1), YSquareSize(1);
+
     for (int i = 0; i < 2; i++) {
         if (TETROMINO_MAP_RECT(name, i, 1).x == -1)
             continue;
-        auto vectorStart = Vector2Rotate( (TETROMINO_MAP_RECT(name, i, 0)), floatRotate);
-        auto vectorEnd = Vector2Rotate( (TETROMINO_MAP_RECT(name, i, 1)), floatRotate);
-        auto widthObject = round(vectorEnd.x) - round(vectorStart.x);
-        auto heightObject = round(vectorEnd.y) - round(vectorStart.y);
-        auto xObjectStart = _position.x + (round(vectorStart.x) * BLOCK_SIZE);
-        auto yObjectStart = _position.y + (round(vectorStart.y) * BLOCK_SIZE);
-        auto xObjectEnd = _position.x + (round(vectorEnd.x) * BLOCK_SIZE);
-        auto yObjectEnd = _position.y + (round(vectorEnd.y) * BLOCK_SIZE);
-        
-        if (widthObject < 0)
-        {
-            xObject = xObjectEnd;
-            widthObject = (widthObject-1)*BLOCK_SIZE;
+        // We create separate variables to facilitate coordinate calculations.
+        // Each vector is rotated based on the specified angle (90°, 180°, and 270°).
+        const auto vectorStart = Vector2Rotate((TETROMINO_MAP_RECT(name, i, 0)), floatRotate);
+        const auto vectorEnd = Vector2Rotate((TETROMINO_MAP_RECT(name, i, 1)), floatRotate);
+        const auto xStart = round(vectorStart.x);
+        const auto yStart = round(vectorStart.y);
+        const auto xEnd = round(vectorEnd.x);
+        const auto yEnd = round(vectorEnd.y);
+
+        // Combining the current position  with the vector coordinates
+        auto xObject = (xStart * BLOCK_SIZE) + _position.x;
+        auto yObject = (yStart * BLOCK_SIZE) + _position.y;
+
+        // If the width or height is negative, our calculations need to consider whether it's based on the end or start of the vector.
+        // In Raylib, width and height cannot be negative, so we adjust the base position accordingly.
+        if ((xEnd - xStart) < 0) {
+            xObject = (xEnd * BLOCK_SIZE) + _position.x;
+            XSquareSize = -1;
         }
-        else {
-            xObject = xObjectStart;
-            widthObject = (widthObject+1)*BLOCK_SIZE;
+        if ((yEnd - yStart) < 0) {
+            yObject = (yEnd * BLOCK_SIZE) + _position.y;
+            YSquareSize = -1;
         }
 
-        if (heightObject < 0)
-        {
-            yObject = yObjectEnd;
-            heightObject = (heightObject-1)*BLOCK_SIZE;
-        }
-        else {
-            yObject = yObjectStart;
-            heightObject = (heightObject+1)*BLOCK_SIZE;
-        }
+        // The formula sqrt((xb-xa)² + (yb-ya)² calculates the Euclidean distance between two vectors.
+        // In this case, we're using the absolute difference in x or y coordinates, and then adding the size of a square since it's a 2D shape.
+        auto widthObject = abs(((xEnd - xStart) + XSquareSize) * BLOCK_SIZE);
+        auto heightObject = abs(((yEnd - yStart) + YSquareSize) * BLOCK_SIZE);
 
-        newObject.push_back({ xObject, yObject, abs(widthObject), abs(heightObject) });
+        // Adding the rectangle to the object and calculate area if needed.
+        newObject.push_back({ xObject, yObject, widthObject, heightObject });
         if (calculateArea)
-            _area_object += abs(widthObject) * abs(heightObject);
+            _area_object += widthObject * heightObject;
     }
-    _object = newObject;
+    return newObject;
 }
 
 int floatTetrisBlock::getRotationAngle(floatTetrisRotation rotation)
 {
-    switch(rotation)
-    {
-        case floatTetrisRotation::CLOCKWISE:
-            return 90;
-        case floatTetrisRotation::INVERTED:
-            return 180;
-        case floatTetrisRotation::COUNTER_CLOCKWISE:
-            return 270;
-        [[likely]]
-        default:
-            return 0;
+    switch (rotation) {
+    case floatTetrisRotation::CLOCKWISE:
+        return 90;
+    case floatTetrisRotation::INVERTED:
+        return 180;
+    case floatTetrisRotation::COUNTER_CLOCKWISE:
+        return 270;
+    [[likely]] default:
+        return 0;
     }
 }
 
