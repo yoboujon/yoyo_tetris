@@ -11,8 +11,9 @@ class controlsTetris {
         bool IsKeyDownTiming(int key, float timing);
         bool IsKeyDown(int key);
     private:
-        float _timingCommand;
         float _elapsed;
+        std::map<int,float> _timingCommand;
+        std::map<int,bool> _keyPressed;
 };
 
 #endif // HEADER_CONTROLS

@@ -1,8 +1,10 @@
 #include "ui.h"
 
 tetrisUI::tetrisUI()
-    : _stage(gameStage::GAME),
-    _Rect_tetrisStage({ 250, 40, 300, 450 })
+    : _stage(gameStage::GAME)
+    , _Rect_tetrisStage({ 250, 40, 300, 450 })
+    , _exit(false)
+    , _newGame(false)
 {
     // Init Textures
     _Texture_button = LoadTexture("res/base_button.png"); // Load button texture
@@ -21,11 +23,14 @@ void tetrisUI::Display(renderLayer layer)
 {
     switch (_stage) {
     case gameStage::GAME:
-        if (layer == renderLayer::BACK) Game();
+        if (layer == renderLayer::BACK)
+            Game();
         break;
     case gameStage::GAME_OVER:
-        if (layer == renderLayer::BACK) Game();
-        if (layer == renderLayer::FRONT) GameOver();
+        if (layer == renderLayer::BACK)
+            Game();
+        if (layer == renderLayer::FRONT)
+            GameOver();
         break;
     default:
         break;
@@ -49,11 +54,18 @@ void tetrisUI::GameOver()
     // Const
     const int gameOvertext = MeasureText("Game Over", 30);
 
-    // Ui
+    // Drawing UI
     DrawRectangleRec({ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT }, PAUSE_COLOR);
     DrawText("Game Over", (SCREEN_WIDTH - gameOvertext) / 2, (SCREEN_HEIGHT / 2) - 100, 30, RAYWHITE);
-    _Btn_restart.Update();
+
+    // Button Actions
     _Btn_quit.Update();
+    if (_Btn_quit.Clicked())
+        _exit = true;
+
+    _Btn_restart.Update();
+    if (_Btn_restart.Clicked())
+        _newGame = true;
 }
 
 // Setters
@@ -63,3 +75,10 @@ void tetrisUI::ChangeStage(gameStage stage) { _stage = stage; }
 // Getters
 
 Rectangle* tetrisUI::getTetrisStage() { return &_Rect_tetrisStage; }
+bool tetrisUI::quitGame() { return _exit; }
+bool tetrisUI::newGame()
+{
+    bool tempNewGame(_newGame);
+    _newGame = false;
+    return tempNewGame;
+}

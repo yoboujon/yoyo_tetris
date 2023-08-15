@@ -27,6 +27,8 @@ public:
 
     //Getters
     Rectangle* getTetrisStage();
+    bool quitGame();
+    bool newGame();
 private:
     void TitleScreen();
     void Game();
@@ -42,6 +44,10 @@ private:
 
     // Textures
     Texture2D _Texture_button;
+
+    // UI States
+    bool _exit;
+    bool _newGame;
 };
 
 #endif // HEADER_TETRIS_UI

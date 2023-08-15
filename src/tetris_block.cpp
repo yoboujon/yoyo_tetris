@@ -50,7 +50,7 @@ void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
     std::vector<Rectangle> gameRectangleVec = { *_tetrisStage };
     int fallSpeed(1);
     if (_gameControls->IsKeyDown(KEY_DOWN))
-        fallSpeed = 5;
+        fallSpeed = FALL_SPEED;
     for (int i = 0; i < fallSpeed; i++) {
         auto newObject = moveY(1); // the speed
         const bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
@@ -67,9 +67,9 @@ void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
 void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
 {
     int offset(0);
-    if (_gameControls->IsKeyDown(KEY_LEFT)) {
+    if (_gameControls->IsKeyDownTiming(KEY_LEFT, KEY_TIMING)) {
         offset = -BLOCK_SIZE;
-    } else if (_gameControls->IsKeyDown(KEY_RIGHT)) {
+    } else if (_gameControls->IsKeyDownTiming(KEY_RIGHT, KEY_TIMING)) {
         offset = BLOCK_SIZE;
     }
     std::vector<Rectangle> gameRectangleVec = { *_tetrisStage };
@@ -199,7 +199,7 @@ int floatTetrisBlock::getRotationAngle(floatTetrisRotation rotation)
         return 180;
     case floatTetrisRotation::COUNTER_CLOCKWISE:
         return 270;
-    //[[likely]]
+    [[likely]]
     default:
         return 0;
     }
