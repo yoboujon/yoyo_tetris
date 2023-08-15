@@ -57,6 +57,9 @@ target_include_directories(${TARGET_NAME} PUBLIC "include")
 # Adding Librairies
 target_link_libraries(${PROJECT_NAME} raylib raygui)
 
+# Copying the ressource folderto the build
+file(COPY ${PROJECT_SOURCE_DIR}/res DESTINATION ${CMAKE_BINARY_DIR})
+
 # Checks if OSX and links appropriate frameworks (Only required on MacOS)
 if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
@@ -68,5 +71,5 @@ endif()
 if(MSVC)
     target_compile_options(${TARGET_NAME} PUBLIC /W3 /WX /DEBUG "-Wno-missing-field-initializers" "-Wno-unused-parameter" "-Wno-unused-variable" "-Wno-unused-but-set-variable" "-Wno-deprecated-enum-compare-conditional")
 else()
-    target_compile_options(${TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror "-Wno-missing-field-initializers" "-Wno-unused-parameter" "-Wno-unused-variable" "-Wno-unused-but-set-variable" "-Wno-deprecated-enum-compare-conditional")
+    target_compile_options(${TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror "-Wno-unused-private-field" "-Wno-missing-field-initializers" "-Wno-unused-parameter" "-Wno-unused-variable" "-Wno-unused-but-set-variable" "-Wno-deprecated-enum-compare-conditional")
 endif()

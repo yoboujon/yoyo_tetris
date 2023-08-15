@@ -1,3 +1,4 @@
+#include "button.h"
 #include "lib.h"
 
 #include "controls.h"
@@ -21,11 +22,12 @@ int main(void)
     SetTargetFPS(60);
     Rectangle* gameRectangle = new Rectangle({ 250, 40, 300, 450 });
     Rectangle* uiRectangle;
-    auto game = gameTetris(gameRectangle, tetromino::tetrominoNames::LightBlue_I);
     Vector2 mousePoint = { 0.0f, 0.0f };
+    auto game = gameTetris(gameRectangle, tetromino::tetrominoNames::LightBlue_I, &mousePoint);
 
     // Step
     while (!WindowShouldClose()) {
+        
         // Mouse position update
         mousePoint = GetMousePosition();
 

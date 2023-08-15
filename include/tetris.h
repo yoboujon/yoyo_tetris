@@ -3,10 +3,11 @@
 
 #include "lib.h"
 #include "tetris_block.h"
+#include "button.h"
 
 class gameTetris {
 public:
-    gameTetris(Rectangle* gameRectangle, tetromino::tetrominoNames name);
+    gameTetris(Rectangle* gameRectangle, tetromino::tetrominoNames name, Vector2* mousePtr);
     ~gameTetris();
     void Loop();
     bool gameFinished();
@@ -21,6 +22,11 @@ private:
     tetromino::tetrominoNames _actualName;
     // The actual game space
     Rectangle* _gameRectangle;
+    // The UI
+    std::vector<tetrisButton> _buttons;
+    
+    // Textures
+    Texture2D _buttonTexture; 
 
     bool _gameOver;
 };
