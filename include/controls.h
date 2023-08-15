@@ -12,13 +12,13 @@ enum class keyState {
 
 class controlsTetris {
     public:
-        controlsTetris();
+        controlsTetris(float* elapsedPtr);
         ~controlsTetris();
         bool IsKeyDownTiming(int key, float timing);
         bool TempoKey(bool keyDown, float timing);
         bool IsKeyDown(int key);
     private:
-        float _elapsed;
+        float* _elapsedPtr;
         float _timingCommand;
         keyState _keyPressed;
 };

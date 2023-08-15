@@ -2,8 +2,8 @@
 #include "raylib.h"
 #include <iostream>
 
-controlsTetris::controlsTetris()
-    : _elapsed(0.0f)
+controlsTetris::controlsTetris(float* elapsedPtr)
+    : _elapsedPtr(elapsedPtr)
     , _timingCommand(0.0f)
     , _keyPressed(keyState::UNSET)
 {}
@@ -13,18 +13,16 @@ controlsTetris::~controlsTetris()
 
 bool controlsTetris::TempoKey(bool keyDown, float timing)
 {
-    _elapsed += GetFrameTime();
-    
     // Init
     if( ((_keyPressed == keyState::UNSET) || (_keyPressed == keyState::NOT_PRESSED)) && keyDown ) 
     {
         _keyPressed = keyState::PRESSED;
-        _timingCommand = _elapsed + timing;
+        _timingCommand = *_elapsedPtr + timing;
         return (_keyPressed == keyState::UNSET);
     }
 
     // Actual check
-    if( keyDown && (_elapsed >= _timingCommand) )
+    if( keyDown && (*_elapsedPtr >= _timingCommand) )
     {
         _keyPressed = keyState::NOT_PRESSED;
         return true;

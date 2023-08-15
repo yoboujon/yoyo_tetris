@@ -1,10 +1,12 @@
 #include "tetris.h"
 #include "button.h"
+#include "controls.h"
 
 #include <iostream>
 
 gameTetris::gameTetris(tetrisUI* gameUI, tetromino::tetrominoNames name)
-    : _actualBlock(new floatTetrisBlock(name, gameUI->getTetrisStage(), &_gameControls))
+    : _gameControls(controlsTetris(gameUI->getElapsedTime())) 
+    , _actualBlock(new floatTetrisBlock(name, gameUI->getTetrisStage(), &_gameControls))
     , _actualName(name)
     , _gameUI(gameUI)
     , _isGameOver(false)

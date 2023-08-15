@@ -1,7 +1,8 @@
 #include "ui.h"
 
-tetrisUI::tetrisUI()
+tetrisUI::tetrisUI(float* elapsedPtr)
     : _stage(gameStage::GAME)
+    , _elapsedPtr(elapsedPtr) 
     , _Rect_tetrisStage({ 250, 40, 300, 450 })
     , _exit(false)
     , _newGame(false)
@@ -75,6 +76,7 @@ void tetrisUI::ChangeStage(gameStage stage) { _stage = stage; }
 // Getters
 
 Rectangle* tetrisUI::getTetrisStage() { return &_Rect_tetrisStage; }
+float* tetrisUI::getElapsedTime() { return _elapsedPtr; }
 bool tetrisUI::quitGame() { return _exit; }
 bool tetrisUI::newGame()
 {

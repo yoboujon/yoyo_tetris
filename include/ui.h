@@ -18,7 +18,7 @@ enum class renderLayer {
 
 class tetrisUI {
 public:
-    tetrisUI();
+    tetrisUI(float* elapsedPtr);
     ~tetrisUI();
     void Display(renderLayer layer);
 
@@ -27,6 +27,7 @@ public:
 
     //Getters
     Rectangle* getTetrisStage();
+    float* getElapsedTime();
     bool quitGame();
     bool newGame();
 private:
@@ -36,6 +37,7 @@ private:
 
     // Stage
     gameStage _stage;
+    float* _elapsedPtr;
 
     // Compositions
     Rectangle _Rect_tetrisStage;

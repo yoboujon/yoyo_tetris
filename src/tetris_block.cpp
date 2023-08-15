@@ -8,7 +8,6 @@
 #include <stdint.h>
 #include <vcruntime.h>
 
-
 inline Vector2 TETROMINO_MAP_RECT(tetromino::tetrominoNames name, int i, int num)
 {
     return tetrominoMap.at(name).rectangles[i][num];
@@ -73,15 +72,14 @@ void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
     int offset(0);
 
     // Key Input
-    // The final else statement optimises the 'move' function by returning directly.
-    if (keyLeft && keyRight) {
+    // Xiantas bebou XNOR
+    if (!(keyLeft ^ keyRight)) {
         return;
-    } else if (_gameControls->TempoKey(keyLeft, KEY_TIMING)) {
+    }
+    if (_gameControls->TempoKey(keyLeft, KEY_TIMING)) {
         offset = -BLOCK_SIZE;
     } else if (_gameControls->TempoKey(keyRight, KEY_TIMING)) {
         offset = BLOCK_SIZE;
-    } else {
-        return;
     }
 
     std::vector<Rectangle> gameRectangleVec = { *_tetrisStage };

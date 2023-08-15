@@ -23,12 +23,14 @@ int main(void)
     SetExitKey(KEY_NULL);
     Rectangle* tetrisStage = new Rectangle({ 250, 40, 300, 450 });
     Rectangle* uiRectangle;
+    float elapsedTime = 0.0f;
     
-    auto gameUI = new tetrisUI();
+    auto gameUI = new tetrisUI(&elapsedTime);
     auto game = new gameTetris(gameUI, tetromino::tetrominoNames::LightBlue_I);
 
     // Step
     while (!WindowShouldClose() && !(gameUI->quitGame())) {
+        elapsedTime += GetFrameTime();
         BeginDrawing();
 
         // UI Update Back
