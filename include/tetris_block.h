@@ -23,7 +23,7 @@ enum class floatTetrisRotation {
 
 class floatTetrisBlock {
 public:
-    floatTetrisBlock(tetromino::tetrominoNames name,Rectangle* gameRectangle, controlsTetris* gameControls);
+    floatTetrisBlock(tetromino::tetrominoNames name,Rectangle* tetrisStage, controlsTetris* gameControls);
     ~floatTetrisBlock();
     // Movement
     void Fall(const std::vector<Rectangle>& tetrisBlock);
@@ -36,9 +36,9 @@ public:
     Color getColor();
     tetromino::tetrominoNames getName();
     bool GameEnded(const std::vector<Rectangle>& tetrisBlock);
+    void Display();
 
 private:
-    void printRec();
     bool checkCollisionWith(const std::vector<Rectangle>& newRectangles, const std::vector<Rectangle>& collideRectangles);
     bool checkGameRectangle(const std::vector<Rectangle>& newRectangles);
     std::vector<Rectangle> moveX(int x);
@@ -56,7 +56,7 @@ private:
     bool _placed;
     floatTetrisRotation _rotation;
     // Game
-    Rectangle* _gameRectangle;
+    Rectangle* _tetrisStage;
     controlsTetris* _gameControls;
 };
 

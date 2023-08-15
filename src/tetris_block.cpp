@@ -28,13 +28,13 @@ const std::map<tetromino::tetrominoNames, tetromino::tetrominoBlock> tetrominoMa
 /*     FLOAT Tetris Block     */
 /* ========================== */
 
-floatTetrisBlock::floatTetrisBlock(tetromino::tetrominoNames name, Rectangle* gameRectangle, controlsTetris* gameControls)
+floatTetrisBlock::floatTetrisBlock(tetromino::tetrominoNames name, Rectangle* tetrisStage, controlsTetris* gameControls)
     : _name(name)
     , _color(tetrominoMap.at(name).color)
     , _position({ BASE_X, BASE_Y })
     , _placed(false)
     , _rotation(floatTetrisRotation::NONE)
-    , _gameRectangle(gameRectangle)
+    , _tetrisStage(tetrisStage)
     , _gameControls(gameControls)
 {
     _area_object = 0;
@@ -47,7 +47,7 @@ floatTetrisBlock::~floatTetrisBlock()
 
 void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
 {
-    std::vector<Rectangle> gameRectangleVec = { *_gameRectangle };
+    std::vector<Rectangle> gameRectangleVec = { *_tetrisStage };
     int fallSpeed(1);
     if (_gameControls->IsKeyDown(KEY_DOWN))
         fallSpeed = 5;
@@ -60,26 +60,25 @@ void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
             _object = newObject;
             _position.y = _position.y + 1;
         }
-        printRec();
+        Display();
     }
 }
 
 void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
 {
     int offset(0);
-    if (_gameControls->IsKeyDownTiming(KEY_LEFT, 0.075f)) {
+    if (_gameControls->IsKeyDown(KEY_LEFT)) {
         offset = -BLOCK_SIZE;
-    } else if (_gameControls->IsKeyDownTiming(KEY_RIGHT, 0.075f)) {
+    } else if (_gameControls->IsKeyDown(KEY_RIGHT)) {
         offset = BLOCK_SIZE;
     }
-    std::vector<Rectangle> gameRectangleVec = { *_gameRectangle };
+    std::vector<Rectangle> gameRectangleVec = { *_tetrisStage };
     auto newObject = moveX(offset); // the speed
     const bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
     if (!canBePlaced) {
         _object = newObject;
         _position.x = _position.x + offset;
     }
-    printRec();
 }
 
 void floatTetrisBlock::Rotate(const std::vector<Rectangle>& tetrisBlock)
@@ -95,7 +94,7 @@ void floatTetrisBlock::Rotate(const std::vector<Rectangle>& tetrisBlock)
     }
 }
 
-void floatTetrisBlock::printRec(void)
+void floatTetrisBlock::Display(void)
 {
     for (auto& recVec : _object) {
         DrawRectangleRec(recVec, _color);
@@ -106,7 +105,7 @@ bool floatTetrisBlock::checkGameRectangle(const std::vector<Rectangle>& newRecta
 {
     float area(0);
     for (auto& newRect : newRectangles) {
-        auto rectCollide = GetCollisionRec(newRect, *_gameRectangle);
+        auto rectCollide = GetCollisionRec(newRect, *_tetrisStage);
         area += rectCollide.height * rectCollide.width;
     }
     return (area == _area_object);

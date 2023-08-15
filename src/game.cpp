@@ -20,25 +20,23 @@ int main(void)
     // Init
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "yoyoTetris");
     SetTargetFPS(60);
-    Rectangle* gameRectangle = new Rectangle({ 250, 40, 300, 450 });
+    Rectangle* tetrisStage = new Rectangle({ 250, 40, 300, 450 });
     Rectangle* uiRectangle;
-    Vector2 mousePoint = { 0.0f, 0.0f };
-    auto game = gameTetris(gameRectangle, tetromino::tetrominoNames::LightBlue_I, &mousePoint);
+    
+    auto gameUI = new tetrisUI();
+    auto game = gameTetris(gameUI, tetromino::tetrominoNames::LightBlue_I);
 
     // Step
     while (!WindowShouldClose()) {
-        
-        // Mouse position update
-        mousePoint = GetMousePosition();
-
         BeginDrawing();
-        // Init base element
-        uiRectangle = initUI(gameRectangle);
+
+        // UI Update
+        gameUI->Display();
 
         // Game Update
         game.Loop();
         if (game.gameFinished()) {
-            game.GameOverScreen();
+            gameUI->ChangeStage(gameStage::GAME_OVER);
         }
 
         // End
@@ -46,8 +44,8 @@ int main(void)
     }
 
     // Stop
-    delete uiRectangle;
-    delete gameRectangle;
+    delete gameUI;
+    delete tetrisStage;
     CloseWindow();
     return 0;
 }

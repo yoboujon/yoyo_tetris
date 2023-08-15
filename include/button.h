@@ -25,14 +25,14 @@ enum class buttonState {
 
 class tetrisButton {
     public:
-        tetrisButton(Vector2* mousePtr, Texture2D* texture, Vector2 position, ButtonStyle style=ButtonStyle::NONE);
+        tetrisButton();
+        tetrisButton(Texture2D* texture, Vector2 position, ButtonStyle style=ButtonStyle::NONE);
         ~tetrisButton();
         void SetText(const std::string& txt);
         void Update();
         bool Clicked();
     private:
         Rectangle _button;
-        Vector2* _mouse;
         Texture2D* _texture;
         buttonState _state;
         std::string _text;

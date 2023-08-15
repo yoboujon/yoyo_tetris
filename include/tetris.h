@@ -4,14 +4,14 @@
 #include "lib.h"
 #include "tetris_block.h"
 #include "button.h"
+#include "ui.h"
 
 class gameTetris {
 public:
-    gameTetris(Rectangle* gameRectangle, tetromino::tetrominoNames name, Vector2* mousePtr);
+    gameTetris(tetrisUI* gameUI, tetromino::tetrominoNames name);
     ~gameTetris();
     void Loop();
     bool gameFinished();
-    void GameOverScreen();
 private:
     // The controller/keyboard manager
     controlsTetris _gameControls;
@@ -20,15 +20,11 @@ private:
     floatTetrisBlock* _actualBlock;
     // The next tetromino
     tetromino::tetrominoNames _actualName;
-    // The actual game space
-    Rectangle* _gameRectangle;
-    // The UI
-    std::vector<tetrisButton> _buttons;
-    
-    // Textures
-    Texture2D _buttonTexture; 
+    // The UI pointer
+    tetrisUI* _gameUI;
 
-    bool _gameOver;
+    //Game States
+    bool _isGameOver;
 };
 
 #endif // HEADER_TETRIS_GAME
