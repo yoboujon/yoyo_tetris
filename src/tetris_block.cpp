@@ -48,7 +48,6 @@ floatTetrisBlock::~floatTetrisBlock()
 
 void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
 {
-    std::vector<Rectangle> gameRectangleVec = { *_tetrisStage };
     int fallSpeed(1);
     if (_gameControls->IsKeyDown(KEY_DOWN))
         fallSpeed = FALL_SPEED;
@@ -82,7 +81,6 @@ void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
         offset = BLOCK_SIZE;
     }
 
-    std::vector<Rectangle> gameRectangleVec = { *_tetrisStage };
     auto newObject = moveX(offset); // the speed
     const bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
     if (!canBePlaced) {

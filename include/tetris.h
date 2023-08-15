@@ -6,6 +6,8 @@
 #include "button.h"
 #include "ui.h"
 
+constexpr float FALLING_TICK_DURATION = 0.0075f;
+
 class gameTetris {
 public:
     gameTetris(tetrisUI* gameUI, tetromino::tetrominoNames name);
@@ -22,6 +24,8 @@ private:
     tetromino::tetrominoNames _actualName;
     // The UI pointer
     tetrisUI* _gameUI;
+    // The falling tick
+    float _fallingTick;
 
     //Game States
     bool _isGameOver;
