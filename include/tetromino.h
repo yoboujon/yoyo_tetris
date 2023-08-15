@@ -13,7 +13,8 @@ enum class tetrominoNames {
     Green_S,
     Red_Z,
     Blue_J,
-    Orange_L
+    Orange_L,
+    Count
 };
 
 struct tetrominoBlock {
@@ -29,6 +30,8 @@ struct tetrominoBlock {
     {
     }
 };
+
+tetromino::tetrominoNames getRandomTetromino();
 
 };
 

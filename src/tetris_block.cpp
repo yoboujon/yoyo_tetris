@@ -2,6 +2,7 @@
 #include "controls.h"
 #include "raylib.h"
 #include "raymath.h"
+#include "tetromino.h"
 
 #include <corecrt_math.h>
 #include <iostream>
@@ -28,6 +29,11 @@ const std::map<tetromino::tetrominoNames, tetromino::tetrominoBlock> tetrominoMa
 /* ========================== */
 /*     FLOAT Tetris Block     */
 /* ========================== */
+
+floatTetrisBlock::floatTetrisBlock()
+    : floatTetrisBlock(tetrominoNames::LightBlue_I, NULL, NULL)
+{
+}
 
 floatTetrisBlock::floatTetrisBlock(tetromino::tetrominoNames name, Rectangle* tetrisStage, controlsTetris* gameControls)
     : _name(name)

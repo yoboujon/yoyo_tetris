@@ -25,6 +25,7 @@ enum class floatTetrisRotation {
 
 class floatTetrisBlock {
 public:
+    floatTetrisBlock();
     floatTetrisBlock(tetromino::tetrominoNames name,Rectangle* tetrisStage, controlsTetris* gameControls);
     ~floatTetrisBlock();
     // Movement

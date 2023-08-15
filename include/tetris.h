@@ -6,7 +6,7 @@
 #include "button.h"
 #include "ui.h"
 
-constexpr float FALLING_TICK_DURATION = 0.0075f;
+constexpr float FALLING_TICK_DURATION = 0.01f;
 
 class gameTetris {
 public:
