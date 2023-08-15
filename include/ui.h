@@ -11,11 +11,16 @@ enum class gameStage {
     GAME_OVER
 };
 
+enum class renderLayer {
+    BACK,
+    FRONT
+};
+
 class tetrisUI {
 public:
     tetrisUI();
     ~tetrisUI();
-    void Display();
+    void Display(renderLayer layer);
 
     //Setters
     void ChangeStage(gameStage stage);

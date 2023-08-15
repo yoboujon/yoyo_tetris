@@ -17,15 +17,15 @@ tetrisUI::~tetrisUI()
 {
 }
 
-void tetrisUI::Display()
+void tetrisUI::Display(renderLayer layer)
 {
     switch (_stage) {
     case gameStage::GAME:
-        Game();
+        if (layer == renderLayer::BACK) Game();
         break;
     case gameStage::GAME_OVER:
-        Game();
-        GameOver();
+        if (layer == renderLayer::BACK) Game();
+        if (layer == renderLayer::FRONT) GameOver();
         break;
     default:
         break;

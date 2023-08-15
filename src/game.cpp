@@ -30,14 +30,17 @@ int main(void)
     while (!WindowShouldClose()) {
         BeginDrawing();
 
-        // UI Update
-        gameUI->Display();
+        // UI Update Back
+        gameUI->Display(renderLayer::BACK);
 
         // Game Update
         game.Loop();
         if (game.gameFinished()) {
             gameUI->ChangeStage(gameStage::GAME_OVER);
         }
+
+        // UI Update Front (after the game rendering.)
+        gameUI->Display(renderLayer::FRONT);
 
         // End
         EndDrawing();
