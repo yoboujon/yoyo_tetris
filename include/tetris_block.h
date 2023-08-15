@@ -14,7 +14,7 @@ constexpr int BASE_X = 250;
 constexpr int BASE_Y = 40;
 constexpr double DEG_TO_RAD = PI/180;
 constexpr int FALL_SPEED = 7;
-constexpr float KEY_TIMING = 0.025f;
+constexpr float KEY_TIMING = 0.0f;
 
 enum class floatTetrisRotation {
     NONE,

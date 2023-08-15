@@ -1,11 +1,13 @@
 #include "tetris_block.h"
 #include "controls.h"
+#include "raylib.h"
 #include "raymath.h"
 
-#include <iostream>
 #include <corecrt_math.h>
+#include <iostream>
 #include <stdint.h>
 #include <vcruntime.h>
+
 
 inline Vector2 TETROMINO_MAP_RECT(tetromino::tetrominoNames name, int i, int num)
 {
@@ -66,12 +68,22 @@ void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
 
 void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
 {
+    const bool keyLeft = IsKeyDown(KEY_LEFT);
+    const bool keyRight = IsKeyDown(KEY_RIGHT);
     int offset(0);
-    if (_gameControls->IsKeyDownTiming(KEY_LEFT, KEY_TIMING)) {
+
+    // Key Input
+    // The final else statement optimises the 'move' function by returning directly.
+    if (keyLeft && keyRight) {
+        return;
+    } else if (_gameControls->TempoKey(keyLeft, KEY_TIMING)) {
         offset = -BLOCK_SIZE;
-    } else if (_gameControls->IsKeyDownTiming(KEY_RIGHT, KEY_TIMING)) {
+    } else if (_gameControls->TempoKey(keyRight, KEY_TIMING)) {
         offset = BLOCK_SIZE;
+    } else {
+        return;
     }
+
     std::vector<Rectangle> gameRectangleVec = { *_tetrisStage };
     auto newObject = moveX(offset); // the speed
     const bool canBePlaced = (checkCollisionWith(newObject, tetrisBlock) || !checkGameRectangle(newObject));
@@ -83,7 +95,6 @@ void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
 
 void floatTetrisBlock::Rotate(const std::vector<Rectangle>& tetrisBlock)
 {
-    std::vector<Rectangle> newRec;
     if (IsKeyPressed(KEY_UP)) {
         _rotation = (_rotation == floatTetrisRotation::COUNTER_CLOCKWISE ? floatTetrisRotation::NONE : static_cast<floatTetrisRotation>(static_cast<int>(_rotation) + 1));
         auto newObject = constructReactangle(_name, _rotation, false);
@@ -199,8 +210,7 @@ int floatTetrisBlock::getRotationAngle(floatTetrisRotation rotation)
         return 180;
     case floatTetrisRotation::COUNTER_CLOCKWISE:
         return 270;
-    [[likely]]
-    default:
+    [[likely]] default:
         return 0;
     }
 }
@@ -289,33 +299,27 @@ void staticTetrisBlocks::Display()
 
 void staticTetrisBlocks::checkLine()
 {
-    for (auto it = _lineMap.begin(); it != _lineMap.end();)
-    {
-        if(it->second == 15)    // For now 15 is the size of game area
+    for (auto it = _lineMap.begin(); it != _lineMap.end();) {
+        if (it->second == 15) // For now 15 is the size of game area
         {
             // TODO : Play animation
-            for (size_t i=0; i < _tetrisBlocks.size();)
-            {
-                if(_tetrisBlocks.at(i).y == it->first)
-                {
+            for (size_t i = 0; i < _tetrisBlocks.size();) {
+                if (_tetrisBlocks.at(i).y == it->first) {
                     _tetrisBlocks.erase(_tetrisBlocks.begin() + i);
                     _tetrisColors.erase(_tetrisColors.begin() + i);
                     i = 0;
-                }
-                else
+                } else
                     i++;
             }
             // For every blocks that are higher than the destroyed block, update its position to fall.
             // Reseting the linemap for the selected y coordonate
-            for (auto& block :_tetrisBlocks)
-            {
-                if(block.y < it->first)
+            for (auto& block : _tetrisBlocks) {
+                if (block.y < it->first)
                     block.y = block.y + BLOCK_SIZE;
             }
             _lineMap = updateLineMap();
             it = _lineMap.begin();
-        }
-        else {
+        } else {
             it++;
         }
     }
@@ -324,8 +328,7 @@ void staticTetrisBlocks::checkLine()
 std::map<float, int> staticTetrisBlocks::updateLineMap()
 {
     std::map<float, int> newMap;
-    for(const auto& block : _tetrisBlocks)
-    {
+    for (const auto& block : _tetrisBlocks) {
         if (newMap.find(block.y) == newMap.end()) {
             newMap[block.y] = 1;
         } else {

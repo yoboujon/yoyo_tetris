@@ -1,36 +1,40 @@
 #include "controls.h"
+#include "raylib.h"
 #include <iostream>
 
 controlsTetris::controlsTetris()
     : _elapsed(0.0f)
+    , _timingCommand(0.0f)
+    , _keyPressed(keyState::UNSET)
 {}
 
 controlsTetris::~controlsTetris()
 {}
 
-// ! BUFFER Working, but way too slow to actually be useful...
-// ! Maybe using a vector would be faster?
-bool controlsTetris::IsKeyDownTiming(int key, float timing)
+bool controlsTetris::TempoKey(bool keyDown, float timing)
 {
     _elapsed += GetFrameTime();
-    auto itKey = _keyPressed.find(key);
-    auto itTiming = _timingCommand.find(key);
     
     // Init
-    if( ((itKey == _keyPressed.end()) ||  (itKey->second == false)) && IsKeyDown(key)) 
+    if( ((_keyPressed == keyState::UNSET) || (_keyPressed == keyState::NOT_PRESSED)) && keyDown ) 
     {
-        _keyPressed[key] = true;
-        _timingCommand[key] = _elapsed + timing;
-        return (itKey == _keyPressed.end());;
+        _keyPressed = keyState::PRESSED;
+        _timingCommand = _elapsed + timing;
+        return (_keyPressed == keyState::UNSET);
     }
 
     // Actual check
-    if( IsKeyDown(key) && (_elapsed >= itTiming->second) )
+    if( keyDown && (_elapsed >= _timingCommand) )
     {
-        _keyPressed[key] = false;
+        _keyPressed = keyState::NOT_PRESSED;
         return true;
     }
     return false;
+}
+
+bool controlsTetris::IsKeyDownTiming(int key, float timing)
+{
+    return TempoKey(::IsKeyDown(key), timing);
 }
 
 bool controlsTetris::IsKeyDown(int key)
