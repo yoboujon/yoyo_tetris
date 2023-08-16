@@ -5,6 +5,8 @@
 #include "button.h"
 #include "raylib.h"
 
+constexpr Rectangle TILESET = { 0,0,16.0f,16.0f };
+
 enum class gameStage {
     TITLE_SCREEN,
     GAME,
@@ -31,6 +33,7 @@ public:
     bool quitGame();
     bool newGame();
 private:
+    void TileSet();
     void TitleScreen();
     void Game();
     void GameOver();
@@ -46,6 +49,8 @@ private:
 
     // Textures
     Texture2D _Texture_button;
+    Texture2D _Texture_tileset_w;
+    Texture2D _Texture_settings_w;
 
     // UI States
     bool _exit;

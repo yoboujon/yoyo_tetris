@@ -1,4 +1,6 @@
 #include "ui.h"
+#include "lib.h"
+#include "raylib.h"
 
 tetrisUI::tetrisUI(float* elapsedPtr)
     : _stage(gameStage::GAME)
@@ -9,6 +11,7 @@ tetrisUI::tetrisUI(float* elapsedPtr)
 {
     // Init Textures
     _Texture_button = LoadTexture("res/base_button.png"); // Load button texture
+    _Texture_tileset_w = LoadTexture("res/tileset_w.png");
     // Init UI Objects
     _Btn_restart = tetrisButton(&_Texture_button, { 0, 50 }, ButtonStyle::CENTERED);
     _Btn_restart.SetText("Restart");
@@ -18,6 +21,9 @@ tetrisUI::tetrisUI(float* elapsedPtr)
 
 tetrisUI::~tetrisUI()
 {
+    UnloadTexture(_Texture_button);
+    UnloadTexture(_Texture_tileset_w);
+    UnloadTexture(_Texture_settings_w);
 }
 
 void tetrisUI::Display(renderLayer layer)
@@ -25,11 +31,17 @@ void tetrisUI::Display(renderLayer layer)
     switch (_stage) {
     case gameStage::GAME:
         if (layer == renderLayer::BACK)
+        {
+            TileSet();
             Game();
+        }
         break;
     case gameStage::GAME_OVER:
         if (layer == renderLayer::BACK)
+        {
+            TileSet();
             Game();
+        }
         if (layer == renderLayer::FRONT)
             GameOver();
         break;
@@ -38,10 +50,14 @@ void tetrisUI::Display(renderLayer layer)
     }
 }
 
+void tetrisUI::TileSet()
+{
+    DrawTextureRatio(_Texture_tileset_w, {0,-1,SCREEN_WIDTH,SCREEN_HEIGHT}, 5.0f, NULL_VECTOR2, WHITE);
+}
+
 void tetrisUI::Game()
 {
     Rectangle UIrectangle = { (_Rect_tetrisStage.x) - 4, (_Rect_tetrisStage.y) - 4, (_Rect_tetrisStage.width) + 8, (_Rect_tetrisStage.height) + 8 };
-    ClearBackground(RAYWHITE);
     DrawText("YoyoTetris", 40, 40, 30, DARKGRAY);
     DrawText("Score", 40, 120, 20, DARKGRAY);
     DrawText("Level", 40, 300, 20, DARKGRAY);
