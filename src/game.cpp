@@ -31,21 +31,25 @@ int main(void)
     // Step
     while (!WindowShouldClose() && !(gameUI->quitGame())) {
         elapsedTime += GetFrameTime();
+        auto actualStage = gameUI->getStage();
         BeginDrawing();
 
         // UI Update Back
         gameUI->Display(renderLayer::BACK);
 
         // Game Update
-        game->Loop();
-        if (game->gameFinished()) {
-            gameUI->ChangeStage(gameStage::GAME_OVER);
-        }
-        if(gameUI->newGame())
+        if(actualStage == gameStage::GAME || actualStage == gameStage::GAME_OVER)
         {
-            delete game;
-            game = new gameTetris(gameUI, tetromino::tetrominoNames::LightBlue_I);
-            gameUI->ChangeStage(gameStage::GAME);
+            game->Loop();
+            if (game->gameFinished()) {
+                gameUI->ChangeStage(gameStage::GAME_OVER);
+            }
+            if(gameUI->newGame())
+            {
+                delete game;
+                game = new gameTetris(gameUI, tetromino::tetrominoNames::LightBlue_I);
+                gameUI->ChangeStage(gameStage::GAME);
+            }
         }
 
         // UI Update Front (after the game rendering.)

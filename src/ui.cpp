@@ -1,9 +1,10 @@
 #include "ui.h"
+#include "button.h"
 #include "lib.h"
 #include "raylib.h"
 
 tetrisUI::tetrisUI(float* elapsedPtr)
-    : _stage(gameStage::GAME)
+    : _stage(gameStage::TITLE_SCREEN)
     , _elapsedPtr(elapsedPtr) 
     , _Rect_tetrisStage({ 250, 40, 300, 450 })
     , _exit(false)
@@ -12,7 +13,15 @@ tetrisUI::tetrisUI(float* elapsedPtr)
     // Init Textures
     _Texture_button = LoadTexture("res/base_button.png"); // Load button texture
     _Texture_tileset_w = LoadTexture("res/tileset_w.png");
+    _Texture_settings_w = LoadTexture("res/tileset_b.png");
+    _Texture_logo = LoadTexture("res/yoyotetris.png");
     // Init UI Objects
+    _Btn_Start = tetrisButton(&_Texture_button, { 20, 180 }, ButtonStyle::NONE);
+    _Btn_Start.SetText("Start");
+    _Btn_Settings = tetrisButton(&_Texture_button, { 20, 240 }, ButtonStyle::NONE);
+    _Btn_Settings.SetText("Settings");
+    _Btn_Exit = tetrisButton(&_Texture_button, { 20, 300 }, ButtonStyle::NONE);
+    _Btn_Exit.SetText("Exit");
     _Btn_restart = tetrisButton(&_Texture_button, { 0, 50 }, ButtonStyle::CENTERED);
     _Btn_restart.SetText("Restart");
     _Btn_quit = tetrisButton(&_Texture_button, { 0, 0 }, ButtonStyle::CENTERED);
@@ -24,11 +33,19 @@ tetrisUI::~tetrisUI()
     UnloadTexture(_Texture_button);
     UnloadTexture(_Texture_tileset_w);
     UnloadTexture(_Texture_settings_w);
+    UnloadTexture(_Texture_logo);
 }
 
 void tetrisUI::Display(renderLayer layer)
 {
     switch (_stage) {
+    case gameStage::TITLE_SCREEN:
+        if(layer == renderLayer::BACK)
+        {
+            TileSet();
+            TitleScreen();
+        }
+        break;
     case gameStage::GAME:
         if (layer == renderLayer::BACK)
         {
@@ -52,7 +69,26 @@ void tetrisUI::Display(renderLayer layer)
 
 void tetrisUI::TileSet()
 {
-    DrawTextureRatio(_Texture_tileset_w, {0,-1,SCREEN_WIDTH,SCREEN_HEIGHT}, 5.0f, NULL_VECTOR2, WHITE);
+    float ratio = 5.0f;
+    //Offseting the texture by 5px in x, and 5px in y. (ratio multiplied by the actual pixels of the texture)
+    DrawTextureRatio(_Texture_tileset_w, {-(ratio*5.0f),-(ratio*5.0f),SCREEN_WIDTH+(ratio*5.0f),SCREEN_HEIGHT+(ratio*5.0f)}, 5.0f, {0.0f,0.0f}, WHITE);
+    DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {255,255,255,128});
+}
+
+void tetrisUI::TitleScreen()
+{
+    DrawTexturePro(_Texture_logo, TITLE, {0.0f,0.0f,TITLE_SIZE*3,TITLE_SIZE}, {0.0f,-10.0f}, 0.0f, WHITE);
+    DrawText("Version 0.1", 20, 130, 20, BLACK_TEXT);
+
+    _Btn_Start.Update();
+    if (_Btn_Start.Clicked())
+        _stage = gameStage::GAME;
+
+    _Btn_Settings.Update();
+
+    _Btn_Exit.Update();
+    if (_Btn_Exit.Clicked())
+        _exit = true;
 }
 
 void tetrisUI::Game()
@@ -91,6 +127,7 @@ void tetrisUI::ChangeStage(gameStage stage) { _stage = stage; }
 
 // Getters
 
+gameStage tetrisUI::getStage() { return _stage; }
 Rectangle* tetrisUI::getTetrisStage() { return &_Rect_tetrisStage; }
 float* tetrisUI::getElapsedTime() { return _elapsedPtr; }
 bool tetrisUI::quitGame() { return _exit; }

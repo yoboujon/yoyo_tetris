@@ -51,7 +51,7 @@ void tetrisButton::DrawButton()
     // Selecting the correct texture offset with the given state
     Rectangle textureSelector = { 0, TEXTURE_SELECTOR.height * static_cast<int>(_state), TEXTURE_SELECTOR.width, TEXTURE_SELECTOR.height };
     // Drawing the texture depending on the state
-    DrawTexturePro(*_texture, textureSelector, _button, NULL_VECTOR2, 0.0f, WHITE);
+    DrawTexturePro(*_texture, textureSelector, _button, {0,0}, 0.0f, WHITE);
     // Drawing text
     Color actualColor = ((_state == buttonState::NONE || _state == buttonState::RELEASE) ? BLACK_TEXT : WHITE_TEXT);
     DrawText(_text.c_str(), _button.x + (_button.width - _textSize) / 2, _button.y + (_button.height - FONT_SIZE) / 2, FONT_SIZE, actualColor);

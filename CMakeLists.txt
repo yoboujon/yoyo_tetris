@@ -58,7 +58,16 @@ target_include_directories(${TARGET_NAME} PUBLIC "include")
 target_link_libraries(${PROJECT_NAME} raylib raygui)
 
 # Copying the ressource folderto the build
-file(COPY ${PROJECT_SOURCE_DIR}/res DESTINATION ${CMAKE_BINARY_DIR})
+add_custom_target(CopyResources ALL
+      COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/res
+      COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/res
+      COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/res
+        ${CMAKE_BINARY_DIR}/res
+    COMMENT "Copying and deleting resources to build directory"
+    VERBATIM
+)
+add_dependencies(${PROJECT_NAME} CopyResources)
 
 # Checks if OSX and links appropriate frameworks (Only required on MacOS)
 if (APPLE)
