@@ -9,7 +9,7 @@ using VectorMaths = std::array<Vector2, 2>;
 
 VectorMaths initArray(Vector2 a, Vector2 b);
 VectorMaths emptyArray();
-void DrawTextureRatio(Texture2D texture, Rectangle source, float ratio, Vector2 position, Color tint);
+void DrawTextureRatio(Texture2D texture, Vector2 source, Rectangle destination, float ratio, Vector2 position, Color tint);
 
 constexpr Vector2 NULL_VECTOR2 = {-1,-1};
 constexpr int SCREEN_WIDTH = 760;

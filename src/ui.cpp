@@ -2,6 +2,7 @@
 #include "button.h"
 #include "lib.h"
 #include "raylib.h"
+#include <iostream>
 
 tetrisUI::tetrisUI(float* elapsedPtr)
     : _stage(gameStage::TITLE_SCREEN)
@@ -9,11 +10,12 @@ tetrisUI::tetrisUI(float* elapsedPtr)
     , _Rect_tetrisStage({ 250, 40, 300, 450 })
     , _exit(false)
     , _newGame(false)
+    //, _kotoPiege(0.0f)
 {
     // Init Textures
     _Texture_button = LoadTexture("res/base_button.png"); // Load button texture
     _Texture_tileset_w = LoadTexture("res/tileset_w.png");
-    _Texture_settings_w = LoadTexture("res/tileset_b.png");
+    _Texture_tileset_b = LoadTexture("res/tileset_b.png");
     _Texture_logo = LoadTexture("res/yoyotetris.png");
 
     ShaderInit();
@@ -47,7 +49,6 @@ void tetrisUI::ShaderInit()
     // blur radius
     float radius = 5.0f;
     _Shader_blur = LoadShader(0, "res/shaders/blur.fs");
-    SetShaderValueTexture(_Shader_blur, GetShaderLocation(_Shader_blur, "texture0"), _Texture_tileset_w);
     SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "xs"), &textureSize, SHADER_UNIFORM_FLOAT);
     SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "ys"), &textureSize, SHADER_UNIFORM_FLOAT);
     SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "r"), &radius, SHADER_UNIFORM_FLOAT);
@@ -64,20 +65,19 @@ void tetrisUI::Display(renderLayer layer)
         break;
     case gameStage::GAME:
         if (layer == renderLayer::BACK) {
+            EndShaderMode();
             TileSet();
             Game(true);
         }
         break;
     case gameStage::GAME_OVER:
         if (layer == renderLayer::BACK) {
-            BeginBlendMode(BLEND_ALPHA);
             BeginShaderMode(_Shader_blur);
             TileSet();
             Game(false);
         }
         if (layer == renderLayer::FRONT) {
             EndShaderMode();
-            EndBlendMode();
             GameOver();
         }
         break;
@@ -89,8 +89,8 @@ void tetrisUI::Display(renderLayer layer)
 void tetrisUI::TileSet()
 {
     // Offseting the texture by 5px in x, and 5px in y. (ratio multiplied by the actual pixels of the texture)
-    DrawTextureRatio(_Texture_tileset_w, { -(TILE_RATIO * 5.0f), -(TILE_RATIO * 5.0f), SCREEN_WIDTH + (TILE_RATIO * 5.0f), SCREEN_HEIGHT + (TILE_RATIO * 5.0f) }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
-    // DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {255,255,255,128});
+    DrawTextureRatio(_Texture_tileset_w, {0.0f,0.0f}, { -(TILE_RATIO * 5.0f), -(TILE_RATIO * 5.0f), SCREEN_WIDTH + (TILE_RATIO * 5.0f), SCREEN_HEIGHT + (TILE_RATIO * 5.0f) }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+    DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {255,255,255,128});
 }
 
 void tetrisUI::TitleScreen()
@@ -117,10 +117,11 @@ void tetrisUI::Game(bool showText)
         DrawText("YoyoTetris", 40, 40, 30, DARKGRAY);
         DrawText("Score", 40, 120, 20, DARKGRAY);
         DrawText("Level", 40, 300, 20, DARKGRAY);
-        DrawText("Next", 650, 40, 20, DARKGRAY);
+        DrawText("Next", 622, 70, 30, DARKGRAY);
     }
-    DrawRectangleRec(UIrectangle, DARKGRAY);
-    DrawRectangleGradientEx(_Rect_tetrisStage, WHITE, LIGHTGRAY, LIGHTGRAY, WHITE);
+    DrawTextureRatio(_Texture_tileset_b, {3.0f,4.0f}, {592,112,128,128}, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+    //DrawRectangleRec(UIrectangle, DARKGRAY);
+    //DrawRectangleGradientEx(_Rect_tetrisStage, WHITE, LIGHTGRAY, LIGHTGRAY, WHITE);
 }
 
 void tetrisUI::GameOver()
@@ -139,7 +140,9 @@ void tetrisUI::GameOver()
 
     _Btn_restart.Update();
     if (_Btn_restart.Clicked())
+    {
         _newGame = true;
+    }
 }
 
 // Setters

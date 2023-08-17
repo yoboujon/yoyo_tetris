@@ -11,8 +11,8 @@ VectorMaths emptyArray()
     return VectorMaths{ NULL_VECTOR2, NULL_VECTOR2 };
 }
 
-void DrawTextureRatio(Texture2D texture, Rectangle source, float ratio, Vector2 position, Color tint)
+void DrawTextureRatio(Texture2D texture, Vector2 source, Rectangle destination, float ratio, Vector2 position, Color tint)
 {
-    Rectangle screenRectangleRatio = {0,0, (source.width/ratio) , (source.height/ratio) };
-    DrawTexturePro(texture, screenRectangleRatio, source, position, 0.0f, tint);
+    Rectangle sourceRatio = {source.x, source.y, (destination.width/ratio) , (destination.height/ratio) };
+    DrawTexturePro(texture, sourceRatio, destination, position, 0.0f, tint);
 }

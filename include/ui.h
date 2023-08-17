@@ -59,6 +59,7 @@ private:
     // Textures
     Texture2D _Texture_button;
     Texture2D _Texture_tileset_w;
+    Texture2D _Texture_tileset_b;
     Texture2D _Texture_settings_w;
     Texture2D _Texture_logo;
 
@@ -68,6 +69,7 @@ private:
     // UI States
     bool _exit;
     bool _newGame;
+    //float _kotoPiege;
 };
 
 #endif // HEADER_TETRIS_UI

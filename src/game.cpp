@@ -32,6 +32,7 @@ int main(void)
     while (!WindowShouldClose() && !(gameUI->quitGame())) {
         elapsedTime += GetFrameTime();
         auto actualStage = gameUI->getStage();
+        std::cout << "<mouse Position> x: " << GetMousePosition().x << "\ty: " << GetMousePosition().y << std::endl;
         BeginDrawing();
 
         // UI Update Back
