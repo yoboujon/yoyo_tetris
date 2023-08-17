@@ -5,7 +5,7 @@
 
 tetrisUI::tetrisUI(float* elapsedPtr)
     : _stage(gameStage::TITLE_SCREEN)
-    , _elapsedPtr(elapsedPtr) 
+    , _elapsedPtr(elapsedPtr)
     , _Rect_tetrisStage({ 250, 40, 300, 450 })
     , _exit(false)
     , _newGame(false)
@@ -15,6 +15,9 @@ tetrisUI::tetrisUI(float* elapsedPtr)
     _Texture_tileset_w = LoadTexture("res/tileset_w.png");
     _Texture_settings_w = LoadTexture("res/tileset_b.png");
     _Texture_logo = LoadTexture("res/yoyotetris.png");
+
+    ShaderInit();
+
     // Init UI Objects
     _Btn_Start = tetrisButton(&_Texture_button, { 20, 180 }, ButtonStyle::NONE);
     _Btn_Start.SetText("Start");
@@ -34,33 +37,49 @@ tetrisUI::~tetrisUI()
     UnloadTexture(_Texture_tileset_w);
     UnloadTexture(_Texture_settings_w);
     UnloadTexture(_Texture_logo);
+    UnloadShader(_Shader_blur);
+}
+
+void tetrisUI::ShaderInit()
+{
+    // Init Shaders
+    float textureSize = TILE_RATIO * TILESET.width;
+    // blur radius
+    float radius = 5.0f;
+    _Shader_blur = LoadShader(0, "res/shaders/blur.fs");
+    SetShaderValueTexture(_Shader_blur, GetShaderLocation(_Shader_blur, "texture0"), _Texture_tileset_w);
+    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "xs"), &textureSize, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "ys"), &textureSize, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "r"), &radius, SHADER_UNIFORM_FLOAT);
 }
 
 void tetrisUI::Display(renderLayer layer)
 {
     switch (_stage) {
     case gameStage::TITLE_SCREEN:
-        if(layer == renderLayer::BACK)
-        {
+        if (layer == renderLayer::BACK) {
             TileSet();
             TitleScreen();
         }
         break;
     case gameStage::GAME:
-        if (layer == renderLayer::BACK)
-        {
+        if (layer == renderLayer::BACK) {
             TileSet();
-            Game();
+            Game(true);
         }
         break;
     case gameStage::GAME_OVER:
-        if (layer == renderLayer::BACK)
-        {
+        if (layer == renderLayer::BACK) {
+            BeginBlendMode(BLEND_ALPHA);
+            BeginShaderMode(_Shader_blur);
             TileSet();
-            Game();
+            Game(false);
         }
-        if (layer == renderLayer::FRONT)
+        if (layer == renderLayer::FRONT) {
+            EndShaderMode();
+            EndBlendMode();
             GameOver();
+        }
         break;
     default:
         break;
@@ -69,15 +88,14 @@ void tetrisUI::Display(renderLayer layer)
 
 void tetrisUI::TileSet()
 {
-    float ratio = 5.0f;
-    //Offseting the texture by 5px in x, and 5px in y. (ratio multiplied by the actual pixels of the texture)
-    DrawTextureRatio(_Texture_tileset_w, {-(ratio*5.0f),-(ratio*5.0f),SCREEN_WIDTH+(ratio*5.0f),SCREEN_HEIGHT+(ratio*5.0f)}, 5.0f, {0.0f,0.0f}, WHITE);
-    DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {255,255,255,128});
+    // Offseting the texture by 5px in x, and 5px in y. (ratio multiplied by the actual pixels of the texture)
+    DrawTextureRatio(_Texture_tileset_w, { -(TILE_RATIO * 5.0f), -(TILE_RATIO * 5.0f), SCREEN_WIDTH + (TILE_RATIO * 5.0f), SCREEN_HEIGHT + (TILE_RATIO * 5.0f) }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+    // DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {255,255,255,128});
 }
 
 void tetrisUI::TitleScreen()
 {
-    DrawTexturePro(_Texture_logo, TITLE, {0.0f,0.0f,TITLE_SIZE*3,TITLE_SIZE}, {0.0f,-10.0f}, 0.0f, WHITE);
+    DrawTexturePro(_Texture_logo, TITLE, { 0.0f, 0.0f, TITLE_SIZE * 3, TITLE_SIZE }, { 0.0f, -10.0f }, 0.0f, WHITE);
     DrawText("Version 0.1", 20, 130, 20, BLACK_TEXT);
 
     _Btn_Start.Update();
@@ -91,13 +109,16 @@ void tetrisUI::TitleScreen()
         _exit = true;
 }
 
-void tetrisUI::Game()
+void tetrisUI::Game(bool showText)
 {
     Rectangle UIrectangle = { (_Rect_tetrisStage.x) - 4, (_Rect_tetrisStage.y) - 4, (_Rect_tetrisStage.width) + 8, (_Rect_tetrisStage.height) + 8 };
-    DrawText("YoyoTetris", 40, 40, 30, DARKGRAY);
-    DrawText("Score", 40, 120, 20, DARKGRAY);
-    DrawText("Level", 40, 300, 20, DARKGRAY);
-    DrawText("Next", 650, 40, 20, DARKGRAY);
+    if(showText)
+    {
+        DrawText("YoyoTetris", 40, 40, 30, DARKGRAY);
+        DrawText("Score", 40, 120, 20, DARKGRAY);
+        DrawText("Level", 40, 300, 20, DARKGRAY);
+        DrawText("Next", 650, 40, 20, DARKGRAY);
+    }
     DrawRectangleRec(UIrectangle, DARKGRAY);
     DrawRectangleGradientEx(_Rect_tetrisStage, WHITE, LIGHTGRAY, LIGHTGRAY, WHITE);
 }

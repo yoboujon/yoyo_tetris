@@ -7,6 +7,7 @@
 
 constexpr Rectangle TILESET = { 0,0,16.0f,16.0f };
 constexpr Rectangle TITLE = { 0,0,48.0f,16.0f };
+constexpr float TILE_RATIO = 7.5f;
 constexpr float TITLE_SIZE = 125.0f;
 
 enum class gameStage {
@@ -36,9 +37,11 @@ public:
     bool quitGame();
     bool newGame();
 private:
+    void ShaderInit();
+    // Scenes
     void TileSet();
     void TitleScreen();
-    void Game();
+    void Game(bool showText);
     void GameOver();
 
     // Stage
@@ -58,6 +61,9 @@ private:
     Texture2D _Texture_tileset_w;
     Texture2D _Texture_settings_w;
     Texture2D _Texture_logo;
+
+    // Shaders
+    Shader _Shader_blur;
 
     // UI States
     bool _exit;
