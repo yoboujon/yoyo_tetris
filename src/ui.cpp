@@ -31,6 +31,10 @@ tetrisUI::tetrisUI(float* elapsedPtr)
     _Btn_restart.SetText("Restart");
     _Btn_quit = tetrisButton(&_Texture_button, { 0, 0 }, ButtonStyle::CENTERED);
     _Btn_quit.SetText("Quit");
+
+    // Target textures
+    _back = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 tetrisUI::~tetrisUI()
@@ -40,6 +44,8 @@ tetrisUI::~tetrisUI()
     UnloadTexture(_Texture_settings_w);
     UnloadTexture(_Texture_logo);
     UnloadShader(_Shader_blur);
+    UnloadRenderTexture(_back);
+    UnloadRenderTexture(_front);
 }
 
 void tetrisUI::ShaderInit()
@@ -71,8 +77,7 @@ void tetrisUI::Display(renderLayer layer)
         if (layer == renderLayer::BACK) {
             TileSet();
             Game(false);
-        }
-        if (layer == renderLayer::FRONT)
+        } else
             GameOver();
         break;
     default:
@@ -80,12 +85,16 @@ void tetrisUI::Display(renderLayer layer)
     }
 }
 
+bool tetrisUI::canDisplay(renderLayer layer)
+{
+    return !((layer == renderLayer::FRONT && _stage == gameStage::TITLE_SCREEN) || (layer == renderLayer::FRONT && _stage == gameStage::GAME));
+}
+
 void tetrisUI::DisplayShader(renderLayer layer, bool end)
 {
     switch (_stage) {
     case gameStage::GAME_OVER:
-        if (layer == renderLayer::BACK)
-        {
+        if (layer == renderLayer::BACK) {
             end ? EndShaderMode() : BeginShaderMode(_Shader_blur);
         }
         break;
@@ -160,7 +169,8 @@ void tetrisUI::ChangeStage(gameStage stage) { _stage = stage; }
 gameStage tetrisUI::getStage() { return _stage; }
 Rectangle* tetrisUI::getTetrisStage() { return &_Rect_tetrisStage; }
 float* tetrisUI::getElapsedTime() { return _elapsedPtr; }
-Shader tetrisUI::getShaderBlur() { return _Shader_blur; }
+Shader* tetrisUI::getShaderBlur() { return &_Shader_blur; }
+RenderTexture2D* tetrisUI::getRenderTexture(renderLayer layer) { return (layer == renderLayer::BACK ? &_back : &_front); }
 bool tetrisUI::quitGame() { return _exit; }
 bool tetrisUI::newGame()
 {

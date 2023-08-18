@@ -26,6 +26,7 @@ class tetrisUI {
 public:
     tetrisUI(float* elapsedPtr);
     ~tetrisUI();
+    bool canDisplay(renderLayer layer);
     void Display(renderLayer layer);
     void DisplayShader(renderLayer layer, bool end=false);
 
@@ -38,7 +39,8 @@ public:
     float* getElapsedTime();
     bool quitGame();
     bool newGame();
-    Shader getShaderBlur();
+    Shader* getShaderBlur();
+    RenderTexture2D* getRenderTexture(renderLayer layer);
 private:
     void ShaderInit();
     // Scenes
@@ -68,6 +70,10 @@ private:
 
     // Shaders
     Shader _Shader_blur;
+
+    // Target textures
+    RenderTexture2D _back;
+    RenderTexture2D _front;
 
     // UI States
     bool _exit;
