@@ -5,23 +5,15 @@
 
 #include "controls.h"
 #include "tetromino.h"
+
 #include <array>
 #include <stdint.h>
 #include <vector>
 
-constexpr int BLOCK_SIZE = 20;
 constexpr int BASE_X = 250;
 constexpr int BASE_Y = 40;
-constexpr double DEG_TO_RAD = PI/180;
 constexpr int FALL_SPEED = 7;
 constexpr float KEY_TIMING = 0.05f;
-
-enum class floatTetrisRotation {
-    NONE,
-    CLOCKWISE,
-    INVERTED,
-    COUNTER_CLOCKWISE
-};
 
 class floatTetrisBlock {
 public:
@@ -46,8 +38,6 @@ private:
     bool checkGameRectangle(const std::vector<Rectangle>& newRectangles);
     std::vector<Rectangle> moveX(int x);
     std::vector<Rectangle> moveY(int y);
-    std::vector<Rectangle> constructReactangle(tetromino::tetrominoNames name, floatTetrisRotation rotation=floatTetrisRotation::NONE, bool calculateArea=true);
-    int getRotationAngle(floatTetrisRotation rotation);
     
     // Properties
     std::vector<Rectangle> _object;
@@ -57,7 +47,7 @@ private:
     Vector2 _position;
     // State
     bool _placed;
-    floatTetrisRotation _rotation;
+    tetromino::tetrisRotation _rotation;
     // Game
     Rectangle* _tetrisStage;
     controlsTetris* _gameControls;

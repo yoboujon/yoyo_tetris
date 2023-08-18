@@ -58,3 +58,8 @@ bool gameTetris::gameFinished()
 {
     return _isGameOver;
 }
+
+void gameTetris::DisplayTetrisNext()
+{
+
+}

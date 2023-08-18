@@ -15,6 +15,7 @@ public:
     void Loop();
     bool gameFinished();
 private:
+    void DisplayTetrisNext();
     // The controller/keyboard manager
     controlsTetris _gameControls;
     // Static and floating blocks of the game

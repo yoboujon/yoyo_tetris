@@ -3,7 +3,7 @@
 
 #include "lib.h"
 #include "raylib.h"
-#include "raymath.h"
+
 #include <string>
 
 constexpr float BUTTON_WIDTH = 128.0f;
