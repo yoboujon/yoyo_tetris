@@ -14,6 +14,7 @@ public:
     ~gameTetris();
     void Loop();
     bool gameFinished();
+    bool pause();
 private:
     void DisplayTetrisNext();
     // The controller/keyboard manager
@@ -31,6 +32,7 @@ private:
 
     //Game States
     bool _isGameOver;
+    bool _pauseMenu;
 };
 
 #endif // HEADER_TETRIS_GAME

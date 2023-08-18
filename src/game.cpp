@@ -38,8 +38,11 @@ int main(void)
         BeginTextureMode(back); // Drawing the back texture
         gameUI->Display(renderLayer::BACK);
         // Game Display and Update
-        if (actualStage == gameStage::GAME || actualStage == gameStage::GAME_OVER) {
+        if (actualStage == gameStage::GAME || actualStage == gameStage::GAME_OVER || actualStage == gameStage::MENU_SCREEN) {
             game->Loop();
+            if(game->pause()) {
+                gameUI->ChangeStage(gameStage::MENU_SCREEN);
+            }
             if (game->gameFinished()) {
                 gameUI->ChangeStage(gameStage::GAME_OVER);
             }

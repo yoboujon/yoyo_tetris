@@ -29,8 +29,8 @@ tetrisUI::tetrisUI(float* elapsedPtr)
     _Btn_Exit.SetText("Exit");
     _Btn_restart = tetrisButton(&_Texture_button, { 0, 50 }, ButtonStyle::CENTERED);
     _Btn_restart.SetText("Restart");
-    _Btn_quit = tetrisButton(&_Texture_button, { 0, 0 }, ButtonStyle::CENTERED);
-    _Btn_quit.SetText("Quit");
+    _Btn_titleScreen = tetrisButton(&_Texture_button, { 0, 0 }, ButtonStyle::CENTERED);
+    _Btn_titleScreen.SetText("Quit");
 
     // Target textures
     _back = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -70,16 +70,19 @@ void tetrisUI::Display(renderLayer layer)
     case gameStage::GAME:
         if (layer == renderLayer::BACK) {
             TileSet();
-            Game(true);
+            Game();
         }
         break;
     case gameStage::GAME_OVER:
         if (layer == renderLayer::BACK) {
             TileSet();
-            Game(false);
+            Game();
         } else
             GameOver();
         break;
+    case gameStage::MENU_SCREEN:
+        if (layer == renderLayer::FRONT)
+            MenuScreen();
     default:
         break;
     }
@@ -89,6 +92,11 @@ void tetrisUI::DisplayShader(renderLayer layer, bool end)
 {
     switch (_stage) {
     case gameStage::GAME_OVER:
+        if (layer == renderLayer::BACK) {
+            end ? EndShaderMode() : BeginShaderMode(_Shader_blur);
+        }
+        break;
+    case gameStage::MENU_SCREEN:
         if (layer == renderLayer::BACK) {
             end ? EndShaderMode() : BeginShaderMode(_Shader_blur);
         }
@@ -121,15 +129,13 @@ void tetrisUI::TitleScreen()
         _exit = true;
 }
 
-void tetrisUI::Game(bool showText)
+void tetrisUI::Game()
 {
     Rectangle UIrectangle = { (_Rect_tetrisStage.x) - 4, (_Rect_tetrisStage.y) - 4, (_Rect_tetrisStage.width) + 8, (_Rect_tetrisStage.height) + 8 };
-    if (showText) {
-        DrawText("YoyoTetris", 40, 40, 30, DARKGRAY);
-        DrawText("Score", 40, 120, 20, DARKGRAY);
-        DrawText("Level", 40, 300, 20, DARKGRAY);
-        DrawText("Next", 622, 70, 30, DARKGRAY);
-    }
+    DrawText("YoyoTetris", 40, 40, 30, DARKGRAY);
+    DrawText("Score", 40, 120, 20, DARKGRAY);
+    DrawText("Level", 40, 300, 20, DARKGRAY);
+    DrawText("Next", 622, 70, 30, DARKGRAY);
     DrawTextureRatio(_Texture_tileset_b, { 3.0f, 4.0f }, { 592, 112, NEXT_SIZE, NEXT_SIZE }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
     // DrawRectangleRec(UIrectangle, DARKGRAY);
     // DrawRectangleGradientEx(_Rect_tetrisStage, WHITE, LIGHTGRAY, LIGHTGRAY, WHITE);
@@ -145,14 +151,50 @@ void tetrisUI::GameOver()
     DrawText("Game Over", (SCREEN_WIDTH - gameOvertext) / 2, (SCREEN_HEIGHT / 2) - 100, 30, RAYWHITE);
 
     // Button Actions
-    _Btn_quit.Update();
-    if (_Btn_quit.Clicked())
-        _exit = true;
+    _Btn_titleScreen.Update();
+    if (_Btn_titleScreen.Clicked()) {
+        _stage = gameStage::TITLE_SCREEN;
+        _newGame = true;
+        // Unloading render texture and reloading a clear buffer.
+        UnloadRenderTexture(_front);
+        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    }
 
     _Btn_restart.Update();
     if (_Btn_restart.Clicked()) {
         _newGame = true;
+        UnloadRenderTexture(_front);
+        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    }
+}
+
+void tetrisUI::MenuScreen()
+{
+    // Const
+    const int menuText = MeasureText("Menu", 30);
+
+    DrawRectangleRec({ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT }, PAUSE_COLOR);
+    DrawText("Menu", (SCREEN_WIDTH - menuText) / 2, (SCREEN_HEIGHT / 2) - 100, 30, RAYWHITE);
+
+    // TODO : Event system with the game object and the ui object having a pointer linked to. They can get information about the other and vice-versa
+    if (IsKeyPressed(KEY_ESCAPE)) {
+        _stage = gameStage::GAME;
+        UnloadRenderTexture(_front);
+        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    }
+
+    _Btn_titleScreen.Update();
+    if (_Btn_titleScreen.Clicked()) {
+        _stage = gameStage::TITLE_SCREEN;
+        _newGame = true;
         // Unloading render texture and reloading a clear buffer.
+        UnloadRenderTexture(_front);
+        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    }
+
+    _Btn_restart.Update();
+    if (_Btn_restart.Clicked()) {
+        _newGame = true;
         UnloadRenderTexture(_front);
         _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     }

@@ -14,7 +14,8 @@ constexpr float NEXT_SIZE = 128.0f;
 enum class gameStage {
     TITLE_SCREEN,
     GAME,
-    GAME_OVER
+    GAME_OVER,
+    MENU_SCREEN
 };
 
 enum class renderLayer {
@@ -45,8 +46,9 @@ private:
     // Scenes
     void TileSet();
     void TitleScreen();
-    void Game(bool showText);
+    void Game();
     void GameOver();
+    void MenuScreen();
 
     // Stage
     gameStage _stage;
@@ -55,7 +57,7 @@ private:
     // Compositions
     Rectangle _Rect_tetrisStage;
     tetrisButton _Btn_restart;
-    tetrisButton _Btn_quit;
+    tetrisButton _Btn_titleScreen;
     tetrisButton _Btn_Start;
     tetrisButton _Btn_Settings;
     tetrisButton _Btn_Exit;

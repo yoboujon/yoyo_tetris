@@ -11,6 +11,7 @@ gameTetris::gameTetris(tetrisUI* gameUI, tetromino::tetrominoNames name)
     , _gameUI(gameUI)
     , _fallingTick(0.0f)
     , _isGameOver(false)
+    , _pauseMenu(false)
 {
     _actualBlock = new floatTetrisBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
     _nextBlock = new floatTetrisBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
@@ -29,9 +30,17 @@ void gameTetris::Loop()
     // static display > next display > Falling block
     _staticBlocks.Display();
     _nextBlock->DisplayNext();
-    // If game over -> Only display the game
-    if (_isGameOver)
+
+    // Check for pause
+    if (IsKeyPressed(KEY_ESCAPE))
+        _pauseMenu = !(_pauseMenu);
+
+    // If game over/ pause menu -> Only display the game
+    if (_isGameOver || _pauseMenu) {
+        if (_pauseMenu)
+            _actualBlock->Display();
         return;
+    }
 
     _staticBlocks.checkLine();
     const auto& collisionStatic = _staticBlocks.getRectangles();
@@ -56,12 +65,5 @@ void gameTetris::Loop()
     }
 }
 
-bool gameTetris::gameFinished()
-{
-    return _isGameOver;
-}
-
-void gameTetris::DisplayTetrisNext()
-{
-
-}
+bool gameTetris::gameFinished() { return _isGameOver; }
+bool gameTetris::pause() { return _pauseMenu; }

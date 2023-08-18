@@ -29,9 +29,7 @@ floatTetrisBlock::floatTetrisBlock(tetromino::tetrominoNames name, Rectangle* te
     _object = constructReactangle(name, _position, &_area_object, tetrisRotation::NONE, true);
 }
 
-floatTetrisBlock::~floatTetrisBlock()
-{
-}
+floatTetrisBlock::~floatTetrisBlock() { }
 
 void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
 {
@@ -97,25 +95,23 @@ void floatTetrisBlock::Display()
 
 void floatTetrisBlock::DisplayNext()
 {
-    const int offsetStart = (TETROMINO_MAP_RECT(_name,0,0).y > 0 ) ? BLOCK_SIZE : 0;
+    const int offsetStart = (TETROMINO_MAP_RECT(_name, 0, 0).y > 0) ? BLOCK_SIZE : 0;
     const int actualWidth = getWidth(_name);
     Rectangle baseRec;
     try {
         baseRec = _object.at(0);
-    }
-    catch (...)
-    {
+    } catch (...) {
         // TODO : Casting a window with the error and the error code.
         std::cout << "ERROR: inside floatTetrisBlock, object is of size 0. Contact the developper." << std::endl;
     }
     for (auto& recVec : _object) {
         // Substracting the base rectangle with its actual position to gather the rectangle at 0,0
-        const auto offsetVector = Vector2Subtract({recVec.x, recVec.y}, {baseRec.x, baseRec.y});
+        const auto offsetVector = Vector2Subtract({ recVec.x, recVec.y }, { baseRec.x, baseRec.y });
         // offsetX -> Casting it at the middle of MAX_WIDTH depending on its width. Adding the offset of the Rectangle and its position
         // offsetY -> Adding the offset of its position, the offset of the starting position (see tetrominoMap), and the base Rectangle.
-        const float offsetX = 615 + ( (static_cast<float>(MAX_WIDTH-actualWidth)/2)*BLOCK_SIZE ) + offsetVector.x;
+        const float offsetX = 615 + ((static_cast<float>(MAX_WIDTH - actualWidth) / 2) * BLOCK_SIZE) + offsetVector.x;
         const float offsetY = 155 + offsetStart + offsetVector.y;
-        DrawRectangleRec({offsetX, offsetY, recVec.width, recVec.height}, _color);
+        DrawRectangleRec({ offsetX, offsetY, recVec.width, recVec.height }, _color);
     }
 }
 
@@ -158,47 +154,20 @@ std::vector<Rectangle> floatTetrisBlock::moveY(int y)
     return newRec;
 }
 
-Rectangle* floatTetrisBlock::getRectangle(int index)
-{
-    return &(_object.at(index));
-}
-
-const std::vector<Rectangle>& floatTetrisBlock::getRectangles()
-{
-    return _object;
-}
-
-bool floatTetrisBlock::Placed()
-{
-    return _placed;
-}
-
-tetromino::tetrominoNames floatTetrisBlock::getName()
-{
-    return _name;
-}
-
-Color floatTetrisBlock::getColor()
-{
-    return _color;
-}
-
-bool floatTetrisBlock::GameEnded(const std::vector<Rectangle>& tetrisBlock)
-{
-    return checkCollisionWith(tetrisBlock, _object);
-}
+Rectangle* floatTetrisBlock::getRectangle(int index) { return &(_object.at(index)); }
+const std::vector<Rectangle>& floatTetrisBlock::getRectangles() { return _object; }
+bool floatTetrisBlock::Placed() { return _placed; }
+tetromino::tetrominoNames floatTetrisBlock::getName() { return _name; }
+Color floatTetrisBlock::getColor() { return _color; }
+bool floatTetrisBlock::GameEnded(const std::vector<Rectangle>& tetrisBlock) { return checkCollisionWith(tetrisBlock, _object); }
 
 /* ========================== */
 /*    STATIC Tetris Blocks    */
 /* ========================== */
 
-staticTetrisBlocks::staticTetrisBlocks()
-{
-}
+staticTetrisBlocks::staticTetrisBlocks() { }
 
-staticTetrisBlocks::~staticTetrisBlocks()
-{
-}
+staticTetrisBlocks::~staticTetrisBlocks() { }
 
 void staticTetrisBlocks::Add(floatTetrisBlock& tetrisBlock, Color tetrisColor)
 {
@@ -216,6 +185,8 @@ void staticTetrisBlocks::Add(floatTetrisBlock& tetrisBlock, Color tetrisColor)
             RectangleSize = recVec.height / BLOCK_SIZE;
             OtherSize = recVec.width / BLOCK_SIZE;
         }
+        // Othersize being the other side size of the rectangle (width or height).
+        // Rectangle size being the main focus. We push back into the _tetrisblock vector each individual square.
         for (float i = 0.0f; i < OtherSize; i++) {
             for (float j = 0.0f; j < RectangleSize; j++) {
                 const auto yCoord = (recVec.y + (j * increment.y * BLOCK_SIZE) + (i * otherIncrement.y * BLOCK_SIZE));
@@ -281,7 +252,4 @@ std::map<float, int> staticTetrisBlocks::updateLineMap()
     return newMap;
 }
 
-const std::vector<Rectangle>& staticTetrisBlocks::getRectangles()
-{
-    return _tetrisBlocks;
-}
+const std::vector<Rectangle>& staticTetrisBlocks::getRectangles() { return _tetrisBlocks; }
