@@ -85,11 +85,6 @@ void tetrisUI::Display(renderLayer layer)
     }
 }
 
-bool tetrisUI::canDisplay(renderLayer layer)
-{
-    return !((layer == renderLayer::FRONT && _stage == gameStage::TITLE_SCREEN) || (layer == renderLayer::FRONT && _stage == gameStage::GAME));
-}
-
 void tetrisUI::DisplayShader(renderLayer layer, bool end)
 {
     switch (_stage) {
@@ -157,6 +152,9 @@ void tetrisUI::GameOver()
     _Btn_restart.Update();
     if (_Btn_restart.Clicked()) {
         _newGame = true;
+        // Unloading render texture and reloading a clear buffer.
+        UnloadRenderTexture(_front);
+        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     }
 }
 

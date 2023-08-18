@@ -26,7 +26,6 @@ class tetrisUI {
 public:
     tetrisUI(float* elapsedPtr);
     ~tetrisUI();
-    bool canDisplay(renderLayer layer);
     void Display(renderLayer layer);
     void DisplayShader(renderLayer layer, bool end=false);
 

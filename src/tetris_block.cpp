@@ -105,10 +105,14 @@ void floatTetrisBlock::DisplayNext()
     }
     catch (...)
     {
+        // TODO : Casting a window with the error and the error code.
         std::cout << "ERROR: inside floatTetrisBlock, object is of size 0. Contact the developper." << std::endl;
     }
     for (auto& recVec : _object) {
+        // Substracting the base rectangle with its actual position to gather the rectangle at 0,0
         const auto offsetVector = Vector2Subtract({recVec.x, recVec.y}, {baseRec.x, baseRec.y});
+        // offsetX -> Casting it at the middle of MAX_WIDTH depending on its width. Adding the offset of the Rectangle and its position
+        // offsetY -> Adding the offset of its position, the offset of the starting position (see tetrominoMap), and the base Rectangle.
         const float offsetX = 615 + ( (static_cast<float>(MAX_WIDTH-actualWidth)/2)*BLOCK_SIZE ) + offsetVector.x;
         const float offsetY = 155 + offsetStart + offsetVector.y;
         DrawRectangleRec({offsetX, offsetY, recVec.width, recVec.height}, _color);
