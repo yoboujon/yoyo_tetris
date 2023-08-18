@@ -1,4 +1,6 @@
 #include "tetris_block.h"
+#include "raylib.h"
+#include "raymath.h"
 #include "tetromino.h"
 #include <iostream>
 
@@ -85,10 +87,18 @@ void floatTetrisBlock::Rotate(const std::vector<Rectangle>& tetrisBlock)
     }
 }
 
-void floatTetrisBlock::Display(void)
+void floatTetrisBlock::Display()
 {
     for (auto& recVec : _object) {
         DrawRectangleRec(recVec, _color);
+    }
+}
+
+void floatTetrisBlock::DisplayNext()
+{
+    for (auto& recVec : _object) {
+        auto offsetVector = Vector2Subtract({recVec.x, recVec.y}, _position);
+        DrawRectangleRec({654+offsetVector.x, 174+offsetVector.y, recVec.width, recVec.height}, _color);
     }
 }
 

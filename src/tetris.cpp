@@ -13,20 +13,22 @@ gameTetris::gameTetris(tetrisUI* gameUI, tetromino::tetrominoNames name)
     , _isGameOver(false)
 {
     _actualBlock = new floatTetrisBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
-    _actualName = tetromino::getRandomTetromino();
+    _nextBlock = new floatTetrisBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
 }
 
 gameTetris::~gameTetris()
 {
     delete _actualBlock;
+    delete _nextBlock;
 }
 
 void gameTetris::Loop()
 {
     _fallingTick += GetFrameTime();
 
-    // Falling block + static display
+    // static display > next display > Falling block
     _staticBlocks.Display();
+    _nextBlock->DisplayNext();
     // If game over -> Only display the game
     if (_isGameOver)
         return;
@@ -46,8 +48,8 @@ void gameTetris::Loop()
     if (_actualBlock->Placed()) {
         _staticBlocks.Add(*_actualBlock, _actualBlock->getColor());
         delete _actualBlock;
-        _actualBlock = new floatTetrisBlock(_actualName, _gameUI->getTetrisStage(), &_gameControls);
-        _actualName = tetromino::getRandomTetromino();
+        _actualBlock = _nextBlock;
+        _nextBlock = new floatTetrisBlock(tetromino::getRandomTetromino(), _gameUI->getTetrisStage(), &_gameControls);
         if (_actualBlock->GameEnded(_staticBlocks.getRectangles())) {
             _isGameOver = true;
         }

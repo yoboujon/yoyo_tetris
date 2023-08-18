@@ -33,7 +33,7 @@ int main(void)
     while (!WindowShouldClose() && !(gameUI->quitGame())) {
         elapsedTime += GetFrameTime();
         auto actualStage = gameUI->getStage();
-        //std::cout << "<mouse Position> x: " << GetMousePosition().x << "\ty: " << GetMousePosition().y << std::endl;
+        std::cout << "<mouse Position> x: " << GetMousePosition().x << "\ty: " << GetMousePosition().y << std::endl;
         
         BeginTextureMode(back); // Drawing the back texture
         gameUI->Display(renderLayer::BACK);

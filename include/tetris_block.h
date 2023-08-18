@@ -32,6 +32,7 @@ public:
     tetromino::tetrominoNames getName();
     bool GameEnded(const std::vector<Rectangle>& tetrisBlock);
     void Display();
+    void DisplayNext();
 
 private:
     bool checkCollisionWith(const std::vector<Rectangle>& newRectangles, const std::vector<Rectangle>& collideRectangles);

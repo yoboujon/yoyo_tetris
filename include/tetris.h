@@ -21,6 +21,7 @@ private:
     // Static and floating blocks of the game
     staticTetrisBlocks _staticBlocks;
     floatTetrisBlock* _actualBlock;
+    floatTetrisBlock* _nextBlock;
     // The next tetromino
     tetromino::tetrominoNames _actualName;
     // The UI pointer
