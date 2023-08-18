@@ -10,7 +10,7 @@ tetrisUI::tetrisUI(float* elapsedPtr)
     , _Rect_tetrisStage({ 250, 40, 300, 450 })
     , _exit(false)
     , _newGame(false)
-    //, _kotoPiege(0.0f)
+//, _kotoPiege(0.0f)
 {
     // Init Textures
     _Texture_button = LoadTexture("res/base_button.png"); // Load button texture
@@ -44,14 +44,12 @@ tetrisUI::~tetrisUI()
 
 void tetrisUI::ShaderInit()
 {
-    // Init Shaders
-    float textureSize = TILE_RATIO * TILESET.width;
     // blur radius
-    float radius = 5.0f;
+    int radius = 8;
     _Shader_blur = LoadShader(0, "res/shaders/blur.fs");
-    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "xs"), &textureSize, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "ys"), &textureSize, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "r"), &radius, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "radius"), &radius, SHADER_UNIFORM_INT);
+    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "width"), &SCREEN_WIDTH, SHADER_UNIFORM_INT);
+    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "height"), &SCREEN_HEIGHT, SHADER_UNIFORM_INT);
 }
 
 void tetrisUI::Display(renderLayer layer)
@@ -65,20 +63,30 @@ void tetrisUI::Display(renderLayer layer)
         break;
     case gameStage::GAME:
         if (layer == renderLayer::BACK) {
-            EndShaderMode();
             TileSet();
             Game(true);
         }
         break;
     case gameStage::GAME_OVER:
         if (layer == renderLayer::BACK) {
-            BeginShaderMode(_Shader_blur);
             TileSet();
             Game(false);
         }
-        if (layer == renderLayer::FRONT) {
-            EndShaderMode();
+        if (layer == renderLayer::FRONT)
             GameOver();
+        break;
+    default:
+        break;
+    }
+}
+
+void tetrisUI::DisplayShader(renderLayer layer, bool end)
+{
+    switch (_stage) {
+    case gameStage::GAME_OVER:
+        if (layer == renderLayer::BACK)
+        {
+            end ? EndShaderMode() : BeginShaderMode(_Shader_blur);
         }
         break;
     default:
@@ -89,8 +97,8 @@ void tetrisUI::Display(renderLayer layer)
 void tetrisUI::TileSet()
 {
     // Offseting the texture by 5px in x, and 5px in y. (ratio multiplied by the actual pixels of the texture)
-    DrawTextureRatio(_Texture_tileset_w, {0.0f,0.0f}, { -(TILE_RATIO * 5.0f), -(TILE_RATIO * 5.0f), SCREEN_WIDTH + (TILE_RATIO * 5.0f), SCREEN_HEIGHT + (TILE_RATIO * 5.0f) }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
-    DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {255,255,255,128});
+    DrawTextureRatio(_Texture_tileset_w, { 0.0f, 0.0f }, { -(TILE_RATIO * 5.0f), -(TILE_RATIO * 5.0f), SCREEN_WIDTH + (TILE_RATIO * 5.0f), SCREEN_HEIGHT + (TILE_RATIO * 5.0f) }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+    DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, { 255, 255, 255, 128 });
 }
 
 void tetrisUI::TitleScreen()
@@ -112,16 +120,15 @@ void tetrisUI::TitleScreen()
 void tetrisUI::Game(bool showText)
 {
     Rectangle UIrectangle = { (_Rect_tetrisStage.x) - 4, (_Rect_tetrisStage.y) - 4, (_Rect_tetrisStage.width) + 8, (_Rect_tetrisStage.height) + 8 };
-    if(showText)
-    {
+    if (showText) {
         DrawText("YoyoTetris", 40, 40, 30, DARKGRAY);
         DrawText("Score", 40, 120, 20, DARKGRAY);
         DrawText("Level", 40, 300, 20, DARKGRAY);
         DrawText("Next", 622, 70, 30, DARKGRAY);
     }
-    DrawTextureRatio(_Texture_tileset_b, {3.0f,4.0f}, {592,112,128,128}, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
-    //DrawRectangleRec(UIrectangle, DARKGRAY);
-    //DrawRectangleGradientEx(_Rect_tetrisStage, WHITE, LIGHTGRAY, LIGHTGRAY, WHITE);
+    DrawTextureRatio(_Texture_tileset_b, { 3.0f, 4.0f }, { 592, 112, 128, 128 }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+    // DrawRectangleRec(UIrectangle, DARKGRAY);
+    // DrawRectangleGradientEx(_Rect_tetrisStage, WHITE, LIGHTGRAY, LIGHTGRAY, WHITE);
 }
 
 void tetrisUI::GameOver()
@@ -139,8 +146,7 @@ void tetrisUI::GameOver()
         _exit = true;
 
     _Btn_restart.Update();
-    if (_Btn_restart.Clicked())
-    {
+    if (_Btn_restart.Clicked()) {
         _newGame = true;
     }
 }
@@ -154,6 +160,7 @@ void tetrisUI::ChangeStage(gameStage stage) { _stage = stage; }
 gameStage tetrisUI::getStage() { return _stage; }
 Rectangle* tetrisUI::getTetrisStage() { return &_Rect_tetrisStage; }
 float* tetrisUI::getElapsedTime() { return _elapsedPtr; }
+Shader tetrisUI::getShaderBlur() { return _Shader_blur; }
 bool tetrisUI::quitGame() { return _exit; }
 bool tetrisUI::newGame()
 {

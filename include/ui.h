@@ -26,6 +26,7 @@ public:
     tetrisUI(float* elapsedPtr);
     ~tetrisUI();
     void Display(renderLayer layer);
+    void DisplayShader(renderLayer layer, bool end=false);
 
     //Setters
     void ChangeStage(gameStage stage);
@@ -36,6 +37,7 @@ public:
     float* getElapsedTime();
     bool quitGame();
     bool newGame();
+    Shader getShaderBlur();
 private:
     void ShaderInit();
     // Scenes
