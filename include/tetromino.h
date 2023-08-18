@@ -7,6 +7,8 @@
 
 constexpr double DEG_TO_RAD = PI/180;
 constexpr int BLOCK_SIZE = 20;
+constexpr int MAX_WIDTH = 4;
+constexpr int MAX_HEIGHT = 2;
 
 namespace tetromino {
 
@@ -46,7 +48,10 @@ tetromino::tetrominoNames getRandomTetromino();
 
 };
 
+Vector2 TETROMINO_MAP_RECT(tetromino::tetrominoNames name, int i, int num);
 std::vector<Rectangle> constructReactangle(tetromino::tetrominoNames name, Vector2 position, float* area_object, tetromino::tetrisRotation rotation=tetromino::tetrisRotation::NONE, bool calculateArea=false);
+int getWidth(tetromino::tetrominoNames name);
+int getHeight(tetromino::tetrominoNames name);
 Color getColorTetromino(tetromino::tetrominoNames name);
 int getRotationAngle(tetromino::tetrisRotation rotation);
 

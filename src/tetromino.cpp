@@ -1,4 +1,5 @@
 #include "tetromino.h"
+#include <algorithm>
 #include <random>
 
 const std::map<tetromino::tetrominoNames, tetromino::tetrominoBlock> tetrominoMap = {
@@ -6,12 +7,12 @@ const std::map<tetromino::tetrominoNames, tetromino::tetrominoBlock> tetrominoMa
     { tetromino::tetrominoNames::Yellow_O, tetromino::tetrominoBlock(initArray({ 0, 0 }, { 1, 1 }), emptyArray(), GOLD, NULL_VECTOR2) },
     { tetromino::tetrominoNames::Purple_T, tetromino::tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 1, 0 }, { 1, 0 }), PURPLE, { 1, 1 }) },
     { tetromino::tetrominoNames::Green_S, tetromino::tetrominoBlock(initArray({ 0, 1 }, { 1, 1 }), initArray({ 1, 0 }, { 2, 0 }), GREEN, { 1, 1 }) },
-    { tetromino::tetrominoNames::Red_Z, tetromino::tetrominoBlock(initArray({ 1, 1 }, { 2, 1 }), initArray({ 0, 0 }, { 1, 0 }), RED, { 1, 1 }) },
+    { tetromino::tetrominoNames::Red_Z, tetromino::tetrominoBlock(initArray({ 0, 0 }, { 1, 0 }), initArray({ 1, 1 }, { 2, 1 }), RED, { 1, 1 }) },
     { tetromino::tetrominoNames::Blue_J, tetromino::tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 0, 0 }, { 0, 0 }), BLUE, { 1, 1 }) },
     { tetromino::tetrominoNames::Orange_L, tetromino::tetrominoBlock(initArray({ 0, 1 }, { 2, 1 }), initArray({ 2, 0 }, { 2, 0 }), ORANGE, { 1, 1 }) }
 };
 
-inline Vector2 TETROMINO_MAP_RECT(tetromino::tetrominoNames name, int i, int num)
+Vector2 TETROMINO_MAP_RECT(tetromino::tetrominoNames name, int i, int num)
 {
     return tetrominoMap.at(name).rectangles[i][num];
 }
@@ -21,11 +22,33 @@ Color getColorTetromino(tetromino::tetrominoNames name)
     return tetrominoMap.at(name).color;
 }
 
+int getWidth(tetromino::tetrominoNames name)
+{
+    std::vector<float> maxWidth;
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++)
+            maxWidth.push_back((TETROMINO_MAP_RECT(name, i, j).x < 0) ? 0 : TETROMINO_MAP_RECT(name, i, j).x);
+    }
+    const float max = *(std::max_element(maxWidth.begin(), maxWidth.end()));
+    const float min = *(std::min_element(maxWidth.begin(), maxWidth.end()));
+    return (max - min) + 1;
+}
+
+int getHeight(tetromino::tetrominoNames name)
+{
+    std::vector<float> maxHeight;
+    for (int i = 0; i < 2; i++)
+        maxHeight.push_back((TETROMINO_MAP_RECT(name, 0, i).y < 0) ? 0 : TETROMINO_MAP_RECT(name, 0, i).y);
+    const float max = *(std::max_element(maxHeight.begin(), maxHeight.end()));
+    const float min = *(std::min_element(maxHeight.begin(), maxHeight.end()));
+    return (max - min) + 1;
+}
+
 tetromino::tetrominoNames tetromino::getRandomTetromino()
 {
     std::random_device seeder;
     std::mt19937 engine(seeder());
-    std::uniform_int_distribution<int> randomName(0, static_cast<int>(tetromino::tetrominoNames::Count)-1);
+    std::uniform_int_distribution<int> randomName(0, static_cast<int>(tetromino::tetrominoNames::Count) - 1);
     return static_cast<tetromino::tetrominoNames>(randomName(engine));
 }
 

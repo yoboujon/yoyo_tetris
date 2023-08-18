@@ -16,7 +16,7 @@ tetrisButton::tetrisButton(Texture2D* texture, Vector2 position, ButtonStyle sty
     , _textSize(0)
 {
     if (style != ButtonStyle::NONE) {
-        _button = { (SCREEN_WIDTH - BUTTON_WIDTH + position.x) / 2, (SCREEN_HEIGHT / 2) - (position.y), BUTTON_WIDTH, BUTTON_HEIGHT };
+        _button = { (SCREEN_WIDTH - BUTTON_WIDTH + position.x) / 2, (static_cast<float>(SCREEN_HEIGHT) / 2) - (position.y), BUTTON_WIDTH, BUTTON_HEIGHT };
     } else {
         _button = { position.x, position.y, BUTTON_WIDTH, BUTTON_HEIGHT };
     }

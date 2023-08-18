@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "tetromino.h"
+#include "ui.h"
 #include <iostream>
 
 using namespace tetromino;
@@ -96,9 +97,21 @@ void floatTetrisBlock::Display()
 
 void floatTetrisBlock::DisplayNext()
 {
+    const int offsetStart = (TETROMINO_MAP_RECT(_name,0,0).y > 0 ) ? BLOCK_SIZE : 0;
+    const int actualWidth = getWidth(_name);
+    Rectangle baseRec;
+    try {
+        baseRec = _object.at(0);
+    }
+    catch (...)
+    {
+        std::cout << "ERROR: inside floatTetrisBlock, object is of size 0. Contact the developper." << std::endl;
+    }
     for (auto& recVec : _object) {
-        auto offsetVector = Vector2Subtract({recVec.x, recVec.y}, _position);
-        DrawRectangleRec({654+offsetVector.x, 174+offsetVector.y, recVec.width, recVec.height}, _color);
+        const auto offsetVector = Vector2Subtract({recVec.x, recVec.y}, {baseRec.x, baseRec.y});
+        const float offsetX = 615 + ( (static_cast<float>(MAX_WIDTH-actualWidth)/2)*BLOCK_SIZE ) + offsetVector.x;
+        const float offsetY = 155 + offsetStart + offsetVector.y;
+        DrawRectangleRec({offsetX, offsetY, recVec.width, recVec.height}, _color);
     }
 }
 

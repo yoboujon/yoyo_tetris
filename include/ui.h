@@ -9,6 +9,7 @@ constexpr Rectangle TILESET = { 0,0,16.0f,16.0f };
 constexpr Rectangle TITLE = { 0,0,48.0f,16.0f };
 constexpr float TILE_RATIO = 7.5f;
 constexpr float TITLE_SIZE = 125.0f;
+constexpr float NEXT_SIZE = 128.0f;
 
 enum class gameStage {
     TITLE_SCREEN,

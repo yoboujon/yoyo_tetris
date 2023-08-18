@@ -126,7 +126,7 @@ void tetrisUI::Game(bool showText)
         DrawText("Level", 40, 300, 20, DARKGRAY);
         DrawText("Next", 622, 70, 30, DARKGRAY);
     }
-    DrawTextureRatio(_Texture_tileset_b, { 3.0f, 4.0f }, { 592, 112, 128, 128 }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+    DrawTextureRatio(_Texture_tileset_b, { 3.0f, 4.0f }, { 592, 112, NEXT_SIZE, NEXT_SIZE }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
     // DrawRectangleRec(UIrectangle, DARKGRAY);
     // DrawRectangleGradientEx(_Rect_tetrisStage, WHITE, LIGHTGRAY, LIGHTGRAY, WHITE);
 }
