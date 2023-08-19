@@ -6,6 +6,10 @@
 #include "button.h"
 #include "raylib.h"
 
+#define VERSION_MAJOR _VERSION_MAJOR
+#define VERSION_MINOR _VERSION_MINOR
+#define VERSION_PATCH _VERSION_PATCH
+
 constexpr Rectangle TILESET = { 0,0,16.0f,16.0f };
 constexpr Rectangle TITLE = { 0,0,48.0f,16.0f };
 constexpr float TILE_RATIO = 7.5f;
@@ -50,6 +54,9 @@ private:
     void Game();
     void GameOver();
     void MenuScreen();
+
+    // Const
+    const std::string _versionNumber;
 
     // Event pointer
     tetrisEvent* _eventPtr;

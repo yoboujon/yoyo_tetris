@@ -3,9 +3,11 @@
 #include "lib.h"
 #include "raylib.h"
 #include <iostream>
+#include <string>
 
 tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
-    : _eventPtr(event)
+    : _versionNumber("Version "+std::string(VERSION_MAJOR)+"."+std::string(VERSION_MINOR)+"."+std::string(VERSION_PATCH))
+    ,_eventPtr(event)
     , _stage(gameStage::TITLE_SCREEN)
     , _elapsedPtr(elapsedPtr)
     , _Rect_tetrisStage({ 250, 40, 300, 450 })
@@ -119,7 +121,7 @@ void tetrisUI::TileSet()
 void tetrisUI::TitleScreen()
 {
     DrawTexturePro(_Texture_logo, TITLE, { 0.0f, 0.0f, TITLE_SIZE * 3, TITLE_SIZE }, { 0.0f, -10.0f }, 0.0f, WHITE);
-    DrawText("Version 0.1", 20, 130, 20, BLACK_TEXT);
+    DrawText(_versionNumber.c_str(), 20, 130, 20, BLACK_TEXT);
 
     _Btn_Start.Update();
     if (_Btn_Start.Clicked())
