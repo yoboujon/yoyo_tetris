@@ -8,21 +8,21 @@
 
 constexpr float FALLING_TICK_DURATION = 0.01f;
 
-class gameTetris {
+class tetrisGame {
 public:
-    gameTetris(tetrisUI* gameUI, tetromino::tetrominoNames name);
-    ~gameTetris();
+    tetrisGame(tetrisUI* gameUI, tetromino::tetrominoNames name);
+    ~tetrisGame();
     void Loop();
     bool gameFinished();
     bool pause();
 private:
     void DisplayTetrisNext();
     // The controller/keyboard manager
-    controlsTetris _gameControls;
+    tetrisControls _gameControls;
     // Static and floating blocks of the game
-    staticTetrisBlocks _staticBlocks;
-    floatTetrisBlock* _actualBlock;
-    floatTetrisBlock* _nextBlock;
+    tetrisStaticBlocks _staticBlocks;
+    tetrisFloatBlock* _actualBlock;
+    tetrisFloatBlock* _nextBlock;
     // The next tetromino
     tetromino::tetrominoNames _actualName;
     // The UI pointer

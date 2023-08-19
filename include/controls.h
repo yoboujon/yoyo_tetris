@@ -10,10 +10,10 @@ enum class keyState {
     PRESSED
 };
 
-class controlsTetris {
+class tetrisControls {
     public:
-        controlsTetris(float* elapsedPtr);
-        ~controlsTetris();
+        tetrisControls(float* elapsedPtr);
+        ~tetrisControls();
         bool IsKeyDownTiming(int key, float timing);
         bool TempoKey(bool keyDown, float timing);
         bool IsKeyDown(int key);

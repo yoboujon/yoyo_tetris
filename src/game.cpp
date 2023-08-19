@@ -25,7 +25,7 @@ int main(void)
     float elapsedTime = 0.0f;
 
     auto gameUI = new tetrisUI(&elapsedTime);
-    auto game = new gameTetris(gameUI, tetromino::tetrominoNames::LightBlue_I);
+    auto game = new tetrisGame(gameUI, tetromino::tetrominoNames::LightBlue_I);
 
     // Step
     while (!WindowShouldClose() && !(gameUI->quitGame())) {
@@ -48,7 +48,7 @@ int main(void)
             }
             if (gameUI->newGame()) {
                 delete game;
-                game = new gameTetris(gameUI, tetromino::tetrominoNames::LightBlue_I);
+                game = new tetrisGame(gameUI, tetromino::tetrominoNames::LightBlue_I);
                 gameUI->ChangeStage(gameStage::GAME);
             }
         }

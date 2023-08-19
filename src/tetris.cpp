@@ -6,24 +6,24 @@
 
 #include <iostream>
 
-gameTetris::gameTetris(tetrisUI* gameUI, tetromino::tetrominoNames name)
-    : _gameControls(controlsTetris(gameUI->getElapsedTime()))
+tetrisGame::tetrisGame(tetrisUI* gameUI, tetromino::tetrominoNames name)
+    : _gameControls(tetrisControls(gameUI->getElapsedTime()))
     , _gameUI(gameUI)
     , _fallingTick(0.0f)
     , _isGameOver(false)
     , _pauseMenu(false)
 {
-    _actualBlock = new floatTetrisBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
-    _nextBlock = new floatTetrisBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
+    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
+    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
 }
 
-gameTetris::~gameTetris()
+tetrisGame::~tetrisGame()
 {
     delete _actualBlock;
     delete _nextBlock;
 }
 
-void gameTetris::Loop()
+void tetrisGame::Loop()
 {
     _fallingTick += GetFrameTime();
 
@@ -58,12 +58,12 @@ void gameTetris::Loop()
         _staticBlocks.Add(*_actualBlock, _actualBlock->getColor());
         delete _actualBlock;
         _actualBlock = _nextBlock;
-        _nextBlock = new floatTetrisBlock(tetromino::getRandomTetromino(), _gameUI->getTetrisStage(), &_gameControls);
+        _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), _gameUI->getTetrisStage(), &_gameControls);
         if (_actualBlock->GameEnded(_staticBlocks.getRectangles())) {
             _isGameOver = true;
         }
     }
 }
 
-bool gameTetris::gameFinished() { return _isGameOver; }
-bool gameTetris::pause() { return _pauseMenu; }
+bool tetrisGame::gameFinished() { return _isGameOver; }
+bool tetrisGame::pause() { return _pauseMenu; }

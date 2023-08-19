@@ -2,16 +2,16 @@
 #include "raylib.h"
 #include <iostream>
 
-controlsTetris::controlsTetris(float* elapsedPtr)
+tetrisControls::tetrisControls(float* elapsedPtr)
     : _elapsedPtr(elapsedPtr)
     , _timingCommand(0.0f)
     , _keyPressed(keyState::UNSET)
 {}
 
-controlsTetris::~controlsTetris()
+tetrisControls::~tetrisControls()
 {}
 
-bool controlsTetris::TempoKey(bool keyDown, float timing)
+bool tetrisControls::TempoKey(bool keyDown, float timing)
 {
     // Init
     if( ((_keyPressed == keyState::UNSET) || (_keyPressed == keyState::NOT_PRESSED)) && keyDown ) 
@@ -30,12 +30,12 @@ bool controlsTetris::TempoKey(bool keyDown, float timing)
     return false;
 }
 
-bool controlsTetris::IsKeyDownTiming(int key, float timing)
+bool tetrisControls::IsKeyDownTiming(int key, float timing)
 {
     return TempoKey(::IsKeyDown(key), timing);
 }
 
-bool controlsTetris::IsKeyDown(int key)
+bool tetrisControls::IsKeyDown(int key)
 {
     return ::IsKeyDown(key);
 }

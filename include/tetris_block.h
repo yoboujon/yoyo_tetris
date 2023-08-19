@@ -15,11 +15,11 @@ constexpr int BASE_Y = 40;
 constexpr int FALL_SPEED = 7;
 constexpr float KEY_TIMING = 0.05f;
 
-class floatTetrisBlock {
+class tetrisFloatBlock {
 public:
-    floatTetrisBlock();
-    floatTetrisBlock(tetromino::tetrominoNames name,Rectangle* tetrisStage, controlsTetris* gameControls);
-    ~floatTetrisBlock();
+    tetrisFloatBlock();
+    tetrisFloatBlock(tetromino::tetrominoNames name,Rectangle* tetrisStage, tetrisControls* gameControls);
+    ~tetrisFloatBlock();
     // Movement
     void Fall(const std::vector<Rectangle>& tetrisBlock);
     void Move(const std::vector<Rectangle>& tetrisBlock);
@@ -51,14 +51,14 @@ private:
     tetromino::tetrisRotation _rotation;
     // Game
     Rectangle* _tetrisStage;
-    controlsTetris* _gameControls;
+    tetrisControls* _gameControls;
 };
 
-class staticTetrisBlocks {
+class tetrisStaticBlocks {
 public:
-    staticTetrisBlocks();
-    ~staticTetrisBlocks();
-    void Add(floatTetrisBlock& tetrisBlock, Color tetrisColor);
+    tetrisStaticBlocks();
+    ~tetrisStaticBlocks();
+    void Add(tetrisFloatBlock& tetrisBlock, Color tetrisColor);
     void Display();
     void checkLine();
     const std::vector<Rectangle>& getRectangles();

@@ -11,12 +11,12 @@ using namespace tetromino;
 /*     FLOAT Tetris Block     */
 /* ========================== */
 
-floatTetrisBlock::floatTetrisBlock()
-    : floatTetrisBlock(tetrominoNames::LightBlue_I, NULL, NULL)
+tetrisFloatBlock::tetrisFloatBlock()
+    : tetrisFloatBlock(tetrominoNames::LightBlue_I, NULL, NULL)
 {
 }
 
-floatTetrisBlock::floatTetrisBlock(tetromino::tetrominoNames name, Rectangle* tetrisStage, controlsTetris* gameControls)
+tetrisFloatBlock::tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle* tetrisStage, tetrisControls* gameControls)
     : _name(name)
     , _color(getColorTetromino(name))
     , _position({ BASE_X, BASE_Y })
@@ -29,9 +29,9 @@ floatTetrisBlock::floatTetrisBlock(tetromino::tetrominoNames name, Rectangle* te
     _object = constructReactangle(name, _position, &_area_object, tetrisRotation::NONE, true);
 }
 
-floatTetrisBlock::~floatTetrisBlock() { }
+tetrisFloatBlock::~tetrisFloatBlock() { }
 
-void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
+void tetrisFloatBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
 {
     int fallSpeed(1);
     if (_gameControls->IsKeyDown(KEY_DOWN))
@@ -49,7 +49,7 @@ void floatTetrisBlock::Fall(const std::vector<Rectangle>& tetrisBlock)
     }
 }
 
-void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
+void tetrisFloatBlock::Move(const std::vector<Rectangle>& tetrisBlock)
 {
     const bool keyLeft = IsKeyDown(KEY_LEFT);
     const bool keyRight = IsKeyDown(KEY_RIGHT);
@@ -74,7 +74,7 @@ void floatTetrisBlock::Move(const std::vector<Rectangle>& tetrisBlock)
     }
 }
 
-void floatTetrisBlock::Rotate(const std::vector<Rectangle>& tetrisBlock)
+void tetrisFloatBlock::Rotate(const std::vector<Rectangle>& tetrisBlock)
 {
     if (IsKeyPressed(KEY_UP)) {
         _rotation = (_rotation == tetromino::tetrisRotation::COUNTER_CLOCKWISE ? tetromino::tetrisRotation::NONE : static_cast<tetromino::tetrisRotation>(static_cast<int>(_rotation) + 1));
@@ -86,14 +86,14 @@ void floatTetrisBlock::Rotate(const std::vector<Rectangle>& tetrisBlock)
     }
 }
 
-void floatTetrisBlock::Display()
+void tetrisFloatBlock::Display()
 {
     for (auto& recVec : _object) {
         DrawRectangleRec(recVec, _color);
     }
 }
 
-void floatTetrisBlock::DisplayNext()
+void tetrisFloatBlock::DisplayNext()
 {
     const int offsetStart = (TETROMINO_MAP_RECT(_name, 0, 0).y > 0) ? BLOCK_SIZE : 0;
     const int actualWidth = getWidth(_name);
@@ -102,7 +102,7 @@ void floatTetrisBlock::DisplayNext()
         baseRec = _object.at(0);
     } catch (...) {
         // TODO : Casting a window with the error and the error code.
-        std::cout << "ERROR: inside floatTetrisBlock, object is of size 0. Contact the developper." << std::endl;
+        std::cout << "ERROR: inside tetrisFloatBlock, object is of size 0. Contact the developper." << std::endl;
     }
     for (auto& recVec : _object) {
         // Substracting the base rectangle with its actual position to gather the rectangle at 0,0
@@ -115,7 +115,7 @@ void floatTetrisBlock::DisplayNext()
     }
 }
 
-bool floatTetrisBlock::checkGameRectangle(const std::vector<Rectangle>& newRectangles)
+bool tetrisFloatBlock::checkGameRectangle(const std::vector<Rectangle>& newRectangles)
 {
     float area(0);
     for (auto& newRect : newRectangles) {
@@ -125,7 +125,7 @@ bool floatTetrisBlock::checkGameRectangle(const std::vector<Rectangle>& newRecta
     return (area == _area_object);
 }
 
-bool floatTetrisBlock::checkCollisionWith(const std::vector<Rectangle>& newRectangles, const std::vector<Rectangle>& collideRectangles)
+bool tetrisFloatBlock::checkCollisionWith(const std::vector<Rectangle>& newRectangles, const std::vector<Rectangle>& collideRectangles)
 {
     for (auto& newRect : newRectangles) {
         for (auto& collideRect : collideRectangles) {
@@ -136,7 +136,7 @@ bool floatTetrisBlock::checkCollisionWith(const std::vector<Rectangle>& newRecta
     return false;
 }
 
-std::vector<Rectangle> floatTetrisBlock::moveX(int x)
+std::vector<Rectangle> tetrisFloatBlock::moveX(int x)
 {
     std::vector<Rectangle> newRec(_object);
     for (auto& rect : newRec) {
@@ -145,7 +145,7 @@ std::vector<Rectangle> floatTetrisBlock::moveX(int x)
     return newRec;
 }
 
-std::vector<Rectangle> floatTetrisBlock::moveY(int y)
+std::vector<Rectangle> tetrisFloatBlock::moveY(int y)
 {
     std::vector<Rectangle> newRec(_object);
     for (auto& rect : newRec) {
@@ -154,22 +154,22 @@ std::vector<Rectangle> floatTetrisBlock::moveY(int y)
     return newRec;
 }
 
-Rectangle* floatTetrisBlock::getRectangle(int index) { return &(_object.at(index)); }
-const std::vector<Rectangle>& floatTetrisBlock::getRectangles() { return _object; }
-bool floatTetrisBlock::Placed() { return _placed; }
-tetromino::tetrominoNames floatTetrisBlock::getName() { return _name; }
-Color floatTetrisBlock::getColor() { return _color; }
-bool floatTetrisBlock::GameEnded(const std::vector<Rectangle>& tetrisBlock) { return checkCollisionWith(tetrisBlock, _object); }
+Rectangle* tetrisFloatBlock::getRectangle(int index) { return &(_object.at(index)); }
+const std::vector<Rectangle>& tetrisFloatBlock::getRectangles() { return _object; }
+bool tetrisFloatBlock::Placed() { return _placed; }
+tetromino::tetrominoNames tetrisFloatBlock::getName() { return _name; }
+Color tetrisFloatBlock::getColor() { return _color; }
+bool tetrisFloatBlock::GameEnded(const std::vector<Rectangle>& tetrisBlock) { return checkCollisionWith(tetrisBlock, _object); }
 
 /* ========================== */
 /*    STATIC Tetris Blocks    */
 /* ========================== */
 
-staticTetrisBlocks::staticTetrisBlocks() { }
+tetrisStaticBlocks::tetrisStaticBlocks() { }
 
-staticTetrisBlocks::~staticTetrisBlocks() { }
+tetrisStaticBlocks::~tetrisStaticBlocks() { }
 
-void staticTetrisBlocks::Add(floatTetrisBlock& tetrisBlock, Color tetrisColor)
+void tetrisStaticBlocks::Add(tetrisFloatBlock& tetrisBlock, Color tetrisColor)
 {
     Vector2 increment, otherIncrement;
     float RectangleSize, OtherSize;
@@ -204,14 +204,14 @@ void staticTetrisBlocks::Add(floatTetrisBlock& tetrisBlock, Color tetrisColor)
     }
 }
 
-void staticTetrisBlocks::Display()
+void tetrisStaticBlocks::Display()
 {
     for (size_t i = 0; i < _tetrisBlocks.size(); i++) {
         DrawRectangleRec(_tetrisBlocks.at(i), _tetrisColors.at(i));
     }
 }
 
-void staticTetrisBlocks::checkLine()
+void tetrisStaticBlocks::checkLine()
 {
     for (auto it = _lineMap.begin(); it != _lineMap.end();) {
         if (it->second == 15) // For now 15 is the size of game area
@@ -239,7 +239,7 @@ void staticTetrisBlocks::checkLine()
     }
 }
 
-std::map<float, int> staticTetrisBlocks::updateLineMap()
+std::map<float, int> tetrisStaticBlocks::updateLineMap()
 {
     std::map<float, int> newMap;
     for (const auto& block : _tetrisBlocks) {
@@ -252,4 +252,4 @@ std::map<float, int> staticTetrisBlocks::updateLineMap()
     return newMap;
 }
 
-const std::vector<Rectangle>& staticTetrisBlocks::getRectangles() { return _tetrisBlocks; }
+const std::vector<Rectangle>& tetrisStaticBlocks::getRectangles() { return _tetrisBlocks; }
