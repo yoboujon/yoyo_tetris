@@ -1,4 +1,5 @@
 #include "button.h"
+#include "event.h"
 #include "lib.h"
 
 #include "controls.h"
@@ -24,8 +25,9 @@ int main(void)
     Rectangle* uiRectangle;
     float elapsedTime = 0.0f;
 
-    auto gameUI = new tetrisUI(&elapsedTime);
-    auto game = new tetrisGame(gameUI, tetromino::tetrominoNames::LightBlue_I);
+    auto gameEvent = new tetrisEvent();
+    auto gameUI = new tetrisUI(gameEvent, &elapsedTime);
+    auto game = new tetrisGame(gameEvent, gameUI, tetromino::tetrominoNames::LightBlue_I);
 
     // Step
     while (!WindowShouldClose() && !(gameUI->quitGame())) {
@@ -38,17 +40,11 @@ int main(void)
         BeginTextureMode(back); // Drawing the back texture
         gameUI->Display(renderLayer::BACK);
         // Game Display and Update
-        if (actualStage == gameStage::GAME || actualStage == gameStage::GAME_OVER || actualStage == gameStage::MENU_SCREEN) {
+        if (actualStage != gameStage::TITLE_SCREEN) {
             game->Loop();
-            if(game->pause()) {
-                gameUI->ChangeStage(gameStage::MENU_SCREEN);
-            }
-            if (game->gameFinished()) {
-                gameUI->ChangeStage(gameStage::GAME_OVER);
-            }
             if (gameUI->newGame()) {
                 delete game;
-                game = new tetrisGame(gameUI, tetromino::tetrominoNames::LightBlue_I);
+                game = new tetrisGame(gameEvent, gameUI, tetromino::tetrominoNames::LightBlue_I);
                 gameUI->ChangeStage(gameStage::GAME);
             }
         }

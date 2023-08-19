@@ -1,5 +1,6 @@
 #include "lib.h"
 #include "raylib.h"
+#include "event.h"
 
 VectorMaths initArray(Vector2 a, Vector2 b)
 {

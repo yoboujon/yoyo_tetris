@@ -1,6 +1,7 @@
 #ifndef HEADER_TETRIS_UI
 #define HEADER_TETRIS_UI
 
+#include "event.h"
 #include "lib.h"
 #include "button.h"
 #include "raylib.h"
@@ -25,7 +26,7 @@ enum class renderLayer {
 
 class tetrisUI {
 public:
-    tetrisUI(float* elapsedPtr);
+    tetrisUI(tetrisEvent* event, float* elapsedPtr);
     ~tetrisUI();
     void Display(renderLayer layer);
     void DisplayShader(renderLayer layer, bool end=false);
@@ -50,6 +51,9 @@ private:
     void GameOver();
     void MenuScreen();
 
+    // Event pointer
+    tetrisEvent* _eventPtr;
+
     // Stage
     gameStage _stage;
     float* _elapsedPtr;
@@ -61,6 +65,7 @@ private:
     tetrisButton _Btn_Start;
     tetrisButton _Btn_Settings;
     tetrisButton _Btn_Exit;
+    tetrisButton _Btn_resume;
 
     // Textures
     Texture2D _Texture_button;

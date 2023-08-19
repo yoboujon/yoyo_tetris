@@ -4,8 +4,9 @@
 #include "raylib.h"
 #include <iostream>
 
-tetrisUI::tetrisUI(float* elapsedPtr)
-    : _stage(gameStage::TITLE_SCREEN)
+tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
+    : _eventPtr(event)
+    , _stage(gameStage::TITLE_SCREEN)
     , _elapsedPtr(elapsedPtr)
     , _Rect_tetrisStage({ 250, 40, 300, 450 })
     , _exit(false)
@@ -31,6 +32,8 @@ tetrisUI::tetrisUI(float* elapsedPtr)
     _Btn_restart.SetText("Restart");
     _Btn_titleScreen = tetrisButton(&_Texture_button, { 0, 0 }, ButtonStyle::CENTERED);
     _Btn_titleScreen.SetText("Quit");
+    _Btn_resume = tetrisButton(&_Texture_button, { 0, -50 }, ButtonStyle::CENTERED);
+    _Btn_resume.SetText("Resume");
 
     // Target textures
     _back = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -177,7 +180,7 @@ void tetrisUI::MenuScreen()
     DrawText("Menu", (SCREEN_WIDTH - menuText) / 2, (SCREEN_HEIGHT / 2) - 100, 30, RAYWHITE);
 
     // TODO : Event system with the game object and the ui object having a pointer linked to. They can get information about the other and vice-versa
-    if (IsKeyPressed(KEY_ESCAPE)) {
+    if (_eventPtr->OnEvent(eventType::MENU_CLOSED, eventUser::UI)) {
         _stage = gameStage::GAME;
         UnloadRenderTexture(_front);
         _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -195,6 +198,14 @@ void tetrisUI::MenuScreen()
     _Btn_restart.Update();
     if (_Btn_restart.Clicked()) {
         _newGame = true;
+        UnloadRenderTexture(_front);
+        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    }
+
+    _Btn_resume.Update();
+    if(_Btn_resume.Clicked()) {
+        _eventPtr->callEvent(eventType::MENU_CLOSED, eventUser::TETRIS);
+        _stage = gameStage::GAME;
         UnloadRenderTexture(_front);
         _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     }
