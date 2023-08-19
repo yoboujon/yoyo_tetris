@@ -2,12 +2,13 @@
 #include "button.h"
 #include "lib.h"
 #include "raylib.h"
+#include "raymath.h"
 #include <iostream>
 #include <string>
 
 tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
-    : _versionNumber("Version "+std::string(VERSION_MAJOR)+"."+std::string(VERSION_MINOR)+"."+std::string(VERSION_PATCH))
-    ,_eventPtr(event)
+    : _versionNumber("Version " + std::string(VERSION_MAJOR) + "." + std::string(VERSION_MINOR) + "." + std::string(VERSION_PATCH))
+    , _eventPtr(event)
     , _stage(gameStage::TITLE_SCREEN)
     , _elapsedPtr(elapsedPtr)
     , _Rect_tetrisStage({ 250, 40, 300, 450 })
@@ -16,7 +17,7 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
 //, _kotoPiege(0.0f)
 {
     // Init Textures
-    _Texture_button = LoadTexture("res/base_button.png"); // Load button texture
+    _Texture_button = LoadTexture("res/button.png"); // Load button texture
     _Texture_tileset_w = LoadTexture("res/tileset_w.png");
     _Texture_tileset_b = LoadTexture("res/tileset_b.png");
     _Texture_logo = LoadTexture("res/yoyotetris.png");
@@ -24,17 +25,22 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
     ShaderInit();
 
     // Init UI Objects
-    _Btn_Start = tetrisButton(&_Texture_button, { 20, 180 }, ButtonStyle::NONE);
+    const Size2 titlescreenSize = { 160.0f, 50.f };
+    _Btn_Start = tetrisButton(&_Texture_button, { 20, 180 }, titlescreenSize);
     _Btn_Start.SetText("Start");
-    _Btn_Settings = tetrisButton(&_Texture_button, { 20, 240 }, ButtonStyle::NONE);
+    _Btn_Settings = tetrisButton(&_Texture_button, { 20, 180 + (titlescreenSize.height + 20) }, titlescreenSize);
     _Btn_Settings.SetText("Settings");
-    _Btn_Exit = tetrisButton(&_Texture_button, { 20, 300 }, ButtonStyle::NONE);
+    _Btn_Exit = tetrisButton(&_Texture_button, { 20, 180 + (titlescreenSize.height + 20) * 2 }, titlescreenSize);
     _Btn_Exit.SetText("Exit");
-    _Btn_restart = tetrisButton(&_Texture_button, { 0, 50 }, ButtonStyle::CENTERED);
+
+    const Size2 menuSize = { 160.0f, 50.f };
+    const float menuTotalWidth = tetrisButtongetTotalWidth(menuSize);
+    const Vector2 menuCenter = { (SCREEN_WIDTH - menuTotalWidth) / 2, (SCREEN_HEIGHT - menuSize.height) / 2 };
+    _Btn_restart = tetrisButton(&_Texture_button, menuCenter, menuSize);
     _Btn_restart.SetText("Restart");
-    _Btn_titleScreen = tetrisButton(&_Texture_button, { 0, 0 }, ButtonStyle::CENTERED);
+    _Btn_titleScreen = tetrisButton(&_Texture_button, Vector2Add(menuCenter, { 0, 80 }), menuSize);
     _Btn_titleScreen.SetText("Quit");
-    _Btn_resume = tetrisButton(&_Texture_button, { 0, -50 }, ButtonStyle::CENTERED);
+    _Btn_resume = tetrisButton(&_Texture_button, Vector2Add(menuCenter, { 0, 80+80 }), menuSize);
     _Btn_resume.SetText("Resume");
 
     // Target textures
@@ -205,7 +211,7 @@ void tetrisUI::MenuScreen()
     }
 
     _Btn_resume.Update();
-    if(_Btn_resume.Clicked()) {
+    if (_Btn_resume.Clicked()) {
         _eventPtr->callEvent(eventType::MENU_CLOSED, eventUser::TETRIS);
         _stage = gameStage::GAME;
         UnloadRenderTexture(_front);
