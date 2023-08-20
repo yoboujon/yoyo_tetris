@@ -16,8 +16,8 @@ bool checkCollisionPointRecArray(Vector2 point, Rectangle* rectArray, int sizeAr
 // Used for the tetromino map
 constexpr Vector2 NULL_VECTOR2 = {-1,-1};
 // TODO : Capability to change the size of the window
-constexpr int SCREEN_WIDTH = 760;
-constexpr int SCREEN_HEIGHT = 540;
+constexpr int SCREEN_WIDTH = 697;
+constexpr int SCREEN_HEIGHT = 488;
 // * The size of one block.
 constexpr int BLOCK_SIZE = 20;
 // 10*20 is the standard tetris grid size.
