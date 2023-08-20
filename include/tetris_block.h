@@ -58,6 +58,7 @@ private:
 class tetrisStaticBlocks {
 public:
     tetrisStaticBlocks();
+    tetrisStaticBlocks(tetrisEvent* eventPtr);
     ~tetrisStaticBlocks();
     void Add(tetrisFloatBlock& tetrisBlock, Color tetrisColor);
     void Display();
@@ -69,6 +70,7 @@ private:
     std::vector<Rectangle> _tetrisBlocks;
     std::vector<Color> _tetrisColors;
     std::map<float, int> _lineMap;
+    tetrisEvent* _event;
 };
 
 #endif // HEADER_TETRIS_BLOCK

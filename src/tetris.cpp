@@ -5,6 +5,7 @@
 tetrisGame::tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore, tetromino::tetrominoNames name)
     : _eventPtr(event)
     , _gameControls(tetrisControls(gameUI->getElapsedTime()))
+    , _staticBlocks(event)
     , _gameUI(gameUI)
     , _gameScore(gameScore)
     , _fallingTick(0.0f)
@@ -72,7 +73,9 @@ void tetrisGame::Loop()
 
     // Checking for score
     _gameScore->updateScore();
+    // TODO: Replaced by Event later
     _gameUI->setScore(_gameScore->getScore());
+    _gameUI->setMultiplicator(_gameScore->getMultiplicator());
 }
 
 bool tetrisGame::gameFinished() { return _isGameOver; }

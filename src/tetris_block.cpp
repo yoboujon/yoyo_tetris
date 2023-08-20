@@ -94,8 +94,8 @@ void tetrisFloatBlock::DisplayNext()
 {
     const int offsetStart = (TETROMINO_MAP_RECT(_name, 0, 0).y > 0) ? BLOCK_SIZE : 0;
     const int actualWidth = getWidth(_name);
-    const float nextX = NEXT_POSITION.x+((25*TILE_RATIO)/5);
-    const float nextY = NEXT_POSITION.y+42;
+    const float nextX = NEXT_POSITION.x + ((25 * TILE_RATIO) / 5);
+    const float nextY = NEXT_POSITION.y + 42;
     Rectangle baseRec;
     try {
         baseRec = _object.at(0);
@@ -164,7 +164,13 @@ bool tetrisFloatBlock::GameEnded(const std::vector<Rectangle>& tetrisBlock) { re
 /*    STATIC Tetris Blocks    */
 /* ========================== */
 
-tetrisStaticBlocks::tetrisStaticBlocks() { }
+tetrisStaticBlocks::tetrisStaticBlocks()
+    : tetrisStaticBlocks(NULL) {};
+
+tetrisStaticBlocks::tetrisStaticBlocks(tetrisEvent* eventPtr)
+    : _event(eventPtr)
+{
+}
 
 tetrisStaticBlocks::~tetrisStaticBlocks() { }
 
@@ -213,8 +219,9 @@ void tetrisStaticBlocks::Display()
 void tetrisStaticBlocks::checkLine()
 {
     for (auto it = _lineMap.begin(); it != _lineMap.end();) {
-        if (it->second == HORIZONTAL_GRID_SIZE)
-        {
+        // Found a line
+        if (it->second == HORIZONTAL_GRID_SIZE) {
+            _event->callEvent(eventType::TETRIS_LINE_COMPLETED, eventUser::SCORE);
             // TODO : Play animation
             for (size_t i = 0; i < _tetrisBlocks.size();) {
                 if (_tetrisBlocks.at(i).y == it->first) {

@@ -6,13 +6,15 @@
 
 enum class eventType {
     MENU_OPENED,
-    MENU_CLOSED
+    MENU_CLOSED,
+    TETRIS_LINE_COMPLETED
 };
 
 enum class eventUser {
     ANY,
     TETRIS,
-    UI
+    UI,
+    SCORE
 };
 
 class tetrisEvent {
@@ -21,7 +23,7 @@ public:
     ~tetrisEvent();
     // minimum being 1.
     void callEvent(eventType type, eventUser forUser);
-    bool OnEvent(eventType type, eventUser user);
+    bool OnEvent(eventType type, eventUser targetUser);
     void ResetEvent(eventType type);
 
 private:

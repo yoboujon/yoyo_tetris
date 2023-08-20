@@ -40,7 +40,8 @@ public:
 
     // Setters
     void ChangeStage(gameStage stage);
-    void setScore(int64_t score);
+    void setScore(uint64_t score);
+    void setMultiplicator(uint8_t multiplicator);
 
     // Getters
     gameStage getStage();
@@ -100,6 +101,7 @@ private:
 
     // UI States
     uint64_t _score;
+    uint8_t _multiplicator;
     bool _exit;
     bool _newGame;
     //float _kotoPiege;

@@ -9,6 +9,7 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
     , _elapsedPtr(elapsedPtr)
     , _Rect_tetrisStage(TETRIS_STAGE)
     , _score(0)
+    , _multiplicator(0)
     , _exit(false)
     , _newGame(false)
     //, _kotoPiege(0.0f)
@@ -151,6 +152,8 @@ void tetrisUI::Game()
     DrawText("Score:", TILE_RATIO*9, TILE_RATIO*9, 30, DARKGRAY);
     DrawText(std::to_string(_score).c_str(), TILE_RATIO*9, TILE_RATIO*17, 30, DARKGRAY);
     DrawText("Next:", TILE_RATIO*97, TILE_RATIO*9, 30, DARKGRAY);
+    if(_multiplicator > 2)
+        DrawText(("Multiplicator: x"+std::to_string(_multiplicator)).c_str(), TILE_RATIO*9, TILE_RATIO*25, 20, DARKGRAY);
     // x=3 and y=4 for the offset because of the actual texture.
     // 3*7+4 = 24 -> 3 Tiles + 4 border -> What we want to draw for the next
     DrawTextureRatio(_Texture_tileset_b, { 3.0f, 4.0f }, { 488, 118, 25*TILE_RATIO, 25*TILE_RATIO }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
@@ -236,7 +239,8 @@ void tetrisUI::MenuScreen()
 // Setters
 
 void tetrisUI::ChangeStage(gameStage stage) { _stage = stage; }
-void tetrisUI::setScore(int64_t score) { _score = score; }
+void tetrisUI::setScore(uint64_t score) { _score = score; }
+void tetrisUI::setMultiplicator(uint8_t multiplicator) { _multiplicator = multiplicator; }
 
 // Getters
 

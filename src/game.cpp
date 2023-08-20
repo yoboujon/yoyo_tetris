@@ -15,7 +15,7 @@ int main(void)
 
     auto gameEvent = new tetrisEvent();
     auto gameUI = new tetrisUI(gameEvent, &elapsedTime);
-    auto gameScore = new tetrisScore();
+    auto gameScore = new tetrisScore(gameEvent);
     auto game = new tetrisGame(gameEvent, gameUI, gameScore, tetromino::tetrominoNames::LightBlue_I);
 
     // Step
@@ -34,6 +34,7 @@ int main(void)
             if (gameUI->newGame()) {
                 delete game;
                 delete gameScore;
+                gameScore = new tetrisScore(gameEvent);
                 game = new tetrisGame(gameEvent, gameUI, gameScore, tetromino::tetrominoNames::LightBlue_I);
                 gameUI->ChangeStage(gameStage::GAME);
             }
