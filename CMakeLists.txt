@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.25)
 # Global Variables
 set(TARGET_NAME yoyoTetris)
 set(CMAKE_CXX_STANDARD 20)
@@ -35,12 +35,18 @@ list(APPEND SOURCES "${PROJECT_SOURCE_DIR}/src/event.cpp")
 
 # yoyoTetris Project (source, header)
 add_executable(${TARGET_NAME} ${SOURCES})
+# If release on Windows, set executable win32 to true
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  set_target_properties(${TARGET_NAME} PROPERTIES
+  WIN32_EXECUTABLE TRUE
+  )
+endif()
 target_include_directories(${TARGET_NAME} PUBLIC "include")
 
 # Adding Librairies
 target_link_libraries(${PROJECT_NAME} raylib)
 
-# Copying the ressource folderto the build
+# Copying the ressource folder to the build
 add_custom_target(CopyResources ALL
       COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/res
       COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/res
@@ -52,6 +58,20 @@ add_custom_target(CopyResources ALL
 )
 add_dependencies(${PROJECT_NAME} CopyResources)
 
+# Adding the icon if it's a windows executable
+if (WIN32)
+set(RESOURCE_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/scripts/res.rc)
+set(RESOURCE_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/scripts/res.res)
+add_custom_command(
+    OUTPUT ${RESOURCE_OUTPUT}
+    COMMAND rc.exe /fo ${RESOURCE_OUTPUT} ${RESOURCE_SCRIPT}
+    DEPENDS ${RESOURCE_SCRIPT}
+    COMMENT "Compiling resource script for executable icon (Windows ONLY)"
+)
+add_custom_target(ResourceCompilation ALL DEPENDS ${RESOURCE_OUTPUT})
+target_link_libraries(${PROJECT_NAME} ${RESOURCE_OUTPUT})
+endif()
+
 # Checks if OSX and links appropriate frameworks (Only required on MacOS)
 if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
@@ -61,7 +81,14 @@ endif()
 
 # Adding compilation option depending on the OS 
 if(MSVC)
-    target_compile_options(${TARGET_NAME} PUBLIC /W3 /WX /DEBUG )
+  if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_link_options(${TARGET_NAME} PUBLIC "/SUBSYSTEM:WINDOWS")
+  endif()
+  target_compile_options(${TARGET_NAME} PUBLIC /W3 /WX /DEBUG )
 else()
-    target_compile_options(${TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror "-Wno-missing-field-initializers")
+  if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_link_options(${TARGET_NAME} PUBLIC "-mwindows")
+  endif()
+  target_compile_options(${TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror "-Wno-unused-parameter" "-Wno-missing-field-initializers")
 endif()
+

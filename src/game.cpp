@@ -5,10 +5,23 @@
 
 using namespace tetromino;
 
+#ifdef _WIN32
+    #ifdef NDEBUG
+    int WinMain(void)
+    #else
+    int main(void)
+    #endif
+#else
 int main(void)
+#endif
 {
     // Init
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "yoyoTetris");
+    //Loading the icon
+    Image icon = LoadImage("res/yoyotetris_logo.png");
+    SetWindowIcon(icon);
+    UnloadImage(icon);
+    // Target FPS = 60 (may be configurable), no exit key
     SetTargetFPS(60);
     SetExitKey(KEY_NULL);
     float elapsedTime = 0.0f;

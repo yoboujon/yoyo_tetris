@@ -46,7 +46,6 @@ void tetrisScore::updateScore()
         _score += 1000 * _multiplicator;
         _activeMultiplcator = true;
         _multiplicatorTime = 0.0f;
-        std::cout << std::hex << (int)_multiplicator << std::endl;
     }
     _event->callEvent(eventType::SEND_SCORE, eventUser::UI, _score);
     _event->callEvent(eventType::SEND_MULTIPLICATOR, eventUser::UI, _multiplicator);
