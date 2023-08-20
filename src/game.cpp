@@ -19,10 +19,8 @@ int main(void)
 {
     // Init
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "yoyoTetris");
-    SetTargetFPS(60);
+    SetTargetFPS(144);
     SetExitKey(KEY_NULL);
-    Rectangle* tetrisStage = new Rectangle({ 250, 40, 300, 450 });
-    Rectangle* uiRectangle;
     float elapsedTime = 0.0f;
 
     auto gameEvent = new tetrisEvent();
@@ -67,7 +65,6 @@ int main(void)
     // Stop
     delete game;
     delete gameUI;
-    delete tetrisStage;
     CloseWindow();
     return 0;
 }

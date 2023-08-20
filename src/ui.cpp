@@ -11,17 +11,19 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
     , _eventPtr(event)
     , _stage(gameStage::TITLE_SCREEN)
     , _elapsedPtr(elapsedPtr)
-    , _Rect_tetrisStage({ 250, 40, 300, 450 })
+    , _Rect_tetrisStage(TETRIS_STAGE)
     , _exit(false)
     , _newGame(false)
-//, _kotoPiege(0.0f)
+    //, _kotoPiege(0.0f)
 {
+    std::cout << "tile ratio set: " << TILE_RATIO << std::endl;
     // Init Textures
     _Texture_button = LoadTexture("res/button.png"); // Load button texture
     _Texture_playButton = LoadTexture("res/button_play.png");
     _Texture_settingButton = LoadTexture("res/button_settings.png");
     _Texture_exitButton = LoadTexture("res/button_exit.png");
     _Texture_tileset_w = LoadTexture("res/tileset_w.png");
+    _Texture_tileset_b_borderless = LoadTexture("res/tileset_b_borderless.png");
     _Texture_tileset_b = LoadTexture("res/tileset_b.png");
     _Texture_logo = LoadTexture("res/yoyotetris.png");
 
@@ -29,11 +31,11 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
 
     // Init UI Objects
     const Size2 titlescreenSize = { 140.0f, 80.f };
-    _Btn_Start = tetrisButton(&_Texture_playButton, { 20, 180 }, { 160.0f, 90.0f}, textureStyle::CUSTOM_SHAPE, {32.0f,18.0f});
+    _Btn_Start = tetrisButton(&_Texture_playButton, { 20, 180 }, { 160.0f, 90.0f }, textureStyle::CUSTOM_SHAPE, { 32.0f, 18.0f });
     _Btn_Start.SetText("Start");
-    _Btn_Settings = tetrisButton(&_Texture_settingButton, { 20, 180+90.0f+10 }, { 160.0f, 90.0f}, textureStyle::CUSTOM_SHAPE, {32.0f,18.0f});
+    _Btn_Settings = tetrisButton(&_Texture_settingButton, { 20, 180 + 90.0f + 10 }, { 160.0f, 90.0f }, textureStyle::CUSTOM_SHAPE, { 32.0f, 18.0f });
     _Btn_Settings.SetText("Settings");
-    _Btn_Exit = tetrisButton(&_Texture_exitButton, { 20, 180+(90.0f+10)*2 }, { 160.0f, 90.0f}, textureStyle::CUSTOM_SHAPE, {32.0f,18.0f});
+    _Btn_Exit = tetrisButton(&_Texture_exitButton, { 20, 180 + (90.0f + 10) * 2 }, { 160.0f, 90.0f }, textureStyle::CUSTOM_SHAPE, { 32.0f, 18.0f });
     _Btn_Exit.SetText("Exit");
 
     const Size2 menuSize = { 160.0f, 50.f };
@@ -66,7 +68,7 @@ tetrisUI::~tetrisUI()
 void tetrisUI::ShaderInit()
 {
     // blur radius
-    int radius = 8;
+    const int radius = 8;
     _Shader_blur = LoadShader(0, "res/shaders/blur.fs");
     SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "radius"), &radius, SHADER_UNIFORM_INT);
     SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "width"), &SCREEN_WIDTH, SHADER_UNIFORM_INT);
@@ -124,7 +126,7 @@ void tetrisUI::DisplayShader(renderLayer layer, bool end)
 void tetrisUI::TileSet()
 {
     // Offseting the texture by 5px in x, and 5px in y. (ratio multiplied by the actual pixels of the texture)
-    DrawTextureRatio(_Texture_tileset_w, { 0.0f, 0.0f }, { -(TILE_RATIO * 5.0f), -(TILE_RATIO * 5.0f), SCREEN_WIDTH + (TILE_RATIO * 5.0f), SCREEN_HEIGHT + (TILE_RATIO * 5.0f) }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+    DrawTextureRatio(_Texture_tileset_w, { 0.0f, 0.0f }, TILE_DESTINATION, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
     DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, { 255, 255, 255, 128 });
 }
 
@@ -146,14 +148,16 @@ void tetrisUI::TitleScreen()
 
 void tetrisUI::Game()
 {
-    Rectangle UIrectangle = { (_Rect_tetrisStage.x) - 4, (_Rect_tetrisStage.y) - 4, (_Rect_tetrisStage.width) + 8, (_Rect_tetrisStage.height) + 8 };
+    Rectangle UIrectangle = { (_Rect_tetrisStage.x) - TILE_RATIO, (_Rect_tetrisStage.y) - TILE_RATIO, (_Rect_tetrisStage.width) + TILE_RATIO * 2, (_Rect_tetrisStage.height) + TILE_RATIO * 2 };
     DrawText("YoyoTetris", 40, 40, 30, DARKGRAY);
     DrawText("Score", 40, 120, 20, DARKGRAY);
     DrawText("Level", 40, 300, 20, DARKGRAY);
     DrawText("Next", 622, 70, 30, DARKGRAY);
     DrawTextureRatio(_Texture_tileset_b, { 3.0f, 4.0f }, { 592, 112, NEXT_SIZE, NEXT_SIZE }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
-    // DrawRectangleRec(UIrectangle, DARKGRAY);
-    // DrawRectangleGradientEx(_Rect_tetrisStage, WHITE, LIGHTGRAY, LIGHTGRAY, WHITE);
+    DrawTextureRatio(_Texture_tileset_b, { 3.0f, 4.0f }, UIrectangle, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+    std::cout << TILE_RATIO/6 << std::endl;
+    // ! 3.8f is for now a dark magic number, it seems to be linked with the 4.0f offset of the texture, but why 0.2 ?
+    DrawTextureRatio(_Texture_tileset_b_borderless, { 3.0f, 3.8f }, _Rect_tetrisStage, TETRIS_STAGE.width/(CASE_NUM*8), { 0.0f, 0.0f }, WHITE);
 }
 
 void tetrisUI::GameOver()

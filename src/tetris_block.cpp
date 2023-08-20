@@ -19,7 +19,7 @@ tetrisFloatBlock::tetrisFloatBlock()
 tetrisFloatBlock::tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle* tetrisStage, tetrisControls* gameControls)
     : _name(name)
     , _color(getColorTetromino(name))
-    , _position({ BASE_X, BASE_Y })
+    , _position({ TETRIS_STAGE.x, TETRIS_STAGE.y })
     , _placed(false)
     , _rotation(tetromino::tetrisRotation::NONE)
     , _tetrisStage(tetrisStage)
@@ -214,7 +214,7 @@ void tetrisStaticBlocks::Display()
 void tetrisStaticBlocks::checkLine()
 {
     for (auto it = _lineMap.begin(); it != _lineMap.end();) {
-        if (it->second == 15) // For now 15 is the size of game area
+        if (it->second == HORIZONTAL_GRID_SIZE)
         {
             // TODO : Play animation
             for (size_t i = 0; i < _tetrisBlocks.size();) {

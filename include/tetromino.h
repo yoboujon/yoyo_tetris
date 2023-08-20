@@ -6,7 +6,6 @@
 #include <vector>
 
 constexpr double DEG_TO_RAD = PI/180;
-constexpr int BLOCK_SIZE = 20;
 constexpr int MAX_WIDTH = 4;
 constexpr int MAX_HEIGHT = 2;
 
