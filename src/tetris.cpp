@@ -12,10 +12,8 @@ tetrisGame::tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameSc
     , _isGameOver(false)
     , _pauseMenu(false)
 {
-    //tetromino::tetrominoNames::LightBlue_I
-    //tetromino::getRandomTetromino()
-    _actualBlock = new tetrisFloatBlock(tetromino::tetrominoNames::LightBlue_I, gameUI->getTetrisStage(), &_gameControls);
-    _nextBlock = new tetrisFloatBlock(tetromino::tetrominoNames::LightBlue_I, gameUI->getTetrisStage(), &_gameControls);
+    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
+    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
 }
 
 tetrisGame::~tetrisGame()
@@ -66,7 +64,7 @@ void tetrisGame::Loop()
         _staticBlocks.Add(*_actualBlock, _actualBlock->getColor());
         delete _actualBlock;
         _actualBlock = _nextBlock;
-        _nextBlock = new tetrisFloatBlock(tetromino::tetrominoNames::LightBlue_I, _gameUI->getTetrisStage(), &_gameControls);
+        _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), _gameUI->getTetrisStage(), &_gameControls);
         if (_actualBlock->GameEnded(_staticBlocks.getRectangles())) {
             _isGameOver = true;
             _gameUI->ChangeStage(gameStage::GAME_OVER);
