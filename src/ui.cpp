@@ -18,6 +18,7 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
 {
     // Init Textures
     _Texture_button = LoadTexture("res/button.png"); // Load button texture
+    _Texture_playButton = LoadTexture("res/button_play.png");
     _Texture_tileset_w = LoadTexture("res/tileset_w.png");
     _Texture_tileset_b = LoadTexture("res/tileset_b.png");
     _Texture_logo = LoadTexture("res/yoyotetris.png");
@@ -25,12 +26,12 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
     ShaderInit();
 
     // Init UI Objects
-    const Size2 titlescreenSize = { 160.0f, 50.f };
-    _Btn_Start = tetrisButton(&_Texture_button, { 20, 180 }, titlescreenSize);
+    const Size2 titlescreenSize = { 140.0f, 80.f };
+    _Btn_Start = tetrisButton(&_Texture_playButton, { 20, 180 }, { 160.0f, 90.0f}, textureStyle::CUSTOM_SHAPE, {32.0f,18.0f});
     _Btn_Start.SetText("Start");
-    _Btn_Settings = tetrisButton(&_Texture_button, { 20, 180 + (titlescreenSize.height + 20) }, titlescreenSize);
+    _Btn_Settings = tetrisButton(&_Texture_button, { 20, 180 + (90.0f)+20 }, titlescreenSize);
     _Btn_Settings.SetText("Settings");
-    _Btn_Exit = tetrisButton(&_Texture_button, { 20, 180 + (titlescreenSize.height + 20) * 2 }, titlescreenSize);
+    _Btn_Exit = tetrisButton(&_Texture_button, { 20, 180 + (titlescreenSize.height+90.0f)+20*2 }, titlescreenSize);
     _Btn_Exit.SetText("Exit");
 
     const Size2 menuSize = { 160.0f, 50.f };
@@ -51,6 +52,7 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
 tetrisUI::~tetrisUI()
 {
     UnloadTexture(_Texture_button);
+    UnloadTexture(_Texture_playButton);
     UnloadTexture(_Texture_tileset_w);
     UnloadTexture(_Texture_settings_w);
     UnloadTexture(_Texture_logo);

@@ -76,6 +76,7 @@ private:
 
     // Textures
     Texture2D _Texture_button;
+    Texture2D _Texture_playButton;
     Texture2D _Texture_tileset_w;
     Texture2D _Texture_tileset_b;
     Texture2D _Texture_settings_w;
