@@ -4,6 +4,7 @@
 #include <deque>
 #include <map>
 #include <any>
+#include <algorithm>
 
 enum class eventType {
     MENU_OPENED,
