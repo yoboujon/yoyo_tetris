@@ -16,7 +16,6 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
     , _newGame(false)
     //, _kotoPiege(0.0f)
 {
-    std::cout << "tile ratio set: " << TILE_RATIO << std::endl;
     // Init Textures
     _Texture_button = LoadTexture("res/button.png"); // Load button texture
     _Texture_playButton = LoadTexture("res/button_play.png");
@@ -148,14 +147,18 @@ void tetrisUI::TitleScreen()
 
 void tetrisUI::Game()
 {
+    // TODO : Write all the elements of the game depending on the number of tiles.
+    // This way Even in other resolutions the game should be designed the same way.
+
     Rectangle UIrectangle = { (_Rect_tetrisStage.x) - TILE_RATIO, (_Rect_tetrisStage.y) - TILE_RATIO, (_Rect_tetrisStage.width) + TILE_RATIO * 2, (_Rect_tetrisStage.height) + TILE_RATIO * 2 };
     DrawText("YoyoTetris", 40, 40, 30, DARKGRAY);
     DrawText("Score", 40, 120, 20, DARKGRAY);
     DrawText("Level", 40, 300, 20, DARKGRAY);
-    DrawText("Next", 622, 70, 30, DARKGRAY);
-    DrawTextureRatio(_Texture_tileset_b, { 3.0f, 4.0f }, { 592, 112, NEXT_SIZE, NEXT_SIZE }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+    DrawText("Next", 488+TILE_RATIO, 88, 30, DARKGRAY);
+    // x=3 and y=4 for the offset because of the actual texture.
+    // 3*7+4 = 24 -> 3 Tiles + 4 border -> What we want to draw for the next
+    DrawTextureRatio(_Texture_tileset_b, { 3.0f, 4.0f }, { 488, 118, 25*TILE_RATIO, 25*TILE_RATIO }, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
     DrawTextureRatio(_Texture_tileset_b, { 3.0f, 4.0f }, UIrectangle, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
-    std::cout << TILE_RATIO/6 << std::endl;
     // ! 3.8f is for now a dark magic number, it seems to be linked with the 4.0f offset of the texture, but why 0.2 ?
     DrawTextureRatio(_Texture_tileset_b_borderless, { 3.0f, 3.8f }, _Rect_tetrisStage, TETRIS_STAGE.width/(CASE_NUM*8), { 0.0f, 0.0f }, WHITE);
 }

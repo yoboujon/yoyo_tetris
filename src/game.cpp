@@ -33,7 +33,7 @@ int main(void)
         const auto actualStage = gameUI->getStage();
         const auto back = *(gameUI->getRenderTexture(renderLayer::BACK));
         const auto front = *(gameUI->getRenderTexture(renderLayer::FRONT));
-        // std::cout << "<mouse Position> x: " << GetMousePosition().x << "\ty: " << GetMousePosition().y << std::endl;
+        std::cout << "<mouse Position> x: " << GetMousePosition().x << "\ty: " << GetMousePosition().y << std::endl;
 
         BeginTextureMode(back); // Drawing the back texture
         gameUI->Display(renderLayer::BACK);

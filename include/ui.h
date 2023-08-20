@@ -12,10 +12,10 @@
 
 constexpr Rectangle TILESET = { 0, 0, 16.0f, 16.0f };
 constexpr Rectangle TITLE = { 0, 0, 48.0f, 16.0f };
+constexpr Vector2 NEXT_POSITION = {488, 118};
 constexpr int CASE_NUM = 5;
 constexpr float TILE_RATIO = TETRIS_STAGE.width/((CASE_NUM*7)+(CASE_NUM-1));
 constexpr float TITLE_SIZE = 125.0f;
-constexpr float NEXT_SIZE = 128.0f;
 inline Vector2 OFFSET_MENU(float id) { return { 0, 60.0f * id }; };
 constexpr Rectangle TILE_DESTINATION = { -(TILE_RATIO * 5.0f), -(TILE_RATIO * 5.0f), SCREEN_WIDTH + (TILE_RATIO * 5.0f), SCREEN_HEIGHT + (TILE_RATIO * 5.0f) };
 

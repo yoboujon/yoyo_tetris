@@ -97,6 +97,8 @@ void tetrisFloatBlock::DisplayNext()
 {
     const int offsetStart = (TETROMINO_MAP_RECT(_name, 0, 0).y > 0) ? BLOCK_SIZE : 0;
     const int actualWidth = getWidth(_name);
+    const float nextX = NEXT_POSITION.x+((25*TILE_RATIO)/5);
+    const float nextY = NEXT_POSITION.y+42;
     Rectangle baseRec;
     try {
         baseRec = _object.at(0);
@@ -109,8 +111,8 @@ void tetrisFloatBlock::DisplayNext()
         const auto offsetVector = Vector2Subtract({ recVec.x, recVec.y }, { baseRec.x, baseRec.y });
         // offsetX -> Casting it at the middle of MAX_WIDTH depending on its width. Adding the offset of the Rectangle and its position
         // offsetY -> Adding the offset of its position, the offset of the starting position (see tetrominoMap), and the base Rectangle.
-        const float offsetX = 615 + ((static_cast<float>(MAX_WIDTH - actualWidth) / 2) * BLOCK_SIZE) + offsetVector.x;
-        const float offsetY = 155 + offsetStart + offsetVector.y;
+        const float offsetX = nextX + ((static_cast<float>(MAX_WIDTH - actualWidth) / 2) * BLOCK_SIZE) + offsetVector.x;
+        const float offsetY = nextY + offsetStart + offsetVector.y;
         DrawRectangleRec({ offsetX, offsetY, recVec.width, recVec.height }, _color);
     }
 }
