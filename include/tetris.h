@@ -12,7 +12,7 @@ constexpr float FALLING_TICK_DURATION = 0.01f;
 
 class tetrisGame {
 public:
-    tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore, tetromino::tetrominoNames name);
+    tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore);
     ~tetrisGame();
     void Loop();
     bool gameFinished();

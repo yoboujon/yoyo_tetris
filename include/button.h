@@ -43,7 +43,7 @@ class tetrisButton {
         textureStyle _style;
         buttonState _state;
         std::string _text;
-        int _textSize;
+        float _textSize;
 };
 
 float tetrisButtongetTotalWidth(Size2 size);

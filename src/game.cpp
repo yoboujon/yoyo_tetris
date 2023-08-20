@@ -16,7 +16,7 @@ int main(void)
     auto gameEvent = new tetrisEvent();
     auto gameUI = new tetrisUI(gameEvent, &elapsedTime);
     auto gameScore = new tetrisScore(gameEvent);
-    auto game = new tetrisGame(gameEvent, gameUI, gameScore, tetromino::tetrominoNames::LightBlue_I);
+    auto game = new tetrisGame(gameEvent, gameUI, gameScore);
 
     // Step
     while (!WindowShouldClose() && !(gameUI->quitGame())) {
@@ -35,7 +35,7 @@ int main(void)
                 delete game;
                 delete gameScore;
                 gameScore = new tetrisScore(gameEvent);
-                game = new tetrisGame(gameEvent, gameUI, gameScore, tetromino::tetrominoNames::LightBlue_I);
+                game = new tetrisGame(gameEvent, gameUI, gameScore);
                 gameUI->ChangeStage(gameStage::GAME);
             }
         }

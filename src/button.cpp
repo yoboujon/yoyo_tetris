@@ -32,7 +32,7 @@ tetrisButton::~tetrisButton()
 
 void tetrisButton::SetText(const std::string& txt, const int fontSize)
 {
-    _textSize = MeasureText(txt.c_str(), fontSize);
+    _textSize = static_cast<float>(MeasureText(txt.c_str(), fontSize));
     _text = txt;
 }
 
@@ -54,7 +54,7 @@ void tetrisButton::setPosition(Vector2 position)
 void tetrisButton::Update()
 {
     // Checking State
-    _state = (checkCollisionPointRecArray(GetMousePosition(), &(_buttonRect)[0], _buttonRect.size()) ? buttonState::HOVER : buttonState::NONE);
+    _state = (checkCollisionPointRecArray(GetMousePosition(), &(_buttonRect)[0], static_cast<int>(_buttonRect.size())) ? buttonState::HOVER : buttonState::NONE);
     // Interaction
     if (_state == buttonState::HOVER || _state == buttonState::PRESS) {
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
@@ -84,7 +84,7 @@ void tetrisButton::DrawButton()
     for (const auto& button : _buttonRect) {
         totalWidth += button.width;
     }
-    DrawText(_text.c_str(), _buttonRect[0].x + (totalWidth - _textSize) / 2, _buttonRect[0].y + (_buttonRect[0].height - FONT_SIZE) / 2, FONT_SIZE, actualColor);
+    DrawText(_text.c_str(), static_cast<int>(_buttonRect[0].x + (totalWidth - _textSize) / 2), static_cast<int>(_buttonRect[0].y + (_buttonRect[0].height - FONT_SIZE) / 2), FONT_SIZE, actualColor);
 }
 
 bool tetrisButton::Clicked()

@@ -31,7 +31,7 @@ int getWidth(tetromino::tetrominoNames name)
     }
     const float max = *(std::max_element(maxWidth.begin(), maxWidth.end()));
     const float min = *(std::min_element(maxWidth.begin(), maxWidth.end()));
-    return (max - min) + 1;
+    return static_cast<int>(max - min) + 1;
 }
 
 int getHeight(tetromino::tetrominoNames name)
@@ -41,7 +41,7 @@ int getHeight(tetromino::tetrominoNames name)
         maxHeight.push_back((TETROMINO_MAP_RECT(name, 0, i).y < 0) ? 0 : TETROMINO_MAP_RECT(name, 0, i).y);
     const float max = *(std::max_element(maxHeight.begin(), maxHeight.end()));
     const float min = *(std::min_element(maxHeight.begin(), maxHeight.end()));
-    return (max - min) + 1;
+    return static_cast<int>(max - min) + 1;
 }
 
 tetromino::tetrominoNames tetromino::getRandomTetromino()
@@ -57,7 +57,7 @@ tetromino::tetrominoNames tetromino::getRandomTetromino()
 std::vector<Rectangle> constructReactangle(tetromino::tetrominoNames name, Vector2 position, float* area_object, tetromino::tetrisRotation rotation, bool calculateArea)
 {
     std::vector<Rectangle> newObject;
-    const auto floatRotate = (Vector2Equals(tetrominoMap.at(name).center, NULL_VECTOR2) ? 0 : getRotationAngle(rotation) * DEG_TO_RAD);
+    const auto floatRotate = static_cast<float>(Vector2Equals(tetrominoMap.at(name).center, NULL_VECTOR2) ? 0 : getRotationAngle(rotation) * DEG_TO_RAD);
     Vector2 SquareSize { 1, 1 };
 
     for (int i = 0; i < 2; i++) {

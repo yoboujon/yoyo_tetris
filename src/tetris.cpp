@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-tetrisGame::tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore, tetromino::tetrominoNames name)
+tetrisGame::tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore)
     : _eventPtr(event)
     , _gameControls(tetrisControls(gameUI->getElapsedTime()))
     , _staticBlocks(event)
@@ -12,8 +12,10 @@ tetrisGame::tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameSc
     , _isGameOver(false)
     , _pauseMenu(false)
 {
-    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
-    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
+    //tetromino::tetrominoNames::LightBlue_I
+    //tetromino::getRandomTetromino()
+    _actualBlock = new tetrisFloatBlock(tetromino::tetrominoNames::LightBlue_I, gameUI->getTetrisStage(), &_gameControls);
+    _nextBlock = new tetrisFloatBlock(tetromino::tetrominoNames::LightBlue_I, gameUI->getTetrisStage(), &_gameControls);
 }
 
 tetrisGame::~tetrisGame()
@@ -64,7 +66,7 @@ void tetrisGame::Loop()
         _staticBlocks.Add(*_actualBlock, _actualBlock->getColor());
         delete _actualBlock;
         _actualBlock = _nextBlock;
-        _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), _gameUI->getTetrisStage(), &_gameControls);
+        _nextBlock = new tetrisFloatBlock(tetromino::tetrominoNames::LightBlue_I, _gameUI->getTetrisStage(), &_gameControls);
         if (_actualBlock->GameEnded(_staticBlocks.getRectangles())) {
             _isGameOver = true;
             _gameUI->ChangeStage(gameStage::GAME_OVER);
@@ -73,9 +75,6 @@ void tetrisGame::Loop()
 
     // Checking for score
     _gameScore->updateScore();
-    // TODO: Replaced by Event later
-    _gameUI->setScore(_gameScore->getScore());
-    _gameUI->setMultiplicator(_gameScore->getMultiplicator());
 }
 
 bool tetrisGame::gameFinished() { return _isGameOver; }

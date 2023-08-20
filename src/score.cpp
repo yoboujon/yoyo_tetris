@@ -44,6 +44,8 @@ void tetrisScore::updateScore()
         _activeMultiplcator = true;
         _multiplicatorTime = 0.0f;
     }
+    _event->callEvent(eventType::SEND_SCORE, eventUser::UI, _score);
+    _event->callEvent(eventType::SEND_MULTIPLICATOR, eventUser::UI, _multiplicator);
 }
 
 uint64_t tetrisScore::getScore() { return _score; }

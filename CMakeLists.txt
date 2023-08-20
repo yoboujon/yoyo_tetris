@@ -29,37 +29,16 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
   endif()
 endif()
 
-# Add the RayGui library
-set(RAYGUI_VERSION 3.6) 
-find_package(raygui ${RAYGUI_VERSION} QUIET) # QUIET or REQUIRED
-if (NOT raygui_FOUND) # If there's none, fetch and build raygui
-  include(FetchContent)
-  FetchContent_Declare(
-    raygui
-    DOWNLOAD_EXTRACT_TIMESTAMP OFF
-    URL https://github.com/raysan5/raygui/archive/refs/tags/${RAYGUI_VERSION}.tar.gz
-  )
-  FetchContent_GetProperties(raygui)
-  if (NOT raygui_POPULATED) # Have we downloaded raygui yet?
-    set(FETCHCONTENT_QUIET NO)
-    FetchContent_Populate(raygui)
-    set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
-    add_subdirectory(${raygui_SOURCE_DIR}/projects/CMake)
-    #add_subdirectory(${raygui_SOURCE_DIR} ${raygui_BINARY_DIR})
-  endif()
-endif()
-
 #Setting up the sources directory
-file(GLOB SOURCES
-        "${PROJECT_SOURCE_DIR}/src/*.cpp"
-        )
+file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
+list(APPEND SOURCES "${PROJECT_SOURCE_DIR}/src/event.cpp")
 
 # yoyoTetris Project (source, header)
 add_executable(${TARGET_NAME} ${SOURCES})
 target_include_directories(${TARGET_NAME} PUBLIC "include")
 
 # Adding Librairies
-target_link_libraries(${PROJECT_NAME} raylib raygui)
+target_link_libraries(${PROJECT_NAME} raylib)
 
 # Copying the ressource folderto the build
 add_custom_target(CopyResources ALL
@@ -82,7 +61,7 @@ endif()
 
 # Adding compilation option depending on the OS 
 if(MSVC)
-    target_compile_options(${TARGET_NAME} PUBLIC /W3 /WX /DEBUG "-Wno-missing-field-initializers" "-Wno-unused-parameter" "-Wno-unused-variable" "-Wno-unused-but-set-variable" "-Wno-deprecated-enum-compare-conditional")
+    target_compile_options(${TARGET_NAME} PUBLIC /W3 /WX /DEBUG )
 else()
-    target_compile_options(${TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror "-Wno-unused-private-field" "-Wno-missing-field-initializers" "-Wno-unused-parameter" "-Wno-unused-variable" "-Wno-unused-but-set-variable" "-Wno-deprecated-enum-compare-conditional")
+    target_compile_options(${TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror "-Wno-missing-field-initializers")
 endif()
