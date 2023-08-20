@@ -1,5 +1,5 @@
 #include "controls.h"
-#include "raylib.h"
+
 #include <iostream>
 
 tetrisControls::tetrisControls(float* elapsedPtr)

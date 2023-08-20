@@ -1,8 +1,5 @@
 #include "tetris_block.h"
-#include "raylib.h"
-#include "raymath.h"
-#include "tetromino.h"
-#include "ui.h"
+
 #include <iostream>
 
 using namespace tetromino;

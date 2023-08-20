@@ -1,17 +1,7 @@
-#include "button.h"
-#include "event.h"
 #include "lib.h"
 
-#include "controls.h"
-#include "raylib.h"
-// #include "rayui_impl.h"   // Not sure if i will be using it...
 #include "tetris.h"
-#include "tetris_block.h"
 #include "tetromino.h"
-#include "ui.h"
-
-#include <iostream>
-#include <stdint.h>
 
 using namespace tetromino;
 
@@ -19,13 +9,14 @@ int main(void)
 {
     // Init
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "yoyoTetris");
-    SetTargetFPS(144);
+    SetTargetFPS(60);
     SetExitKey(KEY_NULL);
     float elapsedTime = 0.0f;
 
     auto gameEvent = new tetrisEvent();
     auto gameUI = new tetrisUI(gameEvent, &elapsedTime);
-    auto game = new tetrisGame(gameEvent, gameUI, tetromino::tetrominoNames::LightBlue_I);
+    auto gameScore = new tetrisScore();
+    auto game = new tetrisGame(gameEvent, gameUI, gameScore, tetromino::tetrominoNames::LightBlue_I);
 
     // Step
     while (!WindowShouldClose() && !(gameUI->quitGame())) {
@@ -33,7 +24,7 @@ int main(void)
         const auto actualStage = gameUI->getStage();
         const auto back = *(gameUI->getRenderTexture(renderLayer::BACK));
         const auto front = *(gameUI->getRenderTexture(renderLayer::FRONT));
-        std::cout << "<mouse Position> x: " << GetMousePosition().x << "\ty: " << GetMousePosition().y << std::endl;
+        //std::cout << "<mouse Position> x: " << GetMousePosition().x << "\ty: " << GetMousePosition().y << std::endl;
 
         BeginTextureMode(back); // Drawing the back texture
         gameUI->Display(renderLayer::BACK);
@@ -42,7 +33,8 @@ int main(void)
             game->Loop();
             if (gameUI->newGame()) {
                 delete game;
-                game = new tetrisGame(gameEvent, gameUI, tetromino::tetrominoNames::LightBlue_I);
+                delete gameScore;
+                game = new tetrisGame(gameEvent, gameUI, gameScore, tetromino::tetrominoNames::LightBlue_I);
                 gameUI->ChangeStage(gameStage::GAME);
             }
         }

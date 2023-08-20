@@ -2,7 +2,6 @@
 #define HEADER_TETRIS_BUTTON
 
 #include "lib.h"
-#include "raylib.h"
 
 #include <string>
 #include <vector>

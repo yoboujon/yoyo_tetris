@@ -1,8 +1,6 @@
 #include "button.h"
-#include "lib.h"
-#include "raylib.h"
+
 #include <iostream>
-#include <stdint.h>
 
 tetrisButton::tetrisButton()
     : tetrisButton(NULL, { 0, 0 }, { 0, 0 })

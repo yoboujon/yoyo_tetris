@@ -40,6 +40,7 @@ public:
 
     // Setters
     void ChangeStage(gameStage stage);
+    void setScore(int64_t score);
 
     // Getters
     gameStage getStage();
@@ -98,6 +99,7 @@ private:
     RenderTexture2D _front;
 
     // UI States
+    uint64_t _score;
     bool _exit;
     bool _newGame;
     //float _kotoPiege;

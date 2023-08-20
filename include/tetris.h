@@ -2,15 +2,17 @@
 #define HEADER_TETRIS_GAME
 
 #include "lib.h"
+
 #include "tetris_block.h"
 #include "button.h"
 #include "ui.h"
+#include "score.h"
 
 constexpr float FALLING_TICK_DURATION = 0.01f;
 
 class tetrisGame {
 public:
-    tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetromino::tetrominoNames name);
+    tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore, tetromino::tetrominoNames name);
     ~tetrisGame();
     void Loop();
     bool gameFinished();
@@ -33,6 +35,9 @@ private:
 
     // The UI pointer
     tetrisUI* _gameUI;
+
+    // The score pointer
+    tetrisScore* _gameScore;
     
     // The falling tick
     float _fallingTick;

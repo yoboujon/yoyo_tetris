@@ -5,6 +5,7 @@
 
 #include "controls.h"
 #include "tetromino.h"
+#include "ui.h"
 
 #include <array>
 #include <stdint.h>

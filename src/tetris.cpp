@@ -1,17 +1,12 @@
 #include "tetris.h"
-#include "button.h"
-#include "controls.h"
-#include "event.h"
-#include "raylib.h"
-#include "tetromino.h"
-#include "ui.h"
 
 #include <iostream>
 
-tetrisGame::tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetromino::tetrominoNames name)
+tetrisGame::tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore, tetromino::tetrominoNames name)
     : _eventPtr(event)
     , _gameControls(tetrisControls(gameUI->getElapsedTime()))
     , _gameUI(gameUI)
+    , _gameScore(gameScore)
     , _fallingTick(0.0f)
     , _isGameOver(false)
     , _pauseMenu(false)
@@ -74,6 +69,10 @@ void tetrisGame::Loop()
             _gameUI->ChangeStage(gameStage::GAME_OVER);
         }
     }
+
+    // Checking for score
+    _gameScore->updateScore();
+    _gameUI->setScore(_gameScore->getScore());
 }
 
 bool tetrisGame::gameFinished() { return _isGameOver; }
