@@ -36,13 +36,13 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
 
     const Size2 menuSize = { 160.0f, 50.f };
     const float menuTotalWidth = tetrisButtongetTotalWidth(menuSize);
-    const Vector2 menuCenter = { (SCREEN_WIDTH - menuTotalWidth) / 2, (SCREEN_HEIGHT - menuSize.height) / 2 };
-    _Btn_restart = tetrisButton(&_Texture_button, menuCenter, menuSize);
-    _Btn_restart.SetText("Restart");
-    _Btn_titleScreen = tetrisButton(&_Texture_button, Vector2Add(menuCenter, { 0, 80 }), menuSize);
-    _Btn_titleScreen.SetText("Quit");
-    _Btn_resume = tetrisButton(&_Texture_button, Vector2Add(menuCenter, { 0, 80+80 }), menuSize);
+    _menuCenter = { (SCREEN_WIDTH - menuTotalWidth) / 2, (SCREEN_HEIGHT - menuSize.height) / 2 };
+    _Btn_resume = tetrisButton(&_Texture_button, Vector2Add(_menuCenter, OFFSET_MENU(0)), menuSize);
     _Btn_resume.SetText("Resume");
+    _Btn_restart = tetrisButton(&_Texture_button, Vector2Add(_menuCenter, OFFSET_MENU(1)), menuSize);
+    _Btn_restart.SetText("Restart");
+    _Btn_titleScreen = tetrisButton(&_Texture_button, Vector2Add(_menuCenter, OFFSET_MENU(2)), menuSize);
+    _Btn_titleScreen.SetText("Quit");
 
     // Target textures
     _back = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -159,6 +159,10 @@ void tetrisUI::GameOver()
     // Const
     const int gameOvertext = MeasureText("Game Over", 30);
 
+    // Updating Buttons position
+    _Btn_restart.setPosition(Vector2Add(_menuCenter, OFFSET_MENU(0)));
+    _Btn_titleScreen.setPosition(Vector2Add(_menuCenter, OFFSET_MENU(1)));
+
     // Drawing UI
     DrawRectangleRec({ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT }, PAUSE_COLOR);
     DrawText("Game Over", (SCREEN_WIDTH - gameOvertext) / 2, (SCREEN_HEIGHT / 2) - 100, 30, RAYWHITE);
@@ -186,11 +190,22 @@ void tetrisUI::MenuScreen()
     // Const
     const int menuText = MeasureText("Menu", 30);
 
+    _Btn_resume.setPosition(Vector2Add(_menuCenter, OFFSET_MENU(0)));
+    _Btn_restart.setPosition(Vector2Add(_menuCenter, OFFSET_MENU(1)));
+    _Btn_titleScreen.setPosition(Vector2Add(_menuCenter, OFFSET_MENU(2)));
+
     DrawRectangleRec({ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT }, PAUSE_COLOR);
     DrawText("Menu", (SCREEN_WIDTH - menuText) / 2, (SCREEN_HEIGHT / 2) - 100, 30, RAYWHITE);
 
-    // TODO : Event system with the game object and the ui object having a pointer linked to. They can get information about the other and vice-versa
     if (_eventPtr->OnEvent(eventType::MENU_CLOSED, eventUser::UI)) {
+        _stage = gameStage::GAME;
+        UnloadRenderTexture(_front);
+        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    }
+
+    _Btn_resume.Update();
+    if (_Btn_resume.Clicked()) {
+        _eventPtr->callEvent(eventType::MENU_CLOSED, eventUser::TETRIS);
         _stage = gameStage::GAME;
         UnloadRenderTexture(_front);
         _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -208,14 +223,6 @@ void tetrisUI::MenuScreen()
     _Btn_restart.Update();
     if (_Btn_restart.Clicked()) {
         _newGame = true;
-        UnloadRenderTexture(_front);
-        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
-    }
-
-    _Btn_resume.Update();
-    if (_Btn_resume.Clicked()) {
-        _eventPtr->callEvent(eventType::MENU_CLOSED, eventUser::TETRIS);
-        _stage = gameStage::GAME;
         UnloadRenderTexture(_front);
         _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     }

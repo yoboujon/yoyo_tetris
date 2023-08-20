@@ -38,6 +38,21 @@ void tetrisButton::SetText(const std::string& txt, const int fontSize)
     _text = txt;
 }
 
+void tetrisButton::setPosition(Vector2 position)
+{
+    if (_style == textureStyle::CUSTOM_SHAPE) {
+        _buttonRect[0].x = position.x;
+        _buttonRect[0].y = position.y;
+    } else {
+
+        const float sides_width = TEXTURE_NORMAL_SIZE.width * (_buttonSize.height / TEXTURE_NORMAL_SIZE.height);
+        _buttonRect.clear();
+        _buttonRect.push_back({ position.x, position.y, sides_width, _buttonSize.height });
+        _buttonRect.push_back({ position.x + sides_width, position.y, _buttonSize.width, _buttonSize.height });
+        _buttonRect.push_back({ position.x + sides_width + _buttonSize.width, position.y, sides_width, _buttonSize.height });
+    }
+}
+
 void tetrisButton::Update()
 {
     // Checking State

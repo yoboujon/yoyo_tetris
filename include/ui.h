@@ -1,20 +1,22 @@
 #ifndef HEADER_TETRIS_UI
 #define HEADER_TETRIS_UI
 
+#include "button.h"
 #include "event.h"
 #include "lib.h"
-#include "button.h"
 #include "raylib.h"
+
 
 #define VERSION_MAJOR _VERSION_MAJOR
 #define VERSION_MINOR _VERSION_MINOR
 #define VERSION_PATCH _VERSION_PATCH
 
-constexpr Rectangle TILESET = { 0,0,16.0f,16.0f };
-constexpr Rectangle TITLE = { 0,0,48.0f,16.0f };
+constexpr Rectangle TILESET = { 0, 0, 16.0f, 16.0f };
+constexpr Rectangle TITLE = { 0, 0, 48.0f, 16.0f };
 constexpr float TILE_RATIO = 7.5f;
 constexpr float TITLE_SIZE = 125.0f;
 constexpr float NEXT_SIZE = 128.0f;
+inline Vector2 OFFSET_MENU(float id) { return { 0, 60.0f * id }; };
 
 enum class gameStage {
     TITLE_SCREEN,
@@ -33,12 +35,12 @@ public:
     tetrisUI(tetrisEvent* event, float* elapsedPtr);
     ~tetrisUI();
     void Display(renderLayer layer);
-    void DisplayShader(renderLayer layer, bool end=false);
+    void DisplayShader(renderLayer layer, bool end = false);
 
-    //Setters
+    // Setters
     void ChangeStage(gameStage stage);
 
-    //Getters
+    // Getters
     gameStage getStage();
     Rectangle* getTetrisStage();
     float* getElapsedTime();
@@ -46,6 +48,7 @@ public:
     bool newGame();
     Shader* getShaderBlur();
     RenderTexture2D* getRenderTexture(renderLayer layer);
+
 private:
     void ShaderInit();
     // Scenes
@@ -57,6 +60,7 @@ private:
 
     // Const
     const std::string _versionNumber;
+    Vector2 _menuCenter;
 
     // Event pointer
     tetrisEvent* _eventPtr;
@@ -92,7 +96,7 @@ private:
     // UI States
     bool _exit;
     bool _newGame;
-    //float _kotoPiege;
+    // float _kotoPiege;
 };
 
 #endif // HEADER_TETRIS_UI
