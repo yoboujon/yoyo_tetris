@@ -36,7 +36,7 @@ public:
     tetrisUI(tetrisEvent* event, float* elapsedPtr);
     ~tetrisUI();
     void Display(renderLayer layer);
-    void DisplayShader(renderLayer layer, bool end = false);
+    void DisplayTexture();
 
     // Setters
     void ChangeStage(gameStage stage);
@@ -58,6 +58,8 @@ private:
     void Game();
     void GameOver();
     void MenuScreen();
+
+    // Display Scenes
 
     // Const
     const std::string _versionNumber;
@@ -92,6 +94,8 @@ private:
 
     // Shaders
     Shader _Shader_blur;
+    std::array<bool,2> _shader_buffer;
+    RenderTexture2D _texture_buffer;
 
     // Target textures
     RenderTexture2D _back;

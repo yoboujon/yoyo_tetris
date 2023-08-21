@@ -8,6 +8,7 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
     , _stage(gameStage::TITLE_SCREEN)
     , _elapsedPtr(elapsedPtr)
     , _Rect_tetrisStage(TETRIS_STAGE)
+    , _shader_buffer({false,false})
     , _score(0)
     , _multiplicator(0)
     , _exit(false)
@@ -47,6 +48,7 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
     // Target textures
     _back = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    _texture_buffer = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 tetrisUI::~tetrisUI()
@@ -59,6 +61,7 @@ tetrisUI::~tetrisUI()
     UnloadShader(_Shader_blur);
     UnloadRenderTexture(_back);
     UnloadRenderTexture(_front);
+    UnloadRenderTexture(_texture_buffer);
 }
 
 void tetrisUI::ShaderInit()
@@ -109,22 +112,39 @@ void tetrisUI::Display(renderLayer layer)
         _multiplicator = tempMultiplicator;
 }
 
-void tetrisUI::DisplayShader(renderLayer layer, bool end)
+void tetrisUI::DisplayTexture()
 {
+    auto backPtr = &_back;
+    auto frontPtr = &_front;
+
     switch (_stage) {
-    case gameStage::GAME_OVER:
-        if (layer == renderLayer::BACK) {
-            end ? EndShaderMode() : BeginShaderMode(_Shader_blur);
-        }
-        break;
     case gameStage::MENU_SCREEN:
-        if (layer == renderLayer::BACK) {
-            end ? EndShaderMode() : BeginShaderMode(_Shader_blur);
+    case gameStage::GAME_OVER:
+        // Shader optimisation : creating a texture buffer everytime the scene is called
+        // The 'BeginShaderMode' in this exemple is only called once.
+        if (!_shader_buffer[0]) {
+            BeginTextureMode(_texture_buffer);
+            BeginShaderMode(_Shader_blur);
+            DrawTextureRec(_back.texture, { 0, 0, (float)_back.texture.width, (float)-_back.texture.height }, { 0, 0 }, WHITE);
+            EndShaderMode();
+            EndTextureMode();
+            _shader_buffer[0] = true;
         }
+        // We set the back pointer texture to the shader buffer created.
+        backPtr = &_texture_buffer;
         break;
     default:
+        for(auto& shader : _shader_buffer)
+            shader = false;
         break;
     }
+
+    // Begin to draw the scene
+    BeginDrawing();
+    // minus the height because the texture height is inverted in the RenderTexture2D.
+    DrawTextureRec(backPtr->texture, { 0, 0, (float)backPtr->texture.width, (float)-backPtr->texture.height }, { 0, 0 }, WHITE);
+    DrawTextureRec(frontPtr->texture, { 0, 0, (float)frontPtr->texture.width, (float)-frontPtr->texture.height }, { 0, 0 }, WHITE);
+    EndDrawing();
 }
 
 void tetrisUI::TileSet()
