@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "raymath.h"
 
+#include <stdint.h>
 #include <array>
 
 using VectorMaths = std::array<Vector2, 2>;
