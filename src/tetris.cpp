@@ -48,15 +48,19 @@ void tetrisGame::Loop()
     }
 
     // If 'game' scene : check player input and collision.
+    // checking any line that can be destroyed and gathering the staticblock rectangles 
     _staticBlocks.checkLine();
     const auto& collisionStatic = _staticBlocks.getRectangles();
 
+    // Player inputs are the first one to be checked
+    _actualBlock->Move(collisionStatic);
+    _actualBlock->Rotate(collisionStatic);
+
+    // Falling and collision/display is done afterward
     while (_fallingTick >= FALLING_TICK_DURATION) {
         _actualBlock->Fall(collisionStatic);
         _fallingTick -= FALLING_TICK_DURATION;
     }
-    _actualBlock->Rotate(collisionStatic);
-    _actualBlock->Move(collisionStatic);
     _actualBlock->Display();
 
     // Checking for collision
