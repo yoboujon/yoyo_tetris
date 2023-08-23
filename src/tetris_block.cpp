@@ -9,11 +9,11 @@ using namespace tetromino;
 /* ========================== */
 
 tetrisFloatBlock::tetrisFloatBlock()
-    : tetrisFloatBlock(tetrominoNames::LightBlue_I, NULL, NULL)
+    : tetrisFloatBlock(tetrominoNames::LightBlue_I, NULL, NULL, NULL)
 {
 }
 
-tetrisFloatBlock::tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle* tetrisStage, tetrisControls* gameControls)
+tetrisFloatBlock::tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle* tetrisStage, tetrisControls* gameControls, Texture2D* tetrominoTexture)
     : _name(name)
     , _color(getColorTetromino(name))
     , _position({ TETRIS_STAGE.x, TETRIS_STAGE.y })
@@ -21,6 +21,7 @@ tetrisFloatBlock::tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle* te
     , _rotation(tetromino::tetrisRotation::NONE)
     , _tetrisStage(tetrisStage)
     , _gameControls(gameControls)
+    , _tetrominoTexture(tetrominoTexture)
 {
     _area_object = 0;
     _object = constructReactangle(name, _position, &_area_object, tetrisRotation::NONE, true);
@@ -85,8 +86,15 @@ void tetrisFloatBlock::Rotate(const std::vector<Rectangle>& tetrisBlock)
 
 void tetrisFloatBlock::Display()
 {
+    const auto textureOffset = static_cast<int>(_name)*TEXTURE_TETROMINO_SIZE;
+    // ! For now really unoptimised, cropping the gpu texture onto an image and making it back to the gpu.
+    // ! Really intensive for nothing, a better approach could be done.
+    auto croppedImage = LoadImageFromTexture(*_tetrominoTexture);
+    ImageCrop(&croppedImage, { textureOffset, 0.0f, TEXTURE_TETROMINO_SIZE, TEXTURE_TETROMINO_SIZE });
+    Texture2D tempTexture = LoadTextureFromImage(croppedImage);
     for (auto& recVec : _object) {
-        DrawRectangleRec(recVec, _color);
+        DrawTextureRatio(tempTexture, {0.0f,0.0f}, recVec, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+        //DrawRectangleRec(recVec, _color);
     }
 }
 
@@ -165,16 +173,17 @@ bool tetrisFloatBlock::GameEnded(const std::vector<Rectangle>& tetrisBlock) { re
 /* ========================== */
 
 tetrisStaticBlocks::tetrisStaticBlocks()
-    : tetrisStaticBlocks(NULL) {};
+    : tetrisStaticBlocks(NULL, NULL) {};
 
-tetrisStaticBlocks::tetrisStaticBlocks(tetrisEvent* eventPtr)
+tetrisStaticBlocks::tetrisStaticBlocks(tetrisEvent* eventPtr, Texture2D* tetrominoTexture)
     : _event(eventPtr)
+    , _tetrominoTexture(tetrominoTexture)
 {
 }
 
 tetrisStaticBlocks::~tetrisStaticBlocks() { }
 
-void tetrisStaticBlocks::Add(tetrisFloatBlock& tetrisBlock, Color tetrisColor)
+void tetrisStaticBlocks::Add(tetrisFloatBlock& tetrisBlock, tetromino::tetrominoNames tetrisName)
 {
     Vector2 increment, otherIncrement;
     float RectangleSize, OtherSize;
@@ -198,7 +207,7 @@ void tetrisStaticBlocks::Add(tetrisFloatBlock& tetrisBlock, Color tetrisColor)
                 _tetrisBlocks.push_back({ (recVec.x + (j * increment.x * BLOCK_SIZE) + (i * otherIncrement.x * BLOCK_SIZE)),
                     yCoord,
                     BLOCK_SIZE, BLOCK_SIZE });
-                _tetrisColors.push_back(tetrisColor);
+                _tetrisNames.push_back(tetrisName);
                 if (_lineMap.find(yCoord) == _lineMap.end()) {
                     _lineMap[yCoord] = 1;
                 } else {
@@ -212,7 +221,9 @@ void tetrisStaticBlocks::Add(tetrisFloatBlock& tetrisBlock, Color tetrisColor)
 void tetrisStaticBlocks::Display()
 {
     for (size_t i = 0; i < _tetrisBlocks.size(); i++) {
-        DrawRectangleRec(_tetrisBlocks.at(i), _tetrisColors.at(i));
+        auto textureOffset = static_cast<int>(_tetrisNames.at(i))*TEXTURE_TETROMINO_SIZE;
+        DrawTextureRatio(*_tetrominoTexture, { textureOffset, 0.0f }, _tetrisBlocks.at(i), TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+        //DrawRectangleRec(_tetrisBlocks.at(i), _tetrisNames.at(i));
     }
 }
 
@@ -226,7 +237,7 @@ void tetrisStaticBlocks::checkLine()
             for (size_t i = 0; i < _tetrisBlocks.size();) {
                 if (_tetrisBlocks.at(i).y == it->first) {
                     _tetrisBlocks.erase(_tetrisBlocks.begin() + i);
-                    _tetrisColors.erase(_tetrisColors.begin() + i);
+                    _tetrisNames.erase(_tetrisNames.begin() + i);
                     i = 0;
                 } else
                     i++;

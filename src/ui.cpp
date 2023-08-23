@@ -24,6 +24,7 @@ tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
     _Texture_tileset_b_borderless = LoadTexture("res/tileset_b_borderless.png");
     _Texture_tileset_b = LoadTexture("res/tileset_b.png");
     _Texture_logo = LoadTexture("res/yoyotetris.png");
+    _Texture_tetromino = LoadTexture("res/tetromino.png");
 
     ShaderInit();
 
@@ -58,6 +59,7 @@ tetrisUI::~tetrisUI()
     UnloadTexture(_Texture_tileset_w);
     UnloadTexture(_Texture_settings_w);
     UnloadTexture(_Texture_logo);
+    UnloadTexture(_Texture_tetromino);
     UnloadShader(_Shader_blur);
     UnloadRenderTexture(_back);
     UnloadRenderTexture(_front);
@@ -276,6 +278,7 @@ Rectangle* tetrisUI::getTetrisStage() { return &_Rect_tetrisStage; }
 float* tetrisUI::getElapsedTime() { return _elapsedPtr; }
 Shader* tetrisUI::getShaderBlur() { return &_Shader_blur; }
 RenderTexture2D* tetrisUI::getRenderTexture(renderLayer layer) { return (layer == renderLayer::BACK ? &_back : &_front); }
+Texture2D* tetrisUI::getTetrominoTexture() { return &_Texture_tetromino; }
 bool tetrisUI::quitGame() { return _exit; }
 bool tetrisUI::newGame()
 {

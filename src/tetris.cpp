@@ -5,15 +5,15 @@
 tetrisGame::tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore)
     : _eventPtr(event)
     , _gameControls(tetrisControls(gameUI->getElapsedTime()))
-    , _staticBlocks(event)
+    , _staticBlocks(event, gameUI->getTetrominoTexture())
     , _gameUI(gameUI)
     , _gameScore(gameScore)
     , _fallingTick(0.0f)
     , _isGameOver(false)
     , _pauseMenu(false)
 {
-    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
-    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
+    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls, gameUI->getTetrominoTexture());
+    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls, gameUI->getTetrominoTexture());
 }
 
 tetrisGame::~tetrisGame()
@@ -65,10 +65,10 @@ void tetrisGame::Loop()
 
     // Checking for collision
     if (_actualBlock->Placed()) {
-        _staticBlocks.Add(*_actualBlock, _actualBlock->getColor());
+        _staticBlocks.Add(*_actualBlock, _actualBlock->getName());
         delete _actualBlock;
         _actualBlock = _nextBlock;
-        _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), _gameUI->getTetrisStage(), &_gameControls);
+        _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), _gameUI->getTetrisStage(), &_gameControls, _gameUI->getTetrominoTexture());
         if (_actualBlock->GameEnded(_staticBlocks.getRectangles())) {
             _isGameOver = true;
             _gameUI->ChangeStage(gameStage::GAME_OVER);

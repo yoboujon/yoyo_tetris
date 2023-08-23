@@ -15,11 +15,13 @@ constexpr int BASE_X = 250;
 constexpr int BASE_Y = 40;
 constexpr int FALL_SPEED = 7;
 constexpr float KEY_TIMING = 0.05f;
+constexpr float TEXTURE_TETROMINO_SIZE = 4.0f;
+constexpr float TEXTURE_TETROMINO_RATIO = 20.0f/16.0f;
 
 class tetrisFloatBlock {
 public:
     tetrisFloatBlock();
-    tetrisFloatBlock(tetromino::tetrominoNames name,Rectangle* tetrisStage, tetrisControls* gameControls);
+    tetrisFloatBlock(tetromino::tetrominoNames name,Rectangle* tetrisStage, tetrisControls* gameControls, Texture2D* tetrominoTexture);
     ~tetrisFloatBlock();
     // Movement
     void Fall(const std::vector<Rectangle>& tetrisBlock);
@@ -53,14 +55,15 @@ private:
     // Game
     Rectangle* _tetrisStage;
     tetrisControls* _gameControls;
+    Texture2D* _tetrominoTexture;
 };
 
 class tetrisStaticBlocks {
 public:
     tetrisStaticBlocks();
-    tetrisStaticBlocks(tetrisEvent* eventPtr);
+    tetrisStaticBlocks(tetrisEvent* eventPtr, Texture2D* tetrominoTexture);
     ~tetrisStaticBlocks();
-    void Add(tetrisFloatBlock& tetrisBlock, Color tetrisColor);
+    void Add(tetrisFloatBlock& tetrisBlock, tetromino::tetrominoNames tetrisName);
     void Display();
     void checkLine();
     const std::vector<Rectangle>& getRectangles();
@@ -68,9 +71,10 @@ public:
 private:
     std::map<float, int> updateLineMap();
     std::vector<Rectangle> _tetrisBlocks;
-    std::vector<Color> _tetrisColors;
+    std::vector<tetromino::tetrominoNames> _tetrisNames;
     std::map<float, int> _lineMap;
     tetrisEvent* _event;
+    Texture2D* _tetrominoTexture;
 };
 
 #endif // HEADER_TETRIS_BLOCK

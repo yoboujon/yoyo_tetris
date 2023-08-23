@@ -49,6 +49,7 @@ public:
     bool newGame();
     Shader* getShaderBlur();
     RenderTexture2D* getRenderTexture(renderLayer layer);
+    Texture2D* getTetrominoTexture();
 
 private:
     void ShaderInit();
@@ -91,6 +92,7 @@ private:
     Texture2D _Texture_tileset_b_borderless;
     Texture2D _Texture_settings_w;
     Texture2D _Texture_logo;
+    Texture2D _Texture_tetromino;
 
     // Shaders
     Shader _Shader_blur;
