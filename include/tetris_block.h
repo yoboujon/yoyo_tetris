@@ -15,8 +15,8 @@ constexpr int BASE_X = 250;
 constexpr int BASE_Y = 40;
 constexpr int FALL_SPEED = 7;
 constexpr float KEY_TIMING = 0.05f;
-constexpr float TEXTURE_TETROMINO_SIZE = 4.0f;
-constexpr float TEXTURE_TETROMINO_RATIO = 20.0f/16.0f;
+constexpr float TEXTURE_TETROMINO_SIZE = 8.0f;
+constexpr float TEXTURE_TETROMINO_RATIO = 20.0f/8.0f;
 
 class tetrisFloatBlock {
 public:

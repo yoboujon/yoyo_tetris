@@ -93,13 +93,20 @@ void tetrisFloatBlock::Display()
     ImageCrop(&croppedImage, { textureOffset, 0.0f, TEXTURE_TETROMINO_SIZE, TEXTURE_TETROMINO_SIZE });
     Texture2D tempTexture = LoadTextureFromImage(croppedImage);
     for (auto& recVec : _object) {
-        DrawTextureRatio(tempTexture, {0.0f,0.0f}, recVec, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+        DrawTextureRatio(tempTexture, {0.0f,0.0f}, recVec, TEXTURE_TETROMINO_RATIO, { 0.0f, 0.0f }, WHITE);
         //DrawRectangleRec(recVec, _color);
     }
 }
 
 void tetrisFloatBlock::DisplayNext()
 {
+    const auto textureOffset = static_cast<int>(_name)*TEXTURE_TETROMINO_SIZE;
+    // ! For now really unoptimised, cropping the gpu texture onto an image and making it back to the gpu.
+    // ! Really intensive for nothing, a better approach could be done.
+    auto croppedImage = LoadImageFromTexture(*_tetrominoTexture);
+    ImageCrop(&croppedImage, { textureOffset, 0.0f, TEXTURE_TETROMINO_SIZE, TEXTURE_TETROMINO_SIZE });
+    Texture2D tempTexture = LoadTextureFromImage(croppedImage);
+
     const int offsetStart = (TETROMINO_MAP_RECT(_name, 0, 0).y > 0) ? BLOCK_SIZE : 0;
     const int actualWidth = getWidth(_name);
     const float nextX = NEXT_POSITION.x + ((25 * TILE_RATIO) / 5);
@@ -118,7 +125,8 @@ void tetrisFloatBlock::DisplayNext()
         // offsetY -> Adding the offset of its position, the offset of the starting position (see tetrominoMap), and the base Rectangle.
         const float offsetX = nextX + ((static_cast<float>(MAX_WIDTH - actualWidth) / 2) * BLOCK_SIZE) + offsetVector.x;
         const float offsetY = nextY + offsetStart + offsetVector.y;
-        DrawRectangleRec({ offsetX, offsetY, recVec.width, recVec.height }, _color);
+        DrawTextureRatio(tempTexture, {0.0f,0.0f}, { offsetX, offsetY, recVec.width, recVec.height }, TEXTURE_TETROMINO_RATIO, { 0.0f, 0.0f }, WHITE);
+        //DrawRectangleRec({ offsetX, offsetY, recVec.width, recVec.height }, _color);
     }
 }
 
@@ -222,7 +230,7 @@ void tetrisStaticBlocks::Display()
 {
     for (size_t i = 0; i < _tetrisBlocks.size(); i++) {
         auto textureOffset = static_cast<int>(_tetrisNames.at(i))*TEXTURE_TETROMINO_SIZE;
-        DrawTextureRatio(*_tetrominoTexture, { textureOffset, 0.0f }, _tetrisBlocks.at(i), TILE_RATIO, { 0.0f, 0.0f }, WHITE);
+        DrawTextureRatio(*_tetrominoTexture, { textureOffset, 0.0f }, _tetrisBlocks.at(i), TEXTURE_TETROMINO_RATIO, { 0.0f, 0.0f }, WHITE);
         //DrawRectangleRec(_tetrisBlocks.at(i), _tetrisNames.at(i));
     }
 }
