@@ -61,12 +61,12 @@ add_dependencies(${PROJECT_NAME} CopyResources)
 # Adding the icon if it's a windows executable
 if (WIN32)
 set(RESOURCE_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/scripts/res.rc)
-set(RESOURCE_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/scripts/res.res)
+set(RESOURCE_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/res.res)
 add_custom_command(
     OUTPUT ${RESOURCE_OUTPUT}
     COMMAND rc.exe /fo ${RESOURCE_OUTPUT} ${RESOURCE_SCRIPT}
     DEPENDS ${RESOURCE_SCRIPT}
-    COMMENT "Compiling resource script for executable icon (Windows ONLY)"
+    COMMENT "Compiling resource script for executable icon (Windows ONLY) on ${CMAKE_CURRENT_SOURCE_DIR}/scripts/res.rc to ${CMAKE_CURRENT_BINARY_DIR}/scripts/res.res"
 )
 add_custom_target(ResourceCompilation ALL DEPENDS ${RESOURCE_OUTPUT})
 target_link_libraries(${PROJECT_NAME} ${RESOURCE_OUTPUT})
