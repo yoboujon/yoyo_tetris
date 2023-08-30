@@ -15,6 +15,7 @@ public:
     tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore);
     ~tetrisGame();
     void Loop();
+    void setTetrominoTexture(Texture2D texture);
     bool gameFinished();
     bool pause();
 private:

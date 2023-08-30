@@ -50,7 +50,7 @@ public:
     bool newGame();
     Shader* getShaderBlur();
     RenderTexture2D* getRenderTexture(renderLayer layer);
-    Texture2D* getTetrominoTexture();
+    Texture2D getTetrominoTexture();
 
 private:
     void ShaderInit();
@@ -84,16 +84,7 @@ private:
     tetrisButton _Btn_resume;
 
     // Textures
-    Texture2D _Texture_button;
-    Texture2D _Texture_playButton;
-    Texture2D _Texture_settingButton;
-    Texture2D _Texture_exitButton;
-    Texture2D _Texture_tileset_w;
-    Texture2D _Texture_tileset_b;
-    Texture2D _Texture_tileset_b_borderless;
-    Texture2D _Texture_settings_w;
-    Texture2D _Texture_logo;
-    Texture2D _Texture_tetromino;
+    textureLoader _textureLoader;
 
     // Shaders
     Shader _Shader_blur;

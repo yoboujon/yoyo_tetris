@@ -9,11 +9,11 @@ using namespace tetromino;
 /* ========================== */
 
 tetrisFloatBlock::tetrisFloatBlock()
-    : tetrisFloatBlock(tetrominoNames::LightBlue_I, NULL, NULL, NULL)
+    : tetrisFloatBlock(tetrominoNames::LightBlue_I, NULL, NULL)
 {
 }
 
-tetrisFloatBlock::tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle* tetrisStage, tetrisControls* gameControls, Texture2D* tetrominoTexture)
+tetrisFloatBlock::tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle* tetrisStage, tetrisControls* gameControls)
     : _name(name)
     , _color(getColorTetromino(name))
     , _position({ TETRIS_STAGE.x, TETRIS_STAGE.y })
@@ -21,7 +21,6 @@ tetrisFloatBlock::tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle* te
     , _rotation(tetromino::tetrisRotation::NONE)
     , _tetrisStage(tetrisStage)
     , _gameControls(gameControls)
-    , _tetrominoTexture(tetrominoTexture)
 {
     _area_object = 0;
     _object = constructReactangle(name, _position, &_area_object, tetrisRotation::NONE, true);
@@ -89,7 +88,7 @@ void tetrisFloatBlock::Display()
     const auto textureOffset = static_cast<int>(_name)*TEXTURE_TETROMINO_SIZE;
     // ! For now really unoptimised, cropping the gpu texture onto an image and making it back to the gpu.
     // ! Really intensive for nothing, a better approach could be done.
-    auto croppedImage = LoadImageFromTexture(*_tetrominoTexture);
+    auto croppedImage = LoadImageFromTexture(_tetrominoTexture);
     ImageCrop(&croppedImage, { textureOffset, 0.0f, TEXTURE_TETROMINO_SIZE, TEXTURE_TETROMINO_SIZE });
     Texture2D tempTexture = LoadTextureFromImage(croppedImage);
     for (auto& recVec : _object) {
@@ -103,7 +102,7 @@ void tetrisFloatBlock::DisplayNext()
     const auto textureOffset = static_cast<int>(_name)*TEXTURE_TETROMINO_SIZE;
     // ! For now really unoptimised, cropping the gpu texture onto an image and making it back to the gpu.
     // ! Really intensive for nothing, a better approach could be done.
-    auto croppedImage = LoadImageFromTexture(*_tetrominoTexture);
+    auto croppedImage = LoadImageFromTexture(_tetrominoTexture);
     ImageCrop(&croppedImage, { textureOffset, 0.0f, TEXTURE_TETROMINO_SIZE, TEXTURE_TETROMINO_SIZE });
     Texture2D tempTexture = LoadTextureFromImage(croppedImage);
 
@@ -169,6 +168,7 @@ std::vector<Rectangle> tetrisFloatBlock::moveY(int y)
     return newRec;
 }
 
+void tetrisFloatBlock::setTexture(Texture2D texture) { _tetrominoTexture = texture; }
 Rectangle* tetrisFloatBlock::getRectangle(int index) { return &(_object.at(index)); }
 const std::vector<Rectangle>& tetrisFloatBlock::getRectangles() { return _object; }
 bool tetrisFloatBlock::Placed() { return _placed; }
@@ -181,11 +181,10 @@ bool tetrisFloatBlock::GameEnded(const std::vector<Rectangle>& tetrisBlock) { re
 /* ========================== */
 
 tetrisStaticBlocks::tetrisStaticBlocks()
-    : tetrisStaticBlocks(NULL, NULL) {};
+    : tetrisStaticBlocks(NULL) {};
 
-tetrisStaticBlocks::tetrisStaticBlocks(tetrisEvent* eventPtr, Texture2D* tetrominoTexture)
+tetrisStaticBlocks::tetrisStaticBlocks(tetrisEvent* eventPtr)
     : _event(eventPtr)
-    , _tetrominoTexture(tetrominoTexture)
 {
 }
 
@@ -230,7 +229,7 @@ void tetrisStaticBlocks::Display()
 {
     for (size_t i = 0; i < _tetrisBlocks.size(); i++) {
         auto textureOffset = static_cast<int>(_tetrisNames.at(i))*TEXTURE_TETROMINO_SIZE;
-        DrawTextureRatio(*_tetrominoTexture, { textureOffset, 0.0f }, _tetrisBlocks.at(i), TEXTURE_TETROMINO_RATIO, { 0.0f, 0.0f }, WHITE);
+        DrawTextureRatio(_tetrominoTexture, { textureOffset, 0.0f }, _tetrisBlocks.at(i), TEXTURE_TETROMINO_RATIO, { 0.0f, 0.0f }, WHITE);
         //DrawRectangleRec(_tetrisBlocks.at(i), _tetrisNames.at(i));
     }
 }
@@ -278,3 +277,4 @@ std::map<float, int> tetrisStaticBlocks::updateLineMap()
 }
 
 const std::vector<Rectangle>& tetrisStaticBlocks::getRectangles() { return _tetrisBlocks; }
+void tetrisStaticBlocks::setTexture(Texture2D texture) { _tetrominoTexture = texture; }

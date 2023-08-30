@@ -28,16 +28,15 @@ enum class buttonState {
 class tetrisButton {
     public:
         tetrisButton();
-        tetrisButton(Texture2D* texture, Vector2 position, Size2 size, textureStyle style=textureStyle::NORMAL, Size2 textureSize={16.0f,16.0f});
+        tetrisButton(Vector2 position, Size2 size, textureStyle style=textureStyle::NORMAL, Size2 textureSize={16.0f,16.0f});
         ~tetrisButton();
         void SetText(const std::string& txt, const int fontSize=FONT_SIZE);
         void setPosition(Vector2 position);
-        void Update();
+        void Update(Texture2D texture);
         bool Clicked();
     private:
-        void DrawButton();
+        void DrawButton(Texture2D texture);
         std::vector<Rectangle> _buttonRect;
-        Texture2D* _texture;
         Size2 _buttonSize;
         Size2 _textureSize;
         textureStyle _style;

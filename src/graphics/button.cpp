@@ -3,13 +3,12 @@
 #include <iostream>
 
 tetrisButton::tetrisButton()
-    : tetrisButton(NULL, { 0, 0 }, { 0, 0 })
+    : tetrisButton({ 0, 0 }, { 0, 0 })
 {
 }
 
-tetrisButton::tetrisButton(Texture2D* texture, Vector2 position, Size2 size, textureStyle style, Size2 textureSize)
-    : _texture(texture)
-    , _buttonSize(size)
+tetrisButton::tetrisButton(Vector2 position, Size2 size, textureStyle style, Size2 textureSize)
+    : _buttonSize(size)
     , _textureSize(textureSize)
     , _style(style)
     , _state(buttonState::NONE)
@@ -51,7 +50,7 @@ void tetrisButton::setPosition(Vector2 position)
     }
 }
 
-void tetrisButton::Update()
+void tetrisButton::Update(Texture2D texture)
 {
     // Checking State
     _state = (checkCollisionPointRecArray(GetMousePosition(), &(_buttonRect)[0], static_cast<int>(_buttonRect.size())) ? buttonState::HOVER : buttonState::NONE);
@@ -63,20 +62,20 @@ void tetrisButton::Update()
             _state = buttonState::RELEASE;
     }
     // Drawing Text
-    DrawButton();
+    DrawButton(texture);
 }
 
-void tetrisButton::DrawButton()
+void tetrisButton::DrawButton(Texture2D texture)
 {
     // Selecting the correct texture offset with the given state
     const float textureSelector = _textureSize.height * static_cast<int>(_state);
     if (_style == textureStyle::CUSTOM_SHAPE) {
-        DrawTexturePro(*_texture, { 0, textureSelector, _textureSize.width, _textureSize.height }, _buttonRect[0], { 0, 0 }, 0.0f, WHITE);
+        DrawTexturePro(texture, { 0, textureSelector, _textureSize.width, _textureSize.height }, _buttonRect[0], { 0, 0 }, 0.0f, WHITE);
     } else {
         // Drawing the texture depending on the state
-        DrawTexturePro(*_texture, { 0, textureSelector, TEXTURE_NORMAL_SIZE.width, TEXTURE_NORMAL_SIZE.height }, _buttonRect[0], { 0, 0 }, 0.0f, WHITE);
-        DrawTexturePro(*_texture, { TEXTURE_NORMAL_SIZE.width, textureSelector, _textureSize.width, _textureSize.height }, _buttonRect[1], { 0, 0 }, 0.0f, WHITE);
-        DrawTexturePro(*_texture, { TEXTURE_NORMAL_SIZE.width + _textureSize.width, textureSelector, TEXTURE_NORMAL_SIZE.width, TEXTURE_NORMAL_SIZE.height }, _buttonRect[2], { 0, 0 }, 0.0f, WHITE);
+        DrawTexturePro(texture, { 0, textureSelector, TEXTURE_NORMAL_SIZE.width, TEXTURE_NORMAL_SIZE.height }, _buttonRect[0], { 0, 0 }, 0.0f, WHITE);
+        DrawTexturePro(texture, { TEXTURE_NORMAL_SIZE.width, textureSelector, _textureSize.width, _textureSize.height }, _buttonRect[1], { 0, 0 }, 0.0f, WHITE);
+        DrawTexturePro(texture, { TEXTURE_NORMAL_SIZE.width + _textureSize.width, textureSelector, TEXTURE_NORMAL_SIZE.width, TEXTURE_NORMAL_SIZE.height }, _buttonRect[2], { 0, 0 }, 0.0f, WHITE);
         // Drawing text
     }
     const Color actualColor = ((_state == buttonState::NONE || _state == buttonState::RELEASE) ? BLACK_TEXT : WHITE_TEXT);

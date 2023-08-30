@@ -5,15 +5,15 @@
 tetrisGame::tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore)
     : _eventPtr(event)
     , _gameControls(tetrisControls(gameUI->getElapsedTime()))
-    , _staticBlocks(event, gameUI->getTetrominoTexture())
+    , _staticBlocks(event)
     , _gameUI(gameUI)
     , _gameScore(gameScore)
     , _fallingTick(0.0f)
     , _isGameOver(false)
     , _pauseMenu(false)
 {
-    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls, gameUI->getTetrominoTexture());
-    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls, gameUI->getTetrominoTexture());
+    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
+    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
 }
 
 tetrisGame::~tetrisGame()
@@ -24,6 +24,10 @@ tetrisGame::~tetrisGame()
 
 void tetrisGame::Loop()
 {
+    //If the scene has just loaded, we can get the texture from the UI
+    if(_eventPtr->OnEvent(eventType::START_GAME, eventUser::TETRIS))
+        setTetrominoTexture(_gameUI->getTetrominoTexture());
+
     if(!_pauseMenu)
         _fallingTick += GetFrameTime();
 
@@ -35,12 +39,16 @@ void tetrisGame::Loop()
     if (IsKeyReleased(KEY_ESCAPE))
     {
         _pauseMenu = !_pauseMenu;
-        _pauseMenu ? _gameUI->ChangeStage(gameStage::MENU_SCREEN) : _eventPtr->callEvent(eventType::MENU_CLOSED, eventUser::UI);
+        if(_pauseMenu)
+            _gameUI->ChangeStage(gameStage::MENU_SCREEN);
+        else
+            _eventPtr->callEvent(eventType::MENU_CLOSED, eventUser::UI);
     }
     if(_eventPtr->OnEvent(eventType::MENU_CLOSED, eventUser::TETRIS))
         _pauseMenu = false;
 
     // If game over/ pause menu -> Only display the game
+    // No collision or falling detection
     if (_isGameOver || _pauseMenu) {
         if (_pauseMenu)
             _actualBlock->Display();
@@ -68,7 +76,7 @@ void tetrisGame::Loop()
         _staticBlocks.Add(*_actualBlock, _actualBlock->getName());
         delete _actualBlock;
         _actualBlock = _nextBlock;
-        _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), _gameUI->getTetrisStage(), &_gameControls, _gameUI->getTetrominoTexture());
+        _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), _gameUI->getTetrisStage(), &_gameControls);
         if (_actualBlock->GameEnded(_staticBlocks.getRectangles())) {
             _isGameOver = true;
             _gameUI->ChangeStage(gameStage::GAME_OVER);
@@ -77,6 +85,12 @@ void tetrisGame::Loop()
 
     // Checking for score
     _gameScore->updateScore();
+}
+
+void tetrisGame::setTetrominoTexture(Texture2D texture) {
+    _actualBlock->setTexture(texture);
+    _nextBlock->setTexture(texture);
+    _staticBlocks.setTexture(texture);
 }
 
 bool tetrisGame::gameFinished() { return _isGameOver; }

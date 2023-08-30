@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <vector>
 
 enum class textureId
 {
@@ -81,7 +82,7 @@ public:
      */
     bool unload(textureId id);
 
-    Texture2D *getTexture(textureId id);
+    Texture2D getTexture(textureId id);
     unloadState getUnloadingState(textureId id);
 
 private:

@@ -50,6 +50,7 @@ int main(void)
                 gameScore = new tetrisScore(gameEvent);
                 game = new tetrisGame(gameEvent, gameUI, gameScore);
                 gameUI->ChangeStage(gameStage::GAME);
+                game->setTetrominoTexture(gameUI->getTetrominoTexture());
             }
         }
         EndTextureMode();

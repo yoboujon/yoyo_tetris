@@ -21,7 +21,7 @@ constexpr float TEXTURE_TETROMINO_RATIO = 20.0f/8.0f;
 class tetrisFloatBlock {
 public:
     tetrisFloatBlock();
-    tetrisFloatBlock(tetromino::tetrominoNames name,Rectangle* tetrisStage, tetrisControls* gameControls, Texture2D* tetrominoTexture);
+    tetrisFloatBlock(tetromino::tetrominoNames name,Rectangle* tetrisStage, tetrisControls* gameControls);
     ~tetrisFloatBlock();
     // Movement
     void Fall(const std::vector<Rectangle>& tetrisBlock);
@@ -36,6 +36,8 @@ public:
     bool GameEnded(const std::vector<Rectangle>& tetrisBlock);
     void Display();
     void DisplayNext();
+    // Setter
+    void setTexture(Texture2D texture);
 
 private:
     bool checkCollisionWith(const std::vector<Rectangle>& newRectangles, const std::vector<Rectangle>& collideRectangles);
@@ -55,18 +57,19 @@ private:
     // Game
     Rectangle* _tetrisStage;
     tetrisControls* _gameControls;
-    Texture2D* _tetrominoTexture;
+    Texture2D _tetrominoTexture;
 };
 
 class tetrisStaticBlocks {
 public:
     tetrisStaticBlocks();
-    tetrisStaticBlocks(tetrisEvent* eventPtr, Texture2D* tetrominoTexture);
+    tetrisStaticBlocks(tetrisEvent* eventPtr);
     ~tetrisStaticBlocks();
     void Add(tetrisFloatBlock& tetrisBlock, tetromino::tetrominoNames tetrisName);
     void Display();
     void checkLine();
     const std::vector<Rectangle>& getRectangles();
+    void setTexture(Texture2D texture);
 
 private:
     std::map<float, int> updateLineMap();
@@ -74,7 +77,7 @@ private:
     std::vector<tetromino::tetrominoNames> _tetrisNames;
     std::map<float, int> _lineMap;
     tetrisEvent* _event;
-    Texture2D* _tetrominoTexture;
+    Texture2D _tetrominoTexture;
 };
 
 #endif // HEADER_TETRIS_BLOCK

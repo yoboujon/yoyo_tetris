@@ -11,7 +11,8 @@ enum class eventType {
     MENU_CLOSED,
     TETRIS_LINE_COMPLETED,
     SEND_SCORE,
-    SEND_MULTIPLICATOR
+    SEND_MULTIPLICATOR,
+    START_GAME
 };
 
 enum class eventUser {
