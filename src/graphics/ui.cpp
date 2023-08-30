@@ -214,15 +214,12 @@ void tetrisUI::GameOver()
     _Btn_titleScreen.Update(buttonBase);
     if (_Btn_titleScreen.Clicked()) {
         _newGame = true;
-        // Unloading render texture and reloading a clear buffer.
-        ClearRenderTexture(_front);
         ChangeStage(gameStage::TITLE_SCREEN);
     }
 
     _Btn_restart.Update(buttonBase);
     if (_Btn_restart.Clicked()) {
         _newGame = true;
-        ClearRenderTexture(_front);
     }
 }
 
@@ -239,7 +236,6 @@ void tetrisUI::MenuScreen()
     DrawText("Menu", (SCREEN_WIDTH - menuText) / 2, (SCREEN_HEIGHT / 2) - 100, 30, RAYWHITE);
 
     if (_eventPtr->OnEvent(eventType::MENU_CLOSED, eventUser::UI)) {
-        ClearRenderTexture(_front);
         ChangeStage(gameStage::GAME);
     }
 
@@ -248,22 +244,18 @@ void tetrisUI::MenuScreen()
     _Btn_resume.Update(buttonBase);
     if (_Btn_resume.Clicked()) {
         _eventPtr->callEvent(eventType::MENU_CLOSED, eventUser::TETRIS);
-        ClearRenderTexture(_front);
         ChangeStage(gameStage::GAME);
     }
 
     _Btn_titleScreen.Update(buttonBase);
     if (_Btn_titleScreen.Clicked()) {
         _newGame = true;
-        // Unloading render texture and reloading a clear buffer.
-        ClearRenderTexture(_front);
         ChangeStage(gameStage::TITLE_SCREEN);
     }
 
     _Btn_restart.Update(buttonBase);
     if (_Btn_restart.Clicked()) {
         _newGame = true;
-        ClearRenderTexture(_front);
     }
 }
 
@@ -277,6 +269,7 @@ void tetrisUI::ChangeStage(gameStage stage)
     switch(stage)
     {
         case gameStage::TITLE_SCREEN:
+            ClearRenderTexture(_front);
             _textureLoader.unload(textureId::TETROMINO_TILEMAP);
             _textureLoader.unload(textureId::TILESET_BLACK);
             _textureLoader.unload(textureId::TILESET_BLACK_BORDERLESS);
@@ -286,6 +279,7 @@ void tetrisUI::ChangeStage(gameStage stage)
             _textureLoader.load(textureId::LOGO,unloadState::ONCE);
             break;
         case gameStage::GAME:
+            ClearRenderTexture(_front);
             _textureLoader.load(textureId::TILESET_BLACK,unloadState::NEVER);
             _textureLoader.load(textureId::TILESET_BLACK_BORDERLESS,unloadState::NEVER);
             _textureLoader.load(textureId::TETROMINO_TILEMAP,unloadState::NEVER);
@@ -294,7 +288,7 @@ void tetrisUI::ChangeStage(gameStage stage)
         case gameStage::GAME_OVER:
             _textureLoader.load(textureId::BUTTON_BASE,unloadState::ONCE);
             break;
-    }
+    }    
 }
 
 // Getters

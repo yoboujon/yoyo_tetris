@@ -40,6 +40,7 @@ int main(void)
         //std::cout << "<mouse Position> x: " << GetMousePosition().x << "\ty: " << GetMousePosition().y << std::endl;
 
         BeginTextureMode(*back); // Drawing the back texture
+        // Displaying the back of the environment
         gameUI->Display(renderLayer::BACK);
         // Game Display and Update
         if (actualStage != gameStage::TITLE_SCREEN) {
