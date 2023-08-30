@@ -1,4 +1,4 @@
-#include "tetris_block.h"
+#include "game/tetris_block.h"
 
 #include <iostream>
 

@@ -3,9 +3,9 @@
 
 #include "lib.h"
 
-#include "controls.h"
-#include "tetromino.h"
-#include "ui.h"
+#include "user/controls.h"
+#include "game/tetromino.h"
+#include "graphics/ui.h"
 
 #include <array>
 #include <stdint.h>

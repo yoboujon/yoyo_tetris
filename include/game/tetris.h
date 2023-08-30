@@ -3,10 +3,10 @@
 
 #include "lib.h"
 
-#include "tetris_block.h"
-#include "button.h"
-#include "ui.h"
-#include "score.h"
+#include "game/tetris_block.h"
+#include "graphics/button.h"
+#include "graphics/ui.h"
+#include "game/score.h"
 
 constexpr float FALLING_TICK_DURATION = 0.01f;
 

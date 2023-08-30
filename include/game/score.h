@@ -2,7 +2,7 @@
 #define HEADER_TETRIS_SCORE
 
 #include "lib.h"
-#include "event.h"
+#include "user/event.h"
 
 class tetrisScore {
 public:

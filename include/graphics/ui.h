@@ -1,10 +1,9 @@
 #ifndef HEADER_TETRIS_UI
 #define HEADER_TETRIS_UI
 
-#include "button.h"
-#include "event.h"
+#include "graphics/button.h"
+#include "user/event.h"
 #include "lib.h"
-#include "raylib.h"
 
 #define VERSION_MAJOR _VERSION_MAJOR
 #define VERSION_MINOR _VERSION_MINOR

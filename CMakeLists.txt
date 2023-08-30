@@ -30,11 +30,12 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
 endif()
 
 #Setting up the sources directory
-file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
-list(APPEND SOURCES "${PROJECT_SOURCE_DIR}/src/event.cpp")
+file(GLOB BASE "${PROJECT_SOURCE_DIR}/src/*.cpp")
+file(GLOB GAME "${PROJECT_SOURCE_DIR}/src/*/*.cpp")
+list(APPEND GAME "${PROJECT_SOURCE_DIR}/src/user/event.cpp")
 
 # yoyoTetris Project (source, header)
-add_executable(${TARGET_NAME} ${SOURCES})
+add_executable(${TARGET_NAME} ${BASE} ${GAME})
 # If release on Windows, set executable win32 to true
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   set_target_properties(${TARGET_NAME} PROPERTIES

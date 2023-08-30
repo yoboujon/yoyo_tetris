@@ -1,7 +1,7 @@
 #include "lib.h"
 
-#include "tetris.h"
-#include "tetromino.h"
+#include "game/tetris.h"
+#include "game/tetromino.h"
 
 using namespace tetromino;
 
