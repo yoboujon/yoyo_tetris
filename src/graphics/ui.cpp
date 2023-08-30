@@ -1,6 +1,7 @@
 #include "graphics/ui.h"
 
 #include <string>
+#include <iostream>
 
 tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
     : _versionNumber("Version " + std::string(VERSION_MAJOR) + "." + std::string(VERSION_MINOR) + "." + std::string(VERSION_PATCH))
@@ -212,18 +213,16 @@ void tetrisUI::GameOver()
     // Button Actions
     _Btn_titleScreen.Update(buttonBase);
     if (_Btn_titleScreen.Clicked()) {
-        ChangeStage(gameStage::TITLE_SCREEN);
         _newGame = true;
         // Unloading render texture and reloading a clear buffer.
-        UnloadRenderTexture(_front);
-        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+        ClearRenderTexture(_front);
+        ChangeStage(gameStage::TITLE_SCREEN);
     }
 
     _Btn_restart.Update(buttonBase);
     if (_Btn_restart.Clicked()) {
         _newGame = true;
-        UnloadRenderTexture(_front);
-        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+        ClearRenderTexture(_front);
     }
 }
 
@@ -240,9 +239,8 @@ void tetrisUI::MenuScreen()
     DrawText("Menu", (SCREEN_WIDTH - menuText) / 2, (SCREEN_HEIGHT / 2) - 100, 30, RAYWHITE);
 
     if (_eventPtr->OnEvent(eventType::MENU_CLOSED, eventUser::UI)) {
+        ClearRenderTexture(_front);
         ChangeStage(gameStage::GAME);
-        UnloadRenderTexture(_front);
-        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     }
 
     auto buttonBase = _textureLoader.getTexture(textureId::BUTTON_BASE);
@@ -250,25 +248,22 @@ void tetrisUI::MenuScreen()
     _Btn_resume.Update(buttonBase);
     if (_Btn_resume.Clicked()) {
         _eventPtr->callEvent(eventType::MENU_CLOSED, eventUser::TETRIS);
+        ClearRenderTexture(_front);
         ChangeStage(gameStage::GAME);
-        UnloadRenderTexture(_front);
-        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     }
 
     _Btn_titleScreen.Update(buttonBase);
     if (_Btn_titleScreen.Clicked()) {
-        ChangeStage(gameStage::TITLE_SCREEN);
         _newGame = true;
         // Unloading render texture and reloading a clear buffer.
-        UnloadRenderTexture(_front);
-        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+        ClearRenderTexture(_front);
+        ChangeStage(gameStage::TITLE_SCREEN);
     }
 
     _Btn_restart.Update(buttonBase);
     if (_Btn_restart.Clicked()) {
         _newGame = true;
-        UnloadRenderTexture(_front);
-        _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+        ClearRenderTexture(_front);
     }
 }
 
@@ -283,14 +278,16 @@ void tetrisUI::ChangeStage(gameStage stage)
     {
         case gameStage::TITLE_SCREEN:
             _textureLoader.unload(textureId::TETROMINO_TILEMAP);
+            _textureLoader.unload(textureId::TILESET_BLACK);
+            _textureLoader.unload(textureId::TILESET_BLACK_BORDERLESS);
             _textureLoader.load(textureId::BUTTON_PLAY,unloadState::ONCE);
             _textureLoader.load(textureId::BUTTON_SETTINGS,unloadState::ONCE);
             _textureLoader.load(textureId::BUTTON_EXIT,unloadState::ONCE);
             _textureLoader.load(textureId::LOGO,unloadState::ONCE);
             break;
         case gameStage::GAME:
-            _textureLoader.load(textureId::TILESET_BLACK,unloadState::ONCE);
-            _textureLoader.load(textureId::TILESET_BLACK_BORDERLESS,unloadState::ONCE);
+            _textureLoader.load(textureId::TILESET_BLACK,unloadState::NEVER);
+            _textureLoader.load(textureId::TILESET_BLACK_BORDERLESS,unloadState::NEVER);
             _textureLoader.load(textureId::TETROMINO_TILEMAP,unloadState::NEVER);
             break;
         case gameStage::MENU_SCREEN:

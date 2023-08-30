@@ -25,3 +25,10 @@ bool checkCollisionPointRecArray(Vector2 point, Rectangle* rectArray, int sizeAr
     }
     return returnCollision;
 }
+
+void ClearRenderTexture(RenderTexture2D renderTexture)
+{
+    BeginTextureMode(renderTexture);
+    ClearBackground({0,0,0,0});
+    EndTextureMode();
+}

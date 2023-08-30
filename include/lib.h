@@ -13,6 +13,7 @@ VectorMaths initArray(Vector2 a, Vector2 b);
 VectorMaths emptyArray();
 void DrawTextureRatio(Texture2D texture, Vector2 source, Rectangle destination, float ratio, Vector2 position, Color tint);
 bool checkCollisionPointRecArray(Vector2 point, Rectangle* rectArray, int sizeArray);
+void ClearRenderTexture(RenderTexture2D renderTexture);
 
 // Used for the tetromino map
 constexpr Vector2 NULL_VECTOR2 = {-1,-1};
