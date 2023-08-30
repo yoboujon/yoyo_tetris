@@ -1,7 +1,6 @@
 #ifndef HEADER_TETRIS_TEXTURES
 #define HEADER_TETRIS_TEXTURES
 
-<<<<<<< HEAD
 #include "lib.h"
 
 #include <string>
@@ -90,6 +89,3 @@ private:
 };
 
 #endif // HEADER_TETRIS_TEXTURES
-=======
-#endif //HEADER_TETRIS_TEXTURES
->>>>>>> 5dcbf985e6c0feec1404514bbc1435c35e864c70
