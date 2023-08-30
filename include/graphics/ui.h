@@ -1,9 +1,17 @@
 #ifndef HEADER_TETRIS_UI
 #define HEADER_TETRIS_UI
 
+<<<<<<< HEAD
+#include "lib.h"
+
+#include "graphics/button.h"
+#include "graphics/textures.h"
+#include "user/event.h"
+=======
 #include "graphics/button.h"
 #include "user/event.h"
 #include "lib.h"
+>>>>>>> 5dcbf985e6c0feec1404514bbc1435c35e864c70
 
 #define VERSION_MAJOR _VERSION_MAJOR
 #define VERSION_MINOR _VERSION_MINOR
