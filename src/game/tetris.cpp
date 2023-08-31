@@ -13,13 +13,33 @@ tetrisGame::tetrisGame(tetrisEvent *event, tetrisUI *gameUI, tetrisScore *gameSc
 
 tetrisGame::~tetrisGame()
 {
-    std::cout << "Deleted Tetris Game!" << std::endl;
     delete _actualBlock;
     delete _nextBlock;
     for(auto texture : _textureMap)
     {
         UnloadTexture(texture);
     }
+}
+
+// ! Maybe creating a copy opertation could be more effective but meh, i'm more sure with this approach
+void tetrisGame::reset(tetrisEvent *event, tetrisUI *gameUI, tetrisScore *gameScore)
+{
+    delete _actualBlock;
+    delete _nextBlock;
+    for(auto texture : _textureMap)
+    {
+        UnloadTexture(texture);
+    }
+    _eventPtr = event;
+    _gameControls = tetrisControls(gameUI->getElapsedTime());
+    _staticBlocks = tetrisStaticBlocks(event);
+    _gameUI = gameUI;
+    _gameScore = gameScore;
+    _fallingTick = 0.0f;
+    _isGameOver = false;
+    _pauseMenu = false;
+    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
+    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
 }
 
 void tetrisGame::Loop()

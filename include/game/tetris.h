@@ -14,6 +14,7 @@ class tetrisGame {
 public:
     tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore);
     ~tetrisGame();
+    void reset(tetrisEvent *event, tetrisUI *gameUI, tetrisScore *gameScore);
     void Loop();
     void setTetrominoTexture(Texture2D texture);
     bool gameFinished();
