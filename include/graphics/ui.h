@@ -35,9 +35,13 @@ enum class renderLayer {
 // Maybe adding other gameStates later...
 enum class gameState {
     NONE,
-    RESET
+    RESET,
+    EXIT
 };
 
+// TODO : Rename this entire file stages with tetrisStages
+// TODO : It will be responsible of the stage elements.
+// ! The render pipeline should be done by an entirely different class.
 class tetrisUI {
 public:
     tetrisUI(tetrisEvent* event, float* elapsedPtr);
@@ -45,7 +49,6 @@ public:
     void Display(renderLayer layer);
     void DisplayTexture();
 
-    // Setters
     void ChangeStage(gameStage stage);
 
     // Getters
@@ -102,12 +105,13 @@ private:
     RenderTexture2D _back;
     RenderTexture2D _front;
 
-    // UI States
+    // UI Variables
     uint64_t _score;
     uint8_t _multiplicator;
-    bool _exit;
+
+    // UI State
+    bool _exit; //TODO: Delete and replace by _gameState
     gameState _gameState;
-    //float _kotoPiege;
 };
 
 #endif // HEADER_TETRIS_UI

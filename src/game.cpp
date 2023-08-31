@@ -2,6 +2,7 @@
 
 #include "game/tetris.h"
 #include "game/tetromino.h"
+#include "graphics/render.h"
 
 using namespace tetromino;
 
