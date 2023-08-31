@@ -7,6 +7,7 @@
 #include "graphics/ui.h"
 #include "graphics/textures.h"
 #include "graphics/shaders.h"
+#include "user/event.h"
 
 // All the private elements inside the tetris renderer will be rendered one time.
 // Each UI/Game elements will be rendered every frame.
@@ -27,6 +28,7 @@ public:
 private:
     // Event reference
     tetrisEvent& _eventPtr;
+/*
 
     // Textures
     textureLoader _textureLoader;
@@ -39,6 +41,7 @@ private:
     // Target textures
     RenderTexture2D _back;
     RenderTexture2D _front;
+*/
 };
 
 #endif // HEADER_TETRIS_RENDER

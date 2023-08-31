@@ -12,7 +12,8 @@ enum class eventType {
     TETRIS_LINE_COMPLETED,
     SEND_SCORE,
     SEND_MULTIPLICATOR,
-    START_GAME
+    START_GAME,
+    NONE
 };
 
 enum class eventUser {
