@@ -45,6 +45,9 @@ int main(void)
         // Game Display and Update
         if (actualStage != gameStage::TITLE_SCREEN) {
             game->Loop();
+            // ! A problem has been noticed when returning to the title screen :
+            // ! The game is not deleted and the textures aren't unloaded. This can lead
+            // ! To potential memory leaks.
             if (gameUI->newGame()) {
                 delete game;
                 delete gameScore;

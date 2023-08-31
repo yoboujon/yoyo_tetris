@@ -31,6 +31,9 @@ private:
     tetrisFloatBlock* _actualBlock;
     tetrisFloatBlock* _nextBlock;
 
+    // Its texture
+    std::vector<Texture2D> _textureMap;
+
     // The next tetromino
     tetromino::tetrominoNames _actualName;
 

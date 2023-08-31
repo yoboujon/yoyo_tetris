@@ -2,33 +2,33 @@
 
 #include <iostream>
 
-tetrisGame::tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore)
-    : _eventPtr(event)
-    , _gameControls(tetrisControls(gameUI->getElapsedTime()))
-    , _staticBlocks(event)
-    , _gameUI(gameUI)
-    , _gameScore(gameScore)
-    , _fallingTick(0.0f)
-    , _isGameOver(false)
-    , _pauseMenu(false)
+tetrisGame::tetrisGame(tetrisEvent *event, tetrisUI *gameUI, tetrisScore *gameScore)
+    : _eventPtr(event), _gameControls(tetrisControls(gameUI->getElapsedTime())), _staticBlocks(event), _gameUI(gameUI), _gameScore(gameScore), _fallingTick(0.0f), _isGameOver(false), _pauseMenu(false)
 {
+    // Reserving the vector to the maximum tetromino name count.
+    _textureMap.reserve(static_cast<int>(tetromino::tetrominoNames::Count));
     _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
     _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
 }
 
 tetrisGame::~tetrisGame()
 {
+    std::cout << "Deleted Tetris Game!" << std::endl;
     delete _actualBlock;
     delete _nextBlock;
+    for(auto texture : _textureMap)
+    {
+        UnloadTexture(texture);
+    }
 }
 
 void tetrisGame::Loop()
 {
-    //If the scene has just loaded, we can get the texture from the UI
-    if(_eventPtr->OnEvent(eventType::START_GAME, eventUser::TETRIS))
+    // If the scene has just loaded, we can get the texture from the UI
+    if (_eventPtr->OnEvent(eventType::START_GAME, eventUser::TETRIS))
         setTetrominoTexture(_gameUI->getTetrominoTexture());
 
-    if(!_pauseMenu)
+    if (!_pauseMenu)
         _fallingTick += GetFrameTime();
 
     // static display > next display > Falling block
@@ -39,45 +39,50 @@ void tetrisGame::Loop()
     if (IsKeyReleased(KEY_ESCAPE))
     {
         _pauseMenu = !_pauseMenu;
-        if(_pauseMenu)
+        if (_pauseMenu)
             _gameUI->ChangeStage(gameStage::MENU_SCREEN);
         else
             _eventPtr->callEvent(eventType::MENU_CLOSED, eventUser::UI);
     }
-    if(_eventPtr->OnEvent(eventType::MENU_CLOSED, eventUser::TETRIS))
+    if (_eventPtr->OnEvent(eventType::MENU_CLOSED, eventUser::TETRIS))
         _pauseMenu = false;
 
     // If game over/ pause menu -> Only display the game
     // No collision or falling detection
-    if (_isGameOver || _pauseMenu) {
+    if (_isGameOver || _pauseMenu)
+    {
         if (_pauseMenu)
             _actualBlock->Display();
         return;
     }
 
     // If 'game' scene : check player input and collision.
-    // checking any line that can be destroyed and gathering the staticblock rectangles 
+    // checking any line that can be destroyed and gathering the staticblock rectangles
     _staticBlocks.checkLine();
-    const auto& collisionStatic = _staticBlocks.getRectangles();
+    const auto &collisionStatic = _staticBlocks.getRectangles();
 
     // Player inputs are the first one to be checked
     _actualBlock->Move(collisionStatic);
     _actualBlock->Rotate(collisionStatic);
 
     // Falling and collision/display is done afterward
-    while (_fallingTick >= FALLING_TICK_DURATION) {
+    while (_fallingTick >= FALLING_TICK_DURATION)
+    {
         _actualBlock->Fall(collisionStatic);
         _fallingTick -= FALLING_TICK_DURATION;
     }
     _actualBlock->Display();
 
     // Checking for collision
-    if (_actualBlock->Placed()) {
+    if (_actualBlock->Placed())
+    {
         _staticBlocks.Add(*_actualBlock, _actualBlock->getName());
         delete _actualBlock;
         _actualBlock = _nextBlock;
         _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), _gameUI->getTetrisStage(), &_gameControls);
-        if (_actualBlock->GameEnded(_staticBlocks.getRectangles())) {
+        _nextBlock->setTextures(_textureMap);
+        if (_actualBlock->GameEnded(_staticBlocks.getRectangles()))
+        {
             _isGameOver = true;
             _gameUI->ChangeStage(gameStage::GAME_OVER);
         }
@@ -87,10 +92,24 @@ void tetrisGame::Loop()
     _gameScore->updateScore();
 }
 
-void tetrisGame::setTetrominoTexture(Texture2D texture) {
-    _actualBlock->setTexture(texture);
-    _nextBlock->setTexture(texture);
+void tetrisGame::setTetrominoTexture(Texture2D texture)
+{
+    // Setting the texture on static block because each block is 1:1
+    // So the texture mapping should work directly
     _staticBlocks.setTexture(texture);
+    // For floating blocks, we are using rectangles that are not 1:1, so the texture offset
+    // of the map could display other colors tetrominos.
+    // Each individual texture is cropped into an image and pushed back as a texture.
+    for (int textureOffset=0; textureOffset != static_cast<int>(tetromino::tetrominoNames::Count) ; textureOffset++)
+    {
+        auto croppedImage = LoadImageFromTexture(texture);
+        ImageCrop(&croppedImage, {(static_cast<int>(textureOffset) * TEXTURE_TETROMINO_SIZE), 0.0f, TEXTURE_TETROMINO_SIZE, TEXTURE_TETROMINO_SIZE});
+        _textureMap.push_back(LoadTextureFromImage(croppedImage));
+    }
+    // Loading these textures to the floating tetrominos.
+    _actualBlock->setTextures(_textureMap);
+    _nextBlock->setTextures(_textureMap);
+    // TODO : Add a function to delete all these textures afterwards. (Memory leaks).
 }
 
 bool tetrisGame::gameFinished() { return _isGameOver; }

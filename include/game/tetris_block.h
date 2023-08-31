@@ -15,8 +15,6 @@ constexpr int BASE_X = 250;
 constexpr int BASE_Y = 40;
 constexpr int FALL_SPEED = 7;
 constexpr float KEY_TIMING = 0.05f;
-constexpr float TEXTURE_TETROMINO_SIZE = 8.0f;
-constexpr float TEXTURE_TETROMINO_RATIO = 20.0f/8.0f;
 
 class tetrisFloatBlock {
 public:
@@ -37,7 +35,7 @@ public:
     void Display();
     void DisplayNext();
     // Setter
-    void setTexture(Texture2D texture);
+    void setTextures(std::vector<Texture2D> texture);
 
 private:
     bool checkCollisionWith(const std::vector<Rectangle>& newRectangles, const std::vector<Rectangle>& collideRectangles);
@@ -57,7 +55,7 @@ private:
     // Game
     Rectangle* _tetrisStage;
     tetrisControls* _gameControls;
-    Texture2D _tetrominoTexture;
+    std::vector<Texture2D> _tetrominoTextureVect;
 };
 
 class tetrisStaticBlocks {

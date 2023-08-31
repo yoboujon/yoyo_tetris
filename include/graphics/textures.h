@@ -8,6 +8,9 @@
 #include <memory>
 #include <vector>
 
+constexpr float TEXTURE_TETROMINO_SIZE = 8.0f;
+constexpr float TEXTURE_TETROMINO_RATIO = 20.0f/8.0f;
+
 enum class textureId
 {
     BUTTON_BASE,

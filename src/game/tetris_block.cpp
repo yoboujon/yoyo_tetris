@@ -85,12 +85,8 @@ void tetrisFloatBlock::Rotate(const std::vector<Rectangle>& tetrisBlock)
 
 void tetrisFloatBlock::Display()
 {
-    const auto textureOffset = static_cast<int>(_name)*TEXTURE_TETROMINO_SIZE;
-    // ! For now really unoptimised, cropping the gpu texture onto an image and making it back to the gpu.
-    // ! Really intensive for nothing, a better approach could be done.
-    auto croppedImage = LoadImageFromTexture(_tetrominoTexture);
-    ImageCrop(&croppedImage, { textureOffset, 0.0f, TEXTURE_TETROMINO_SIZE, TEXTURE_TETROMINO_SIZE });
-    Texture2D tempTexture = LoadTextureFromImage(croppedImage);
+    // Selecting the correct texture from the texture vect depending on the name.
+    Texture2D tempTexture = _tetrominoTextureVect.at(static_cast<int>(_name));
     for (auto& recVec : _object) {
         DrawTextureRatio(tempTexture, {0.0f,0.0f}, recVec, TEXTURE_TETROMINO_RATIO, { 0.0f, 0.0f }, WHITE);
         //DrawRectangleRec(recVec, _color);
@@ -99,18 +95,14 @@ void tetrisFloatBlock::Display()
 
 void tetrisFloatBlock::DisplayNext()
 {
-    const auto textureOffset = static_cast<int>(_name)*TEXTURE_TETROMINO_SIZE;
-    // ! For now really unoptimised, cropping the gpu texture onto an image and making it back to the gpu.
-    // ! Really intensive for nothing, a better approach could be done.
-    auto croppedImage = LoadImageFromTexture(_tetrominoTexture);
-    ImageCrop(&croppedImage, { textureOffset, 0.0f, TEXTURE_TETROMINO_SIZE, TEXTURE_TETROMINO_SIZE });
-    Texture2D tempTexture = LoadTextureFromImage(croppedImage);
-
+    // Selecting the correct texture from the texture vect depending on the name.
+    Texture2D tempTexture = _tetrominoTextureVect.at(static_cast<int>(_name));
     const int offsetStart = (TETROMINO_MAP_RECT(_name, 0, 0).y > 0) ? BLOCK_SIZE : 0;
     const int actualWidth = getWidth(_name);
     const float nextX = NEXT_POSITION.x + ((25 * TILE_RATIO) / 5);
     const float nextY = NEXT_POSITION.y + 42;
     Rectangle baseRec;
+
     try {
         baseRec = _object.at(0);
     } catch (...) {
@@ -168,7 +160,7 @@ std::vector<Rectangle> tetrisFloatBlock::moveY(int y)
     return newRec;
 }
 
-void tetrisFloatBlock::setTexture(Texture2D texture) { _tetrominoTexture = texture; }
+void tetrisFloatBlock::setTextures(std::vector<Texture2D> textures) { _tetrominoTextureVect = textures; }
 Rectangle* tetrisFloatBlock::getRectangle(int index) { return &(_object.at(index)); }
 const std::vector<Rectangle>& tetrisFloatBlock::getRectangles() { return _object; }
 bool tetrisFloatBlock::Placed() { return _placed; }
