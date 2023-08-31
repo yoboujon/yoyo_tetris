@@ -16,6 +16,15 @@ tetrisScore::~tetrisScore()
 {
 }
 
+void tetrisScore::resetScore()
+{
+    _score = 0;
+    _multiplicator = 1;
+    _activeMultiplcator = false;
+    _multiplicatorTime = 0.0f;
+    _scoreTime = 0.0f;
+}
+
 void tetrisScore::updateScore()
 {
     // Getting the frame time

@@ -10,6 +10,7 @@ public:
     ~tetrisScore();
     void updateScore();
     uint64_t getScore();
+    void resetScore();
     uint8_t getMultiplicator();
 private:
     tetrisEvent* _event;

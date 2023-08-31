@@ -154,8 +154,8 @@ void tetrisUI::TitleScreen()
     DrawText(_versionNumber.c_str(), 20, 130, 20, BLACK_TEXT);
 
     auto buttonPlay = _textureLoader.getTexture(textureId::BUTTON_PLAY);
-    auto buttonSettings = _textureLoader.getTexture(textureId::BUTTON_PLAY);
-    auto buttonExit = _textureLoader.getTexture(textureId::BUTTON_PLAY);
+    auto buttonSettings = _textureLoader.getTexture(textureId::BUTTON_SETTINGS);
+    auto buttonExit = _textureLoader.getTexture(textureId::BUTTON_EXIT);
 
     _Btn_Start.Update(buttonPlay);
     if (_Btn_Start.Clicked())

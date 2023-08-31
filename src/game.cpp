@@ -27,12 +27,11 @@ main{
     SetExitKey(KEY_NULL);
     float elapsedTime = 0.0f;
 
-    // ! Making all the game objects on the heap is not a great idea.
-    // ! Maybe a function to reset each element can be called.
-    auto gameEvent = new tetrisEvent();
-    auto gameUI = tetrisUI(gameEvent, &elapsedTime);
-    auto gameScore = new tetrisScore(gameEvent);
-    auto game = tetrisGame(gameEvent, &gameUI, gameScore);
+    // TODO : Multi-threading for event, ui elements and score.
+    auto gameEvent = tetrisEvent();
+    auto gameUI = tetrisUI(&gameEvent, &elapsedTime);
+    auto gameScore = tetrisScore(&gameEvent);
+    auto game = tetrisGame(&gameEvent, &gameUI, &gameScore);
 
     // Step
     while (!WindowShouldClose() && !(gameUI.quitGame())) {
@@ -52,10 +51,8 @@ main{
             // ! The game is not deleted and the textures aren't unloaded. This can lead
             // ! To potential memory leaks.
             if (gameUI.newGame()) {
-                delete gameScore;
-                gameScore = new tetrisScore(gameEvent);
-                game.reset(gameEvent, &gameUI, gameScore);
-                //game = tetrisGame(gameEvent, &gameUI, gameScore);
+                gameScore.resetScore();
+                game.reset(&gameEvent, &gameUI, &gameScore);
                 gameUI.ChangeStage(gameStage::GAME);
                 game.setTetrominoTexture(gameUI.getTetrominoTexture());
             }
