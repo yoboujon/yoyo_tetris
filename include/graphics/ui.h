@@ -32,6 +32,12 @@ enum class renderLayer {
     FRONT
 };
 
+// Maybe adding other gameStates later...
+enum class gameState {
+    NONE,
+    RESET
+};
+
 class tetrisUI {
 public:
     tetrisUI(tetrisEvent* event, float* elapsedPtr);
@@ -47,7 +53,8 @@ public:
     Rectangle* getTetrisStage();
     float* getElapsedTime();
     bool quitGame();
-    bool newGame();
+    // Check a particular game state (resetting, ending...)
+    bool checkGameState(gameState state);
     Shader* getShaderBlur();
     RenderTexture2D* getRenderTexture(renderLayer layer);
     Texture2D getTetrominoTexture();
@@ -99,7 +106,7 @@ private:
     uint64_t _score;
     uint8_t _multiplicator;
     bool _exit;
-    bool _newGame;
+    gameState _gameState;
     //float _kotoPiege;
 };
 

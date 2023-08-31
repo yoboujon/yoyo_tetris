@@ -6,19 +6,20 @@
 using namespace tetromino;
 
 #ifdef _WIN32
-    #ifdef NDEBUG
-    #define main int WinMain(void)
-    #else
-    #define main int main(void)
-    #endif
+#ifdef NDEBUG
+#define main int WinMain(void)
+#else
+#define main int main(void)
+#endif
 #else
 #define main int main(void)
 #endif
 
-main{
+main
+{
     // Init
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "yoyoTetris");
-    //Loading the icon
+    // Loading the icon
     Image icon = LoadImage("res/yoyotetris_logo.png");
     SetWindowIcon(icon);
     UnloadImage(icon);
@@ -34,28 +35,31 @@ main{
     auto game = tetrisGame(&gameEvent, &gameUI, &gameScore);
 
     // Step
-    while (!WindowShouldClose() && !(gameUI.quitGame())) {
+    while (!WindowShouldClose() && !(gameUI.quitGame()))
+    {
         elapsedTime += GetFrameTime();
         const auto actualStage = gameUI.getStage();
         const auto back = gameUI.getRenderTexture(renderLayer::BACK);
         const auto front = gameUI.getRenderTexture(renderLayer::FRONT);
-        //std::cout << "<mouse Position> x: " << GetMousePosition().x << "\ty: " << GetMousePosition().y << std::endl;
+        // std::cout << "<mouse Position> x: " << GetMousePosition().x << "\ty: " << GetMousePosition().y << std::endl;
 
         BeginTextureMode(*back); // Drawing the back texture
-        // Displaying the back of the environment
         gameUI.Display(renderLayer::BACK);
+
         // Game Display and Update
-        if (actualStage != gameStage::TITLE_SCREEN) {
+        if (actualStage != gameStage::TITLE_SCREEN)
+        {
             game.Loop();
-            // ! A problem has been noticed when returning to the title screen :
-            // ! The game is not deleted and the textures aren't unloaded. This can lead
-            // ! To potential memory leaks.
-            if (gameUI.newGame()) {
-                gameScore.resetScore();
-                game.reset(&gameEvent, &gameUI, &gameScore);
-                gameUI.ChangeStage(gameStage::GAME);
+        }
+        // Checking if the game need to be reset
+        if (gameUI.checkGameState(gameState::RESET))
+        {
+            gameScore.resetScore();
+            game.reset(&gameEvent, &gameUI, &gameScore);
+            // Loading the textures only if we stay on stages that needs these textures.
+            // As a matter of fact, when starting a game from the titlescreen : this function will be called again.
+            if(actualStage != gameStage::TITLE_SCREEN)
                 game.setTetrominoTexture(gameUI.getTetrominoTexture());
-            }
         }
         EndTextureMode();
 
