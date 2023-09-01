@@ -3,7 +3,8 @@
 
 #include <any>
 
-enum EventType {
+enum EventType
+{
     NONE = 0,
     MENU_OPENED,
     MENU_CLOSED,
@@ -17,17 +18,18 @@ enum EventType {
 class BaseComponent;
 class EventHandler
 {
-    public:
-        virtual void sendEvent(BaseComponent* sender, EventType type) const=0;
-        virtual void sendEvent(BaseComponent* sender, EventType type, const std::any& data) const=0;
+public:
+    virtual void sendEvent(BaseComponent *sender, EventType type, const std::any &data = std::any()) = 0;
 };
 
-class BaseComponent {
+class BaseComponent
+{
 public:
-    BaseComponent(EventHandler* event=nullptr);
-    void setEventHandler(EventHandler* event);
+    BaseComponent(EventHandler *event = nullptr);
+    void setEventHandler(EventHandler *event);
+
 protected:
-    EventHandler* _eventHandler;
+    EventHandler *_eventHandler;
 };
 
 #endif // HEADER_TETRIS_COMPONENT

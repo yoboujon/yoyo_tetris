@@ -62,6 +62,7 @@ main
             // As a matter of fact, when starting a game from the titlescreen : this function will be called again.
             if(actualStage != gameStage::TITLE_SCREEN)
                 game.setTetrominoTexture(gameUI.getTetrominoTexture());
+            // Informing the gameEventHandler that a new game has been created.
             gameEventHandler.sendEvent(nullptr, EventType::CREATED_NEW_GAME);
         }
         EndTextureMode();

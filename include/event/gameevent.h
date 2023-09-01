@@ -11,9 +11,14 @@ class GameEvent : public EventHandler
 public:
     GameEvent(tetrisUI* ui, tetrisScore* score, tetrisGame* game);
     ~GameEvent();
-    void sendEvent(BaseComponent* sender, EventType type) const override;
-    void sendEvent(BaseComponent* sender, EventType type, const std::any& data) const override;
+    void sendEvent(BaseComponent* sender, EventType type, const std::any& data = std::any());
 private:
+    void uIEvents(EventType type, const std::any& data = std::any());
+    void scoreEvents(EventType type, const std::any& data = std::any());
+    void gameEvents(EventType type, const std::any& data = std::any());
+    void staticBlockEvents(EventType type, const std::any& data = std::any());
+    void mainEvents(EventType type, const std::any& data = std::any());
+
     tetrisUI* _tetrisUI;
     tetrisScore* _tetrisScore;
     tetrisGame* _tetrisGame;
