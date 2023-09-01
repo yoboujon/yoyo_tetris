@@ -32,7 +32,7 @@ void GameEvent::uIEvents(EventType type, const std::any &data)
 {
     // When Starting the game, loading the textures for tetrominos
     if (type == START_GAME)
-        _tetrisGame->setTetrominoTexture(_tetrisUI->getTetrominoTexture());
+        _tetrisGame->setTetrominoTexture(_renderer.GetTexture(textureId::TETROMINO_TILEMAP));
     // If the user prompted 'Resume' or 'Restart' buttons, the pause status is set to false.
     if (type == BUTTON_PRESSED_CLOSE_MENU)
         _tetrisGame->setPause(false);
@@ -45,7 +45,7 @@ void GameEvent::uIEvents(EventType type, const std::any &data)
         // Loading the textures only if we stay on stages that needs these textures.
         // As a matter of fact, when starting a game from the titlescreen : this function will be called again.
         if (_renderer.GetStage() != gameStage::TITLE_SCREEN)
-            _tetrisGame->setTetrominoTexture(_tetrisUI->getTetrominoTexture());
+            _tetrisGame->setTetrominoTexture(_renderer.GetTexture(textureId::TETROMINO_TILEMAP));
         // When a new game is created, the static bloc is reset
         // We have to make sure the event handler is set.
         _staticBlocks->setEventHandler(this);

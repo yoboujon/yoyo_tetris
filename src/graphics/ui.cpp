@@ -187,9 +187,9 @@ void tetrisUI::MenuScreen()
     }
 }
 
+// Setters
 void tetrisUI::setScore(uint64_t score) { _score = score; }
 void tetrisUI::setMultiplicator(uint8_t multiplicator) { _multiplicator = multiplicator; }
 
 // Getters
-Texture2D tetrisUI::getTetrominoTexture() { return _textureLoader.getTexture(textureId::TETROMINO_TILEMAP); }
 bool tetrisUI::quitGame() { return _exit; }

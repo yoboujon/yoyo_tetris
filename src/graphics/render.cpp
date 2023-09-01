@@ -80,6 +80,7 @@ void TetrisRenderer::ChangeStage(gameStage stage)
 void TetrisRenderer::Render(void)
 {
     auto backPtr = &_back;
+    auto gamePtr = &_game;
     auto frontPtr = &_front;
 
     switch (_stage) {
@@ -88,14 +89,23 @@ void TetrisRenderer::Render(void)
         // Shader optimisation : creating a texture buffer everytime the scene is called
         // The 'BeginShaderMode' in this exemple is only called once.
         if (!_shader_buffer[0]) {
+            // Drawing the scene completly on a buffer
+            auto render_buffer = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+            BeginTextureMode(render_buffer);
+            DrawTextureRec(_back.texture, { 0, 0, (float)_back.texture.width, (float)-_back.texture.height }, { 0, 0 }, WHITE);
+            DrawTextureRec(_game.texture, { 0, 0, (float)_game.texture.width, (float)-_game.texture.height }, { 0, 0 }, WHITE);
+            EndTextureMode();
+            // Then applying the shader
             BeginTextureMode(_texture_buffer);
             BeginShaderMode(_Shader_blur);
-            DrawTextureRec(_back.texture, { 0, 0, (float)_back.texture.width, (float)-_back.texture.height }, { 0, 0 }, WHITE);
+            DrawTextureRec(render_buffer.texture, { 0, 0, (float)render_buffer.texture.width, (float)-render_buffer.texture.height }, { 0, 0 }, WHITE);
             EndShaderMode();
             EndTextureMode();
+            // Setting the shader buffer to true -> not rerendering the shader + not showing the game
             _shader_buffer[0] = true;
         }
-        // We set the back pointer texture to the shader buffer created.
+        // We set the GAME pointer texture to the shader buffer created.
+        // Because it is the closest to the front which has to be displayed without any blur.
         backPtr = &_texture_buffer;
         break;
     default:
@@ -108,11 +118,19 @@ void TetrisRenderer::Render(void)
     BeginDrawing();
     // minus the height because the texture height is inverted in the RenderTexture2D.
     DrawTextureRec(backPtr->texture, { 0, 0, (float)backPtr->texture.width, (float)-backPtr->texture.height }, { 0, 0 }, WHITE);
+    // Drawing the game isn't needed when the shader buffer is true.
+    if(_shader_buffer[0] == false)
+    {
+        DrawTextureRec(gamePtr->texture, { 0, 0, (float)gamePtr->texture.width, (float)-gamePtr->texture.height }, { 0, 0 }, WHITE);
+    }
     DrawTextureRec(frontPtr->texture, { 0, 0, (float)frontPtr->texture.width, (float)-frontPtr->texture.height }, { 0, 0 }, WHITE);
     EndDrawing();
+    // Clearing the game texture
+    ClearRenderTexture(_game);
 }
 
 textureLoader& TetrisRenderer::GetTextureLoader() { return _textureLoader; }
+Texture2D TetrisRenderer::GetTexture(textureId id) { return _textureLoader.getTexture(id); }
 gameStage TetrisRenderer::GetStage() { return _stage; }
 
 RenderTexture2D* TetrisRenderer::getRenderTextureFromLayer(RendererLayer layer)

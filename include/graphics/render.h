@@ -29,6 +29,7 @@ public:
     void ChangeStage(gameStage stage);
     void Render();
     textureLoader& GetTextureLoader();
+    Texture2D GetTexture(textureId id);
     gameStage GetStage();
 private:
     // Singleton

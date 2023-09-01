@@ -38,8 +38,6 @@ public:
 
     // Getters
     bool quitGame();
-    RenderTexture2D* getRenderTexture(RendererLayer layer);
-    Texture2D getTetrominoTexture();
 
 private:
     // Scenes
