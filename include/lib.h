@@ -38,4 +38,19 @@ typedef struct Size2 {
     float height;               // Size h component
 } Size2;
 
+// ! Will be moved to stages.h
+enum class gameStage {
+    TITLE_SCREEN,
+    GAME,
+    GAME_OVER,
+    MENU_SCREEN
+};
+
+// ? Idk about this one...
+enum class RendererLayer {
+    BACK,
+    GAME,
+    FRONT
+};
+
 #endif // HEADER_LIBRARY

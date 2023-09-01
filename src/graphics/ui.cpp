@@ -1,22 +1,20 @@
 #include "graphics/ui.h"
+#include "graphics/render.h"
 
 #include <string>
 #include <iostream>
 
 tetrisUI::tetrisUI()
     : _versionNumber("Version " + std::string(VERSION_MAJOR) + "." + std::string(VERSION_MINOR) + "." + std::string(VERSION_PATCH))
-    , _stage(gameStage::TITLE_SCREEN)
-    , _Rect_tetrisStage(TETRIS_STAGE)
-    , _shader_buffer({false,false})
     , _score(0)
     , _multiplicator(0)
+    , _Rect_tetrisStage(TETRIS_STAGE)
+    , _textureLoader(TetrisRenderer::GetInstance().GetTextureLoader())
     , _exit(false)
 //, _kotoPiege(0.0f)
 {
     // Init Textures
     _textureLoader.load(textureId::TILESET_WHITE,unloadState::NEVER);
-
-    ShaderInit();
 
     // Init UI Objects
     _Btn_Start = tetrisButton({ 20, 180 }, { 160.0f, 90.0f }, textureStyle::CUSTOM_SHAPE, { 32.0f, 18.0f });
@@ -35,108 +33,40 @@ tetrisUI::tetrisUI()
     _Btn_restart.SetText("Restart");
     _Btn_titleScreen = tetrisButton(Vector2Add(_menuCenter, OFFSET_MENU(2)), menuSize);
     _Btn_titleScreen.SetText("Title Screen");
-
-    // Target textures
-    _back = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
-    _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
-    _texture_buffer = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    // Loading base texture on the actual scene
-    ChangeStage(_stage);
 }
 
 tetrisUI::~tetrisUI()
 {
-    UnloadShader(_Shader_blur);
-    UnloadRenderTexture(_back);
-    UnloadRenderTexture(_front);
-    UnloadRenderTexture(_texture_buffer);
 }
 
-void tetrisUI::ShaderInit()
+void tetrisUI::Display(RendererLayer layer)
 {
-    // blur radius
-    const int radius = 8;
-    _Shader_blur = LoadShader(0, "res/shaders/blur.fs");
-    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "radius"), &radius, SHADER_UNIFORM_INT);
-    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "width"), &SCREEN_WIDTH, SHADER_UNIFORM_INT);
-    SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "height"), &SCREEN_HEIGHT, SHADER_UNIFORM_INT);
-}
-
-void tetrisUI::Display(renderLayer layer)
-{
-    switch (_stage) {
+    switch (TetrisRenderer::GetInstance().GetStage()) {
     case gameStage::TITLE_SCREEN:
-        if (layer == renderLayer::BACK) {
+        if (layer == RendererLayer::BACK) {
             TileSet();
             TitleScreen();
         }
         break;
     case gameStage::GAME:
-        if (layer == renderLayer::BACK) {
+        if (layer == RendererLayer::BACK) {
             TileSet();
             Game();
         }
         break;
     case gameStage::GAME_OVER:
-        if (layer == renderLayer::BACK) {
+        if (layer == RendererLayer::BACK) {
             TileSet();
             Game();
         } else
             GameOver();
         break;
     case gameStage::MENU_SCREEN:
-        if (layer == renderLayer::FRONT)
+        if (layer == RendererLayer::FRONT)
             MenuScreen();
     default:
         break;
     }
-
-    // Events to update variables
-    // ! NOT WORKING FOR NOW
-    /*
-    uint64_t tempScore;
-    uint8_t tempMultiplicator;
-    if (_eventPtr->OnEvent(eventType::SEND_SCORE, eventUser::UI, tempScore))
-        _score = tempScore;
-    if (_eventPtr->OnEvent(eventType::SEND_MULTIPLICATOR, eventUser::UI, tempMultiplicator))
-        _multiplicator = tempMultiplicator;
-    */
-}
-
-void tetrisUI::DisplayTexture()
-{
-    auto backPtr = &_back;
-    auto frontPtr = &_front;
-
-    switch (_stage) {
-    case gameStage::MENU_SCREEN:
-    case gameStage::GAME_OVER:
-        // Shader optimisation : creating a texture buffer everytime the scene is called
-        // The 'BeginShaderMode' in this exemple is only called once.
-        if (!_shader_buffer[0]) {
-            BeginTextureMode(_texture_buffer);
-            BeginShaderMode(_Shader_blur);
-            DrawTextureRec(_back.texture, { 0, 0, (float)_back.texture.width, (float)-_back.texture.height }, { 0, 0 }, WHITE);
-            EndShaderMode();
-            EndTextureMode();
-            _shader_buffer[0] = true;
-        }
-        // We set the back pointer texture to the shader buffer created.
-        backPtr = &_texture_buffer;
-        break;
-    default:
-        for(auto& shader : _shader_buffer)
-            shader = false;
-        break;
-    }
-
-    // Begin to draw the scene
-    BeginDrawing();
-    // minus the height because the texture height is inverted in the RenderTexture2D.
-    DrawTextureRec(backPtr->texture, { 0, 0, (float)backPtr->texture.width, (float)-backPtr->texture.height }, { 0, 0 }, WHITE);
-    DrawTextureRec(frontPtr->texture, { 0, 0, (float)frontPtr->texture.width, (float)-frontPtr->texture.height }, { 0, 0 }, WHITE);
-    EndDrawing();
 }
 
 void tetrisUI::TileSet()
@@ -160,7 +90,7 @@ void tetrisUI::TitleScreen()
     _Btn_Start.Update(buttonPlay);
     if (_Btn_Start.Clicked())
     {
-        ChangeStage(gameStage::GAME);
+        TetrisRenderer::GetInstance().ChangeStage(gameStage::GAME);
         this->_eventHandler->sendEvent(this, EventType::START_GAME);
     }
 
@@ -214,13 +144,13 @@ void tetrisUI::GameOver()
     _Btn_titleScreen.Update(buttonBase);
     if (_Btn_titleScreen.Clicked()) {
         this->_eventHandler->sendEvent(this, NEW_GAME);
-        ChangeStage(gameStage::TITLE_SCREEN);
+        TetrisRenderer::GetInstance().ChangeStage(gameStage::TITLE_SCREEN);
     }
 
     _Btn_restart.Update(buttonBase);
     if (_Btn_restart.Clicked()) {
         this->_eventHandler->sendEvent(this, NEW_GAME);
-        ChangeStage(gameStage::GAME);
+        TetrisRenderer::GetInstance().ChangeStage(gameStage::GAME);
     }
 }
 
@@ -241,61 +171,25 @@ void tetrisUI::MenuScreen()
     _Btn_resume.Update(buttonBase);
     if (_Btn_resume.Clicked()) {
         this->_eventHandler->sendEvent(this, EventType::BUTTON_PRESSED_CLOSE_MENU);
-        ChangeStage(gameStage::GAME);
+        TetrisRenderer::GetInstance().ChangeStage(gameStage::GAME);
     }
 
     _Btn_titleScreen.Update(buttonBase);
     if (_Btn_titleScreen.Clicked()) {
         this->_eventHandler->sendEvent(this, NEW_GAME);
-        ChangeStage(gameStage::TITLE_SCREEN);
+        TetrisRenderer::GetInstance().ChangeStage(gameStage::TITLE_SCREEN);
     }
 
     _Btn_restart.Update(buttonBase);
     if (_Btn_restart.Clicked()) {
         this->_eventHandler->sendEvent(this, NEW_GAME);
-        ChangeStage(gameStage::GAME);
+        TetrisRenderer::GetInstance().ChangeStage(gameStage::GAME);
     }
 }
 
-// Setters
-
-void tetrisUI::ChangeStage(gameStage stage)
-{
-    _stage = stage;
-    // Clearing all the textures that have the unloadState set to ONCE.
-    _textureLoader.clearTextureBuffer();
-    switch(stage)
-    {
-        case gameStage::TITLE_SCREEN:
-            ClearRenderTexture(_front);
-            _textureLoader.unload(textureId::TETROMINO_TILEMAP);
-            _textureLoader.unload(textureId::TILESET_BLACK);
-            _textureLoader.unload(textureId::TILESET_BLACK_BORDERLESS);
-            _textureLoader.load(textureId::BUTTON_PLAY,unloadState::ONCE);
-            _textureLoader.load(textureId::BUTTON_SETTINGS,unloadState::ONCE);
-            _textureLoader.load(textureId::BUTTON_EXIT,unloadState::ONCE);
-            _textureLoader.load(textureId::LOGO,unloadState::ONCE);
-            break;
-        case gameStage::GAME:
-            ClearRenderTexture(_front);
-            _textureLoader.load(textureId::TILESET_BLACK,unloadState::NEVER);
-            _textureLoader.load(textureId::TILESET_BLACK_BORDERLESS,unloadState::NEVER);
-            _textureLoader.load(textureId::TETROMINO_TILEMAP,unloadState::NEVER);
-            break;
-        case gameStage::MENU_SCREEN:
-        case gameStage::GAME_OVER:
-            _textureLoader.load(textureId::BUTTON_BASE,unloadState::ONCE);
-            break;
-    }    
-}
 void tetrisUI::setScore(uint64_t score) { _score = score; }
 void tetrisUI::setMultiplicator(uint8_t multiplicator) { _multiplicator = multiplicator; }
 
 // Getters
-
-gameStage tetrisUI::getStage() { return _stage; }
-Rectangle* tetrisUI::getTetrisStage() { return &_Rect_tetrisStage; }
-Shader* tetrisUI::getShaderBlur() { return &_Shader_blur; }
-RenderTexture2D* tetrisUI::getRenderTexture(renderLayer layer) { return (layer == renderLayer::BACK ? &_back : &_front); }
 Texture2D tetrisUI::getTetrominoTexture() { return _textureLoader.getTexture(textureId::TETROMINO_TILEMAP); }
 bool tetrisUI::quitGame() { return _exit; }

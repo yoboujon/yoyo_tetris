@@ -22,18 +22,6 @@ constexpr float TITLE_SIZE = 125.0f;
 inline Vector2 OFFSET_MENU(float id) { return { 0, 60.0f * id }; };
 constexpr Rectangle TILE_DESTINATION = { -(TILE_RATIO * 5.0f), -(TILE_RATIO * 5.0f), SCREEN_WIDTH + (TILE_RATIO * 5.0f), SCREEN_HEIGHT + (TILE_RATIO * 5.0f) };
 
-enum class gameStage {
-    TITLE_SCREEN,
-    GAME,
-    GAME_OVER,
-    MENU_SCREEN
-};
-
-enum class renderLayer {
-    BACK,
-    FRONT
-};
-
 // TODO : Rename this entire file stages with tetrisStages
 // TODO : It will be responsible of the stage elements.
 // ! The render pipeline should be done by an entirely different class.
@@ -42,24 +30,18 @@ class tetrisUI : public BaseComponent
 public:
     tetrisUI();
     ~tetrisUI();
-    void Display(renderLayer layer);
-    void DisplayTexture();
+    void Display(RendererLayer layer);
 
     // Setters
-    void ChangeStage(gameStage stage);
     void setScore(uint64_t score);
     void setMultiplicator(uint8_t multiplicator);
 
     // Getters
-    gameStage getStage();
-    Rectangle* getTetrisStage();
     bool quitGame();
-    Shader* getShaderBlur();
-    RenderTexture2D* getRenderTexture(renderLayer layer);
+    RenderTexture2D* getRenderTexture(RendererLayer layer);
     Texture2D getTetrominoTexture();
 
 private:
-    void ShaderInit();
     // Scenes
     void TileSet();
     void TitleScreen();
@@ -67,14 +49,11 @@ private:
     void GameOver();
     void MenuScreen();
 
-    // Display Scenes
-
-    // Const
+    // Labels/Consts
     const std::string _versionNumber;
     Vector2 _menuCenter;
-
-    // Stage
-    gameStage _stage;
+    uint64_t _score;
+    uint8_t _multiplicator;
 
     // Compositions
     Rectangle _Rect_tetrisStage;
@@ -86,20 +65,7 @@ private:
     tetrisButton _Btn_resume;
 
     // Textures
-    textureLoader _textureLoader;
-
-    // Shaders
-    Shader _Shader_blur;
-    std::array<bool,2> _shader_buffer;
-    RenderTexture2D _texture_buffer;
-
-    // Target textures
-    RenderTexture2D _back;
-    RenderTexture2D _front;
-
-    // UI Variables
-    uint64_t _score;
-    uint8_t _multiplicator;
+    textureLoader& _textureLoader;
 
     // UI State
     bool _exit;

@@ -31,6 +31,7 @@ main
     float elapsedTime = 0.0f;
 
     // TODO : Multi-threading for event, ui elements and score.
+    auto& renderer = TetrisRenderer::GetInstance();
     auto gameUI = tetrisUI();
     auto gameScore = tetrisScore();
     auto game = tetrisGame(&elapsedTime);
@@ -40,29 +41,30 @@ main
     while (!WindowShouldClose() && !(gameUI.quitGame()))
     {
         elapsedTime += GetFrameTime();
-        const auto actualStage = gameUI.getStage();
-        const auto back = gameUI.getRenderTexture(renderLayer::BACK);
-        const auto front = gameUI.getRenderTexture(renderLayer::FRONT);
-        // std::cout << "<mouse Position> x: " << GetMousePosition().x << "\ty: " << GetMousePosition().y << std::endl;
+        RendererLayer layer = RendererLayer::BACK;
 
-        BeginTextureMode(*back); // Drawing the back texture
-        gameUI.Display(renderLayer::BACK);
+        renderer.BeginDisplay(layer);
+        gameUI.Display(layer);
+        renderer.EndDisplay();
 
+        layer = RendererLayer::GAME;
+        renderer.BeginDisplay(layer);
         // Game Display and Update
         // TODO : Modify the escape key check in the tetrisGame to be here with the gameControls object
         // TODO : This could lead to a huge if statement when adding scenes in the future
-        if (actualStage != gameStage::TITLE_SCREEN)
+        if (renderer.GetStage() != gameStage::TITLE_SCREEN)
         {
             game.Loop();
             gameScore.updateScore();
         }
-        EndTextureMode();
+        renderer.EndDisplay();
 
-        BeginTextureMode(*front); // UI Update Front
-        gameUI.Display(renderLayer::FRONT);
-        EndTextureMode();
+        layer = RendererLayer::FRONT;
+        renderer.BeginDisplay(layer);
+        gameUI.Display(layer);
+        renderer.EndDisplay();
 
-        gameUI.DisplayTexture();
+        renderer.Render();
     }
 
     // Stop

@@ -1,12 +1,13 @@
 #include "event/gameevent.h"
 #include <iostream>
-GameEvent::GameEvent(tetrisUI *ui, tetrisScore *score, tetrisGame *game, float *elapstedPtr)
-    : _tetrisUI(ui), _tetrisScore(score), _tetrisGame(game), _staticBlocks(game->getStaticBlock()), _elapsedPtr(elapstedPtr)
+GameEvent::GameEvent(tetrisUI* ui, tetrisScore* score, tetrisGame* game, float *elapstedPtr)
+    : _tetrisUI(ui), _tetrisScore(score), _tetrisGame(game), _staticBlocks(game->getStaticBlock()), _renderer(TetrisRenderer::GetInstance()), _elapsedPtr(elapstedPtr)
 {
     _tetrisUI->setEventHandler(this);
     _tetrisScore->setEventHandler(this);
     _tetrisGame->setEventHandler(this);
     _staticBlocks->setEventHandler(this);
+    _renderer.setEventHandler(this);
 }
 
 GameEvent::~GameEvent()
@@ -23,8 +24,8 @@ void GameEvent::sendEvent(BaseComponent *sender, EventType type, const std::any 
         gameEvents(type, data);
     if (sender == _staticBlocks)
         staticBlockEvents(type, data);
-    if (sender == nullptr)
-        mainEvents(type, data);
+    if (sender == &_renderer)
+        rendererEvents(type, data);
 }
 
 void GameEvent::uIEvents(EventType type, const std::any &data)
@@ -43,7 +44,7 @@ void GameEvent::uIEvents(EventType type, const std::any &data)
         _tetrisGame->reset(_elapsedPtr);
         // Loading the textures only if we stay on stages that needs these textures.
         // As a matter of fact, when starting a game from the titlescreen : this function will be called again.
-        if (_tetrisUI->getStage() != gameStage::TITLE_SCREEN)
+        if (_renderer.GetStage() != gameStage::TITLE_SCREEN)
             _tetrisGame->setTetrominoTexture(_tetrisUI->getTetrominoTexture());
         // When a new game is created, the static bloc is reset
         // We have to make sure the event handler is set.
@@ -64,14 +65,14 @@ void GameEvent::gameEvents(EventType type, const std::any &data)
 {
     // ESCAPE is pressed and we were in game.
     if (type == OPEN_MENU)
-        _tetrisUI->ChangeStage(gameStage::MENU_SCREEN);
+        _renderer.ChangeStage(gameStage::MENU_SCREEN);
     // ESCAPE is pressed and we were in a menu.
-    if ((_tetrisUI->getStage() == gameStage::MENU_SCREEN) && (type == ESCAPE_PRESSED_CLOSE_MENU))
-        _tetrisUI->ChangeStage(gameStage::GAME);
+    if ((_renderer.GetStage() == gameStage::MENU_SCREEN) && (type == ESCAPE_PRESSED_CLOSE_MENU))
+        _renderer.ChangeStage(gameStage::GAME);
 
     // GAMEOVER
     if (type == GAME_OVER)
-        _tetrisUI->ChangeStage(gameStage::GAME_OVER);
+        _renderer.ChangeStage(gameStage::GAME_OVER);
 }
 
 void GameEvent::staticBlockEvents(EventType type, const std::any &data)
@@ -82,7 +83,7 @@ void GameEvent::staticBlockEvents(EventType type, const std::any &data)
         _tetrisScore->lineComplete();
 }
 
-void GameEvent::mainEvents(EventType type, const std::any &data)
+void GameEvent::rendererEvents(EventType type, const std::any &data)
 {
-    
+
 }
