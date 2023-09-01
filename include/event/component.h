@@ -6,6 +6,7 @@
 enum EventType
 {
     NONE = 0,
+    STAGE_CHANGED,
     OPEN_MENU,
     BUTTON_PRESSED_CLOSE_MENU,
     ESCAPE_PRESSED_CLOSE_MENU,

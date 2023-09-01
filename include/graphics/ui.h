@@ -35,6 +35,7 @@ public:
     // Setters
     void setScore(uint64_t score);
     void setMultiplicator(uint8_t multiplicator);
+    void RenderTile();
 
     // Getters
     bool quitGame();
@@ -67,6 +68,7 @@ private:
 
     // UI State
     bool _exit;
+    bool _showTiles;
 };
 
 #endif // HEADER_TETRIS_UI

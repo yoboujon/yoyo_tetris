@@ -3,6 +3,7 @@
 
 TetrisRenderer::TetrisRenderer()
     : _stage(gameStage::TITLE_SCREEN)
+    , _stageChanged(false)
 {
     //Init Shader
     ShaderInit();
@@ -50,6 +51,9 @@ void TetrisRenderer::EndDisplay()
 void TetrisRenderer::ChangeStage(gameStage stage)
 {
     _stage = stage;
+    _stageChanged = true;
+    if(_eventHandler != nullptr)
+        _eventHandler->sendEvent(this,EventType::STAGE_CHANGED);
     // Clearing all the textures that have the unloadState set to ONCE.
     _textureLoader.clearTextureBuffer();
     switch(stage)

@@ -11,6 +11,7 @@ tetrisUI::tetrisUI()
     , _Rect_tetrisStage(TETRIS_STAGE)
     , _textureLoader(TetrisRenderer::GetInstance().GetTextureLoader())
     , _exit(false)
+    , _showTiles(true)
 //, _kotoPiege(0.0f)
 {
     // Init Textures
@@ -41,24 +42,22 @@ tetrisUI::~tetrisUI()
 
 void tetrisUI::Display(RendererLayer layer)
 {
+    if(_showTiles && layer == RendererLayer::BACK)
+    {
+        TileSet();
+        _showTiles = false;
+    }
     switch (TetrisRenderer::GetInstance().GetStage()) {
     case gameStage::TITLE_SCREEN:
-        if (layer == RendererLayer::BACK) {
-            TileSet();
+        if (layer == RendererLayer::BACK)
             TitleScreen();
-        }
         break;
     case gameStage::GAME:
-        if (layer == RendererLayer::BACK) {
-            TileSet();
+        if (layer == RendererLayer::BACK)
             Game();
-        }
         break;
     case gameStage::GAME_OVER:
-        if (layer == RendererLayer::BACK) {
-            TileSet();
-            Game();
-        } else
+        if (layer == RendererLayer::FRONT)
             GameOver();
         break;
     case gameStage::MENU_SCREEN:
@@ -185,6 +184,11 @@ void tetrisUI::MenuScreen()
         this->_eventHandler->sendEvent(this, NEW_GAME);
         TetrisRenderer::GetInstance().ChangeStage(gameStage::GAME);
     }
+}
+
+void tetrisUI::RenderTile()
+{
+    _showTiles = true;
 }
 
 // Setters

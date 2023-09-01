@@ -52,6 +52,9 @@ private:
     RenderTexture2D _back;
     RenderTexture2D _game;
     RenderTexture2D _front;
+
+    // Variables
+    bool _stageChanged;
 };
 
 #endif // HEADER_TETRIS_RENDER

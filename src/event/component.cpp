@@ -8,5 +8,5 @@ BaseComponent::BaseComponent(EventHandler* event)
 void BaseComponent::setEventHandler(EventHandler* event)
 {
     // Setting the eventhandler of the component
-    this->_eventHandler = event;
+    _eventHandler = event;
 }

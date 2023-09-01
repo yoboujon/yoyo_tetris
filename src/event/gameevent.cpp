@@ -85,5 +85,6 @@ void GameEvent::staticBlockEvents(EventType type, const std::any &data)
 
 void GameEvent::rendererEvents(EventType type, const std::any &data)
 {
-
+    if(type == STAGE_CHANGED)
+        _tetrisUI->RenderTile();
 }
