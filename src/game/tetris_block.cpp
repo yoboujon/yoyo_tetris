@@ -172,13 +172,7 @@ bool tetrisFloatBlock::GameEnded(const std::vector<Rectangle>& tetrisBlock) { re
 /*    STATIC Tetris Blocks    */
 /* ========================== */
 
-tetrisStaticBlocks::tetrisStaticBlocks()
-    : tetrisStaticBlocks(NULL) {};
-
-tetrisStaticBlocks::tetrisStaticBlocks(tetrisEvent* eventPtr)
-    : _event(eventPtr)
-{
-}
+tetrisStaticBlocks::tetrisStaticBlocks() { }
 
 tetrisStaticBlocks::~tetrisStaticBlocks() { }
 
@@ -231,7 +225,7 @@ void tetrisStaticBlocks::checkLine()
     for (auto it = _lineMap.begin(); it != _lineMap.end();) {
         // Found a line
         if (it->second == HORIZONTAL_GRID_SIZE) {
-            _event->callEvent(eventType::TETRIS_LINE_COMPLETED, eventUser::SCORE);
+            this->_eventHandler->sendEvent(this, EventType::TETRIS_LINE_COMPLETED);
             // TODO : Play animation
             for (size_t i = 0; i < _tetrisBlocks.size();) {
                 if (_tetrisBlocks.at(i).y == it->first) {

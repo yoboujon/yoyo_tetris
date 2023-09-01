@@ -1,8 +1,7 @@
 #include "graphics/render.h"
 #include <iostream>
 
-tetrisRenderer::tetrisRenderer(tetrisEvent& event)
-    : _eventPtr(event)
+tetrisRenderer::tetrisRenderer()
 {
 
 }
@@ -25,6 +24,5 @@ void tetrisRenderer::EndDisplay(rendererLayer layer)
 
 void tetrisRenderer::Render()
 {
-    _eventPtr.callEvent(eventType::NONE,eventUser::ANY);
     // Render the texture created
 }

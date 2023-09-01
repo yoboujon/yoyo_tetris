@@ -32,7 +32,6 @@ endif()
 #Setting up the sources directory
 file(GLOB BASE "${PROJECT_SOURCE_DIR}/src/*.cpp")
 file(GLOB GAME "${PROJECT_SOURCE_DIR}/src/*/*.cpp")
-list(APPEND GAME "${PROJECT_SOURCE_DIR}/src/user/event.cpp")
 
 # yoyoTetris Project (source, header)
 add_executable(${TARGET_NAME} ${BASE} ${GAME})

@@ -7,7 +7,7 @@
 #include "graphics/ui.h"
 #include "graphics/textures.h"
 #include "graphics/shaders.h"
-#include "user/event.h"
+
 
 // All the private elements inside the tetris renderer will be rendered one time.
 // Each UI/Game elements will be rendered every frame.
@@ -20,14 +20,12 @@ enum class rendererLayer {
 class tetrisRenderer
 {
 public:
-    tetrisRenderer(tetrisEvent& event);
+    tetrisRenderer();
     ~tetrisRenderer();
     void BeginDisplay(rendererLayer layer);
     void EndDisplay(rendererLayer layer);
     void Render();
 private:
-    // Event reference
-    tetrisEvent& _eventPtr;
 /*
 
     // Textures

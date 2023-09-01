@@ -3,6 +3,7 @@
 #include "game/tetris.h"
 #include "game/tetromino.h"
 #include "graphics/render.h"
+#include "event/gameevent.h"
 
 using namespace tetromino;
 
@@ -30,10 +31,10 @@ main
     float elapsedTime = 0.0f;
 
     // TODO : Multi-threading for event, ui elements and score.
-    auto gameEvent = tetrisEvent();
-    auto gameUI = tetrisUI(&gameEvent, &elapsedTime);
-    auto gameScore = tetrisScore(&gameEvent);
-    auto game = tetrisGame(&gameEvent, &gameUI, &gameScore);
+    auto gameUI = tetrisUI(&elapsedTime);
+    auto gameScore = tetrisScore();
+    auto game = tetrisGame(&gameUI, &gameScore);
+    auto gameEventHandler = GameEvent(&gameUI, &gameScore, &game);
 
     // Step
     while (!WindowShouldClose() && !(gameUI.quitGame()))
@@ -56,7 +57,7 @@ main
         if (gameUI.checkGameState(gameState::RESET))
         {
             gameScore.resetScore();
-            game.reset(&gameEvent, &gameUI, &gameScore);
+            game.reset(&gameUI, &gameScore);
             // Loading the textures only if we stay on stages that needs these textures.
             // As a matter of fact, when starting a game from the titlescreen : this function will be called again.
             if(actualStage != gameStage::TITLE_SCREEN)

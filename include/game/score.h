@@ -2,18 +2,20 @@
 #define HEADER_TETRIS_SCORE
 
 #include "lib.h"
-#include "user/event.h"
 
-class tetrisScore {
+#include "event/component.h"
+
+class tetrisScore : public BaseComponent
+{
 public:
-    tetrisScore(tetrisEvent* eventPtr);
+    tetrisScore();
     ~tetrisScore();
     void updateScore();
+    void lineComplete();
     uint64_t getScore();
     void resetScore();
     uint8_t getMultiplicator();
 private:
-    tetrisEvent* _event;
     uint64_t _score;
     uint8_t _multiplicator;
     bool _activeMultiplcator;

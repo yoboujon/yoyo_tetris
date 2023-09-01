@@ -3,6 +3,8 @@
 
 #include "lib.h"
 
+#include "event/component.h"
+
 #include "game/tetris_block.h"
 #include "graphics/button.h"
 #include "graphics/ui.h"
@@ -10,19 +12,20 @@
 
 constexpr float FALLING_TICK_DURATION = 0.01f;
 
-class tetrisGame {
+class tetrisGame : public BaseComponent
+{
 public:
-    tetrisGame(tetrisEvent* event, tetrisUI* gameUI, tetrisScore* gameScore);
+    tetrisGame(tetrisUI* gameUI, tetrisScore* gameScore);
     ~tetrisGame();
-    void reset(tetrisEvent *event, tetrisUI *gameUI, tetrisScore *gameScore);
+    void reset(tetrisUI *gameUI, tetrisScore *gameScore);
     void Loop();
     void setTetrominoTexture(Texture2D texture);
     bool gameFinished();
-    bool pause();
+    bool getPause();
+    void setPause(bool state);
+    tetrisStaticBlocks* getStaticBlock();
 private:
     void DisplayTetrisNext();
-    // Event pointer
-    tetrisEvent* _eventPtr;
 
     // The controller/keyboard manager
     tetrisControls _gameControls;

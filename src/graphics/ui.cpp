@@ -3,9 +3,8 @@
 #include <string>
 #include <iostream>
 
-tetrisUI::tetrisUI(tetrisEvent* event, float* elapsedPtr)
+tetrisUI::tetrisUI(float* elapsedPtr)
     : _versionNumber("Version " + std::string(VERSION_MAJOR) + "." + std::string(VERSION_MINOR) + "." + std::string(VERSION_PATCH))
-    , _eventPtr(event)
     , _stage(gameStage::TITLE_SCREEN)
     , _elapsedPtr(elapsedPtr)
     , _Rect_tetrisStage(TETRIS_STAGE)
@@ -96,12 +95,15 @@ void tetrisUI::Display(renderLayer layer)
     }
 
     // Events to update variables
+    // ! NOT WORKING FOR NOW
+    /*
     uint64_t tempScore;
     uint8_t tempMultiplicator;
     if (_eventPtr->OnEvent(eventType::SEND_SCORE, eventUser::UI, tempScore))
         _score = tempScore;
     if (_eventPtr->OnEvent(eventType::SEND_MULTIPLICATOR, eventUser::UI, tempMultiplicator))
         _multiplicator = tempMultiplicator;
+    */
 }
 
 void tetrisUI::DisplayTexture()
@@ -161,7 +163,7 @@ void tetrisUI::TitleScreen()
     if (_Btn_Start.Clicked())
     {
         ChangeStage(gameStage::GAME);
-        _eventPtr->callEvent(eventType::START_GAME, eventUser::TETRIS);
+        this->_eventHandler->sendEvent(this, EventType::START_GAME);
     }
 
     _Btn_Settings.Update(buttonSettings);
@@ -236,15 +238,11 @@ void tetrisUI::MenuScreen()
     DrawRectangleRec({ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT }, PAUSE_COLOR);
     DrawText("Menu", (SCREEN_WIDTH - menuText) / 2, (SCREEN_HEIGHT / 2) - 100, 30, RAYWHITE);
 
-    if (_eventPtr->OnEvent(eventType::MENU_CLOSED, eventUser::UI)) {
-        ChangeStage(gameStage::GAME);
-    }
-
     auto buttonBase = _textureLoader.getTexture(textureId::BUTTON_BASE);
 
     _Btn_resume.Update(buttonBase);
     if (_Btn_resume.Clicked()) {
-        _eventPtr->callEvent(eventType::MENU_CLOSED, eventUser::TETRIS);
+        this->_eventHandler->sendEvent(this, EventType::MENU_CLOSED);
         ChangeStage(gameStage::GAME);
     }
 

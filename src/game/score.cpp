@@ -2,13 +2,8 @@
 
 #include <iostream>
 
-tetrisScore::tetrisScore(tetrisEvent* eventPtr)
-    : _event(eventPtr)
-    , _score(0)
-    , _multiplicator(1)
-    , _activeMultiplcator(false)
-    , _multiplicatorTime(0.0f)
-    , _scoreTime(0.0f)
+tetrisScore::tetrisScore()
+    : _score(0), _multiplicator(1), _activeMultiplcator(false), _multiplicatorTime(0.0f), _scoreTime(0.0f)
 {
 }
 
@@ -33,31 +28,35 @@ void tetrisScore::updateScore()
     _multiplicatorTime += frameTime;
 
     // each second = 100 points.
-    while (_scoreTime > 1.0f) {
+    while (_scoreTime > 1.0f)
+    {
         _score += 100;
         _scoreTime -= 1.0f;
     }
-    if (_activeMultiplcator && (_multiplicatorTime >= 10.0f)) {
+    if (_activeMultiplcator && (_multiplicatorTime >= 10.0f))
+    {
         _multiplicatorTime = 0.0f;
         _multiplicator = 1;
         _activeMultiplcator = false;
     }
+    // ! FOR NOW NOT WORKING
+    //_event->callEvent(eventType::SEND_SCORE, eventUser::UI, _score);
+    //_event->callEvent(eventType::SEND_MULTIPLICATOR, eventUser::UI, _multiplicator);
+}
 
+void tetrisScore::lineComplete()
+{
     // each line = 1000 points*multiplicator
-    if (_event->OnEvent(eventType::TETRIS_LINE_COMPLETED, eventUser::SCORE)) {
-        // If a line has already been completed, multiple gets x2
-        // the period between each line has to be less than 10 seconds
-        if (_activeMultiplcator && (_multiplicatorTime < 10.0f))
-        {
-            _multiplicator = (_multiplicator == 0x80 ? UINT8_MAX : _multiplicator);
-            _multiplicator = (_multiplicator <= 0x80 ? _multiplicator *= 2 : _multiplicator);
-        }
-        _score += 1000 * _multiplicator;
-        _activeMultiplcator = true;
-        _multiplicatorTime = 0.0f;
+    // If a line has already been completed, multiple gets x2
+    // the period between each line has to be less than 10 seconds
+    if (_activeMultiplcator && (_multiplicatorTime < 10.0f))
+    {
+        _multiplicator = (_multiplicator == 0x80 ? UINT8_MAX : _multiplicator);
+        _multiplicator = (_multiplicator <= 0x80 ? _multiplicator *= 2 : _multiplicator);
     }
-    _event->callEvent(eventType::SEND_SCORE, eventUser::UI, _score);
-    _event->callEvent(eventType::SEND_MULTIPLICATOR, eventUser::UI, _multiplicator);
+    _score += 1000 * _multiplicator;
+    _activeMultiplcator = true;
+    _multiplicatorTime = 0.0f;
 }
 
 uint64_t tetrisScore::getScore() { return _score; }

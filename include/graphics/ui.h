@@ -3,9 +3,11 @@
 
 #include "lib.h"
 
+#include "event/component.h"
+
 #include "graphics/button.h"
 #include "graphics/textures.h"
-#include "user/event.h"
+
 
 #define VERSION_MAJOR _VERSION_MAJOR
 #define VERSION_MINOR _VERSION_MINOR
@@ -42,9 +44,10 @@ enum class gameState {
 // TODO : Rename this entire file stages with tetrisStages
 // TODO : It will be responsible of the stage elements.
 // ! The render pipeline should be done by an entirely different class.
-class tetrisUI {
+class tetrisUI : public BaseComponent
+{
 public:
-    tetrisUI(tetrisEvent* event, float* elapsedPtr);
+    tetrisUI(float* elapsedPtr);
     ~tetrisUI();
     void Display(renderLayer layer);
     void DisplayTexture();
@@ -76,9 +79,6 @@ private:
     // Const
     const std::string _versionNumber;
     Vector2 _menuCenter;
-
-    // Event pointer
-    tetrisEvent* _eventPtr;
 
     // Stage
     gameStage _stage;

@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-tetrisGame::tetrisGame(tetrisEvent *event, tetrisUI *gameUI, tetrisScore *gameScore)
-    : _eventPtr(event), _gameControls(tetrisControls(gameUI->getElapsedTime())), _staticBlocks(event), _gameUI(gameUI), _gameScore(gameScore), _fallingTick(0.0f), _isGameOver(false), _pauseMenu(false)
+tetrisGame::tetrisGame(tetrisUI *gameUI, tetrisScore *gameScore)
+    : _gameControls(tetrisControls(gameUI->getElapsedTime())), _staticBlocks(), _gameUI(gameUI), _gameScore(gameScore), _fallingTick(0.0f), _isGameOver(false), _pauseMenu(false)
 {
     // Reserving the vector to the maximum tetromino name count.
     _textureMap.reserve(static_cast<int>(tetromino::tetrominoNames::Count));
@@ -22,7 +22,7 @@ tetrisGame::~tetrisGame()
 }
 
 // ! Maybe creating a copy opertation could be more effective but meh, i'm more sure with this approach
-void tetrisGame::reset(tetrisEvent *event, tetrisUI *gameUI, tetrisScore *gameScore)
+void tetrisGame::reset(tetrisUI *gameUI, tetrisScore *gameScore)
 {
     delete _actualBlock;
     delete _nextBlock;
@@ -30,9 +30,8 @@ void tetrisGame::reset(tetrisEvent *event, tetrisUI *gameUI, tetrisScore *gameSc
     {
         UnloadTexture(texture);
     }
-    _eventPtr = event;
     _gameControls = tetrisControls(gameUI->getElapsedTime());
-    _staticBlocks = tetrisStaticBlocks(event);
+    _staticBlocks = tetrisStaticBlocks();
     _gameUI = gameUI;
     _gameScore = gameScore;
     _fallingTick = 0.0f;
@@ -44,10 +43,6 @@ void tetrisGame::reset(tetrisEvent *event, tetrisUI *gameUI, tetrisScore *gameSc
 
 void tetrisGame::Loop()
 {
-    // If the scene has just loaded, we can get the texture from the UI
-    if (_eventPtr->OnEvent(eventType::START_GAME, eventUser::TETRIS))
-        setTetrominoTexture(_gameUI->getTetrominoTexture());
-
     if (!_pauseMenu)
         _fallingTick += GetFrameTime();
 
@@ -62,10 +57,8 @@ void tetrisGame::Loop()
         if (_pauseMenu)
             _gameUI->ChangeStage(gameStage::MENU_SCREEN);
         else
-            _eventPtr->callEvent(eventType::MENU_CLOSED, eventUser::UI);
+            this->_eventHandler->sendEvent(this, EventType::MENU_CLOSED);
     }
-    if (_eventPtr->OnEvent(eventType::MENU_CLOSED, eventUser::TETRIS))
-        _pauseMenu = false;
 
     // If game over/ pause menu -> Only display the game
     // No collision or falling detection
@@ -133,4 +126,6 @@ void tetrisGame::setTetrominoTexture(Texture2D texture)
 }
 
 bool tetrisGame::gameFinished() { return _isGameOver; }
-bool tetrisGame::pause() { return _pauseMenu; }
+tetrisStaticBlocks* tetrisGame::getStaticBlock() { return &_staticBlocks; }
+bool tetrisGame::getPause() { return _pauseMenu; }
+void tetrisGame::setPause(bool state) { _pauseMenu = state; }
