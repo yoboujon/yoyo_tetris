@@ -11,7 +11,6 @@ tetrisUI::tetrisUI()
     , _score(0)
     , _multiplicator(0)
     , _exit(false)
-    , _gameState(gameState::NONE)
 //, _kotoPiege(0.0f)
 {
     // Init Textures
@@ -214,13 +213,13 @@ void tetrisUI::GameOver()
     // Button Actions
     _Btn_titleScreen.Update(buttonBase);
     if (_Btn_titleScreen.Clicked()) {
-        _gameState = gameState::RESET;
+        this->_eventHandler->sendEvent(this, NEW_GAME);
         ChangeStage(gameStage::TITLE_SCREEN);
     }
 
     _Btn_restart.Update(buttonBase);
     if (_Btn_restart.Clicked()) {
-        _gameState = gameState::RESET;
+        this->_eventHandler->sendEvent(this, NEW_GAME);
         ChangeStage(gameStage::GAME);
     }
 }
@@ -247,13 +246,13 @@ void tetrisUI::MenuScreen()
 
     _Btn_titleScreen.Update(buttonBase);
     if (_Btn_titleScreen.Clicked()) {
-        _gameState = gameState::RESET;
+        this->_eventHandler->sendEvent(this, NEW_GAME);
         ChangeStage(gameStage::TITLE_SCREEN);
     }
 
     _Btn_restart.Update(buttonBase);
     if (_Btn_restart.Clicked()) {
-        _gameState = gameState::RESET;
+        this->_eventHandler->sendEvent(this, NEW_GAME);
         ChangeStage(gameStage::GAME);
     }
 }
@@ -300,9 +299,3 @@ Shader* tetrisUI::getShaderBlur() { return &_Shader_blur; }
 RenderTexture2D* tetrisUI::getRenderTexture(renderLayer layer) { return (layer == renderLayer::BACK ? &_back : &_front); }
 Texture2D tetrisUI::getTetrominoTexture() { return _textureLoader.getTexture(textureId::TETROMINO_TILEMAP); }
 bool tetrisUI::quitGame() { return _exit; }
-bool tetrisUI::checkGameState(gameState state)
-{
-    bool stateBool = (state == _gameState);
-    _gameState = gameState::NONE;
-    return stateBool;
-}

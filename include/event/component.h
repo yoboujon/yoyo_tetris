@@ -14,7 +14,7 @@ enum EventType
     SEND_MULTIPLICATOR,
     GAME_OVER,
     START_GAME,
-    CREATED_NEW_GAME
+    NEW_GAME
 };
 
 class BaseComponent;

@@ -9,7 +9,7 @@
 class GameEvent : public EventHandler
 {
 public:
-    GameEvent(tetrisUI* ui, tetrisScore* score, tetrisGame* game);
+    GameEvent(tetrisUI* ui, tetrisScore* score, tetrisGame* game, float* elapsedPtr);
     ~GameEvent();
     void sendEvent(BaseComponent* sender, EventType type, const std::any& data = std::any());
 private:
@@ -23,6 +23,9 @@ private:
     tetrisScore* _tetrisScore;
     tetrisGame* _tetrisGame;
     tetrisStaticBlocks* _staticBlocks;
+
+    // Main Variables
+    float* _elapsedPtr;
 };
 
 #endif //HEADER_TETRIS_GAME_EVENT

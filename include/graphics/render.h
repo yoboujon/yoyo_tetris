@@ -26,7 +26,6 @@ public:
     void EndDisplay(rendererLayer layer);
     void Render();
 private:
-/*
 
     // Textures
     textureLoader _textureLoader;
@@ -39,7 +38,6 @@ private:
     // Target textures
     RenderTexture2D _back;
     RenderTexture2D _front;
-*/
 };
 
 #endif // HEADER_TETRIS_RENDER

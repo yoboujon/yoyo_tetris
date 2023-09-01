@@ -34,7 +34,7 @@ main
     auto gameUI = tetrisUI();
     auto gameScore = tetrisScore();
     auto game = tetrisGame(&elapsedTime);
-    auto gameEventHandler = GameEvent(&gameUI, &gameScore, &game);
+    auto gameEventHandler = GameEvent(&gameUI, &gameScore, &game, &elapsedTime);
 
     // Step
     while (!WindowShouldClose() && !(gameUI.quitGame()))
@@ -49,22 +49,12 @@ main
         gameUI.Display(renderLayer::BACK);
 
         // Game Display and Update
+        // TODO : Modify the escape key check in the tetrisGame to be here with the gameControls object
+        // TODO : This could lead to a huge if statement when adding scenes in the future
         if (actualStage != gameStage::TITLE_SCREEN)
         {
             game.Loop();
             gameScore.updateScore();
-        }
-        // Checking if the game need to be reset
-        if (gameUI.checkGameState(gameState::RESET))
-        {
-            gameScore.resetScore();
-            game.reset(&elapsedTime);
-            // Loading the textures only if we stay on stages that needs these textures.
-            // As a matter of fact, when starting a game from the titlescreen : this function will be called again.
-            if(actualStage != gameStage::TITLE_SCREEN)
-                game.setTetrominoTexture(gameUI.getTetrominoTexture());
-            // Informing the gameEventHandler that a new game has been created.
-            gameEventHandler.sendEvent(nullptr, EventType::CREATED_NEW_GAME);
         }
         EndTextureMode();
 

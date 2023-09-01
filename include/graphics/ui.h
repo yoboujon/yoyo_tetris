@@ -34,13 +34,6 @@ enum class renderLayer {
     FRONT
 };
 
-// Maybe adding other gameStates later...
-enum class gameState {
-    NONE,
-    RESET,
-    EXIT
-};
-
 // TODO : Rename this entire file stages with tetrisStages
 // TODO : It will be responsible of the stage elements.
 // ! The render pipeline should be done by an entirely different class.
@@ -61,8 +54,6 @@ public:
     gameStage getStage();
     Rectangle* getTetrisStage();
     bool quitGame();
-    // Check a particular game state (resetting, ending...)
-    bool checkGameState(gameState state);
     Shader* getShaderBlur();
     RenderTexture2D* getRenderTexture(renderLayer layer);
     Texture2D getTetrominoTexture();
@@ -111,8 +102,7 @@ private:
     uint8_t _multiplicator;
 
     // UI State
-    bool _exit; //TODO: Delete and replace by _gameState
-    gameState _gameState;
+    bool _exit;
 };
 
 #endif // HEADER_TETRIS_UI

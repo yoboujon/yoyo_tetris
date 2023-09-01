@@ -1,7 +1,7 @@
 #include "event/gameevent.h"
 #include <iostream>
-GameEvent::GameEvent(tetrisUI *ui, tetrisScore *score, tetrisGame *game)
-    : _tetrisUI(ui), _tetrisScore(score), _tetrisGame(game), _staticBlocks(game->getStaticBlock())
+GameEvent::GameEvent(tetrisUI *ui, tetrisScore *score, tetrisGame *game, float *elapstedPtr)
+    : _tetrisUI(ui), _tetrisScore(score), _tetrisGame(game), _staticBlocks(game->getStaticBlock()), _elapsedPtr(elapstedPtr)
 {
     _tetrisUI->setEventHandler(this);
     _tetrisScore->setEventHandler(this);
@@ -35,6 +35,20 @@ void GameEvent::uIEvents(EventType type, const std::any &data)
     // If the user prompted 'Resume' or 'Restart' buttons, the pause status is set to false.
     if (type == BUTTON_PRESSED_CLOSE_MENU)
         _tetrisGame->setPause(false);
+
+    // When reseting the game (restart, exit, etc...)
+    if (type == NEW_GAME)
+    {
+        _tetrisScore->resetScore();
+        _tetrisGame->reset(_elapsedPtr);
+        // Loading the textures only if we stay on stages that needs these textures.
+        // As a matter of fact, when starting a game from the titlescreen : this function will be called again.
+        if (_tetrisUI->getStage() != gameStage::TITLE_SCREEN)
+            _tetrisGame->setTetrominoTexture(_tetrisUI->getTetrominoTexture());
+        // When a new game is created, the static bloc is reset
+        // We have to make sure the event handler is set.
+        _staticBlocks->setEventHandler(this);
+    }
 }
 
 void GameEvent::scoreEvents(EventType type, const std::any &data)
@@ -49,14 +63,14 @@ void GameEvent::scoreEvents(EventType type, const std::any &data)
 void GameEvent::gameEvents(EventType type, const std::any &data)
 {
     // ESCAPE is pressed and we were in game.
-    if(type == OPEN_MENU)
+    if (type == OPEN_MENU)
         _tetrisUI->ChangeStage(gameStage::MENU_SCREEN);
     // ESCAPE is pressed and we were in a menu.
     if ((_tetrisUI->getStage() == gameStage::MENU_SCREEN) && (type == ESCAPE_PRESSED_CLOSE_MENU))
         _tetrisUI->ChangeStage(gameStage::GAME);
 
     // GAMEOVER
-    if(type == GAME_OVER)
+    if (type == GAME_OVER)
         _tetrisUI->ChangeStage(gameStage::GAME_OVER);
 }
 
@@ -70,8 +84,5 @@ void GameEvent::staticBlockEvents(EventType type, const std::any &data)
 
 void GameEvent::mainEvents(EventType type, const std::any &data)
 {
-    // When a new game is created, the static bloc is reset
-    // We have to make sure the event handler is set.
-    if (type == CREATED_NEW_GAME)
-        _staticBlocks->setEventHandler(this);
+    
 }
