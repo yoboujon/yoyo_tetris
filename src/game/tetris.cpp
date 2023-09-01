@@ -57,7 +57,7 @@ void tetrisGame::Loop()
         if (_pauseMenu)
             _gameUI->ChangeStage(gameStage::MENU_SCREEN);
         else
-            this->_eventHandler->sendEvent(this, EventType::MENU_CLOSED);
+            this->_eventHandler->sendEvent(this, ESCAPE_PRESSED_CLOSE_MENU);
     }
 
     // If game over/ pause menu -> Only display the game

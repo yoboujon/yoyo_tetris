@@ -242,7 +242,7 @@ void tetrisUI::MenuScreen()
 
     _Btn_resume.Update(buttonBase);
     if (_Btn_resume.Clicked()) {
-        this->_eventHandler->sendEvent(this, EventType::MENU_CLOSED);
+        this->_eventHandler->sendEvent(this, EventType::BUTTON_PRESSED_CLOSE_MENU);
         ChangeStage(gameStage::GAME);
     }
 
