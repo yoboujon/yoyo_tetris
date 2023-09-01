@@ -18,14 +18,34 @@ GameEvent::~GameEvent()
 
 void GameEvent::sendEvent(BaseComponent* sender, EventType type) const
 {
-    if(type == EventType::TETRIS_LINE_COMPLETED)
+    //Comes from staticBlock
+    if(type == TETRIS_LINE_COMPLETED)
+    {
         _tetrisScore->lineComplete();
+    }
 
-    if(type == EventType::START_GAME)
+    //Comes from tetrisUI
+    if(type == START_GAME)
         _tetrisGame->setTetrominoTexture(_tetrisUI->getTetrominoTexture());
-    if (type == EventType::MENU_CLOSED)
+    if (type == MENU_CLOSED)
         _tetrisGame->setPause(false);
     
-    if((_tetrisUI->getStage() == gameStage::MENU_SCREEN) && (type == EventType::MENU_CLOSED))
+    //Comes from tetrisGame
+    if((_tetrisUI->getStage() == gameStage::MENU_SCREEN) && (type == MENU_CLOSED))
         _tetrisUI->ChangeStage(gameStage::GAME);
+
+    //Comes from main
+    if(type == CREATED_NEW_GAME)
+    {
+        GameEvent* eventHandlerTemp = const_cast<GameEvent*>(this);
+        _staticBlocks->setEventHandler(eventHandlerTemp);
+    }
+}
+
+void GameEvent::sendEvent(BaseComponent* sender, EventType type, const std::any& data) const
+{
+    if ((type == SEND_SCORE) && (data.type() == typeid(uint64_t)))
+        _tetrisUI->setScore(std::any_cast<uint64_t>(data));
+    if ((type == SEND_MULTIPLICATOR) && (data.type() == typeid(uint8_t)))
+        _tetrisUI->setMultiplicator(std::any_cast<uint8_t>(data));
 }

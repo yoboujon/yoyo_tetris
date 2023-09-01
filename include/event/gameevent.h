@@ -12,6 +12,7 @@ public:
     GameEvent(tetrisUI* ui, tetrisScore* score, tetrisGame* game);
     ~GameEvent();
     void sendEvent(BaseComponent* sender, EventType type) const override;
+    void sendEvent(BaseComponent* sender, EventType type, const std::any& data) const override;
 private:
     tetrisUI* _tetrisUI;
     tetrisScore* _tetrisScore;

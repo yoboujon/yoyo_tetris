@@ -52,7 +52,10 @@ public:
     void Display(renderLayer layer);
     void DisplayTexture();
 
+    // Setters
     void ChangeStage(gameStage stage);
+    void setScore(uint64_t score);
+    void setMultiplicator(uint8_t multiplicator);
 
     // Getters
     gameStage getStage();

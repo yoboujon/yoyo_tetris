@@ -40,8 +40,8 @@ void tetrisScore::updateScore()
         _activeMultiplcator = false;
     }
     // ! FOR NOW NOT WORKING
-    //_event->callEvent(eventType::SEND_SCORE, eventUser::UI, _score);
-    //_event->callEvent(eventType::SEND_MULTIPLICATOR, eventUser::UI, _multiplicator);
+    this->_eventHandler->sendEvent(this, EventType::SEND_SCORE, _score);
+    this->_eventHandler->sendEvent(this, EventType::SEND_MULTIPLICATOR, _multiplicator);
 }
 
 void tetrisScore::lineComplete()

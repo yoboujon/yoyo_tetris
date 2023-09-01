@@ -290,6 +290,8 @@ void tetrisUI::ChangeStage(gameStage stage)
             break;
     }    
 }
+void tetrisUI::setScore(uint64_t score) { _score = score; }
+void tetrisUI::setMultiplicator(uint8_t multiplicator) { _multiplicator = multiplicator; }
 
 // Getters
 
