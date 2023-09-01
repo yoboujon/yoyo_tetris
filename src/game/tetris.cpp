@@ -2,13 +2,13 @@
 
 #include <iostream>
 
-tetrisGame::tetrisGame(tetrisUI *gameUI, tetrisScore *gameScore)
-    : _gameControls(tetrisControls(gameUI->getElapsedTime())), _staticBlocks(), _gameUI(gameUI), _gameScore(gameScore), _fallingTick(0.0f), _isGameOver(false), _pauseMenu(false)
+tetrisGame::tetrisGame(float* _elapsedPtr)
+    : _gameControls(tetrisControls(_elapsedPtr)), _staticBlocks(), _fallingTick(0.0f), _isGameOver(false), _pauseMenu(false)
 {
     // Reserving the vector to the maximum tetromino name count.
     _textureMap.reserve(static_cast<int>(tetromino::tetrominoNames::Count));
-    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
-    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
+    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), TETRIS_STAGE, &_gameControls);
+    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), TETRIS_STAGE, &_gameControls);
 }
 
 tetrisGame::~tetrisGame()
@@ -22,7 +22,7 @@ tetrisGame::~tetrisGame()
 }
 
 // ! Maybe creating a copy opertation could be more effective but meh, i'm more sure with this approach
-void tetrisGame::reset(tetrisUI *gameUI, tetrisScore *gameScore)
+void tetrisGame::reset(float* _elapsedPtr)
 {
     delete _actualBlock;
     delete _nextBlock;
@@ -30,15 +30,13 @@ void tetrisGame::reset(tetrisUI *gameUI, tetrisScore *gameScore)
     {
         UnloadTexture(texture);
     }
-    _gameControls = tetrisControls(gameUI->getElapsedTime());
+    _gameControls = tetrisControls(_elapsedPtr);
     _staticBlocks = tetrisStaticBlocks();
-    _gameUI = gameUI;
-    _gameScore = gameScore;
     _fallingTick = 0.0f;
     _isGameOver = false;
     _pauseMenu = false;
-    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
-    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), gameUI->getTetrisStage(), &_gameControls);
+    _actualBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), TETRIS_STAGE, &_gameControls);
+    _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), TETRIS_STAGE, &_gameControls);
 }
 
 void tetrisGame::Loop()
@@ -55,7 +53,7 @@ void tetrisGame::Loop()
     {
         _pauseMenu = !_pauseMenu;
         if (_pauseMenu)
-            _gameUI->ChangeStage(gameStage::MENU_SCREEN);
+            this->_eventHandler->sendEvent(this, OPEN_MENU);
         else
             this->_eventHandler->sendEvent(this, ESCAPE_PRESSED_CLOSE_MENU);
     }
@@ -92,17 +90,14 @@ void tetrisGame::Loop()
         _staticBlocks.Add(*_actualBlock, _actualBlock->getName());
         delete _actualBlock;
         _actualBlock = _nextBlock;
-        _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), _gameUI->getTetrisStage(), &_gameControls);
+        _nextBlock = new tetrisFloatBlock(tetromino::getRandomTetromino(), TETRIS_STAGE, &_gameControls);
         _nextBlock->setTextures(_textureMap);
         if (_actualBlock->GameEnded(_staticBlocks.getRectangles()))
         {
             _isGameOver = true;
-            _gameUI->ChangeStage(gameStage::GAME_OVER);
+            this->_eventHandler->sendEvent(this, GAME_OVER);
         }
     }
-
-    // Checking for score
-    _gameScore->updateScore();
 }
 
 void tetrisGame::setTetrominoTexture(Texture2D texture)

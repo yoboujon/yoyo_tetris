@@ -48,9 +48,16 @@ void GameEvent::scoreEvents(EventType type, const std::any &data)
 
 void GameEvent::gameEvents(EventType type, const std::any &data)
 {
+    // ESCAPE is pressed and we were in game.
+    if(type == OPEN_MENU)
+        _tetrisUI->ChangeStage(gameStage::MENU_SCREEN);
     // ESCAPE is pressed and we were in a menu.
     if ((_tetrisUI->getStage() == gameStage::MENU_SCREEN) && (type == ESCAPE_PRESSED_CLOSE_MENU))
         _tetrisUI->ChangeStage(gameStage::GAME);
+
+    // GAMEOVER
+    if(type == GAME_OVER)
+        _tetrisUI->ChangeStage(gameStage::GAME_OVER);
 }
 
 void GameEvent::staticBlockEvents(EventType type, const std::any &data)

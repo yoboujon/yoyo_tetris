@@ -7,8 +7,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Set variables for versionning
 add_definitions( -D_VERSION_MAJOR=\"1\")
 add_definitions( -D_VERSION_MINOR=\"0\")
-add_definitions( -D_VERSION_PATCH=\"1\")
-project(${TARGET_NAME} VERSION 1.0.1 LANGUAGES C CXX)
+add_definitions( -D_VERSION_PATCH=\"2\")
+project(${TARGET_NAME} VERSION 1.0.2 LANGUAGES C CXX)
 
 # Raylib
 set(RAYLIB_VERSION 4.5.0)

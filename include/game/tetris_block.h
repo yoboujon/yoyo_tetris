@@ -21,7 +21,7 @@ class tetrisFloatBlock : public BaseComponent
 {
 public:
     tetrisFloatBlock();
-    tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle *tetrisStage, tetrisControls *gameControls);
+    tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle tetrisStage, tetrisControls *gameControls);
     ~tetrisFloatBlock();
     // Movement
     void Fall(const std::vector<Rectangle> &tetrisBlock);
@@ -55,7 +55,7 @@ private:
     bool _placed;
     tetromino::tetrisRotation _rotation;
     // Game
-    Rectangle *_tetrisStage;
+    Rectangle _tetrisStage;
     tetrisControls *_gameControls;
     std::vector<Texture2D> _tetrominoTextureVect;
 };

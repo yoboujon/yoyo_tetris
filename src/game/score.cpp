@@ -39,7 +39,7 @@ void tetrisScore::updateScore()
         _multiplicator = 1;
         _activeMultiplcator = false;
     }
-    // ! FOR NOW NOT WORKING
+
     this->_eventHandler->sendEvent(this, EventType::SEND_SCORE, _score);
     this->_eventHandler->sendEvent(this, EventType::SEND_MULTIPLICATOR, _multiplicator);
 }

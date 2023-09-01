@@ -3,10 +3,9 @@
 #include <string>
 #include <iostream>
 
-tetrisUI::tetrisUI(float* elapsedPtr)
+tetrisUI::tetrisUI()
     : _versionNumber("Version " + std::string(VERSION_MAJOR) + "." + std::string(VERSION_MINOR) + "." + std::string(VERSION_PATCH))
     , _stage(gameStage::TITLE_SCREEN)
-    , _elapsedPtr(elapsedPtr)
     , _Rect_tetrisStage(TETRIS_STAGE)
     , _shader_buffer({false,false})
     , _score(0)
@@ -297,7 +296,6 @@ void tetrisUI::setMultiplicator(uint8_t multiplicator) { _multiplicator = multip
 
 gameStage tetrisUI::getStage() { return _stage; }
 Rectangle* tetrisUI::getTetrisStage() { return &_Rect_tetrisStage; }
-float* tetrisUI::getElapsedTime() { return _elapsedPtr; }
 Shader* tetrisUI::getShaderBlur() { return &_Shader_blur; }
 RenderTexture2D* tetrisUI::getRenderTexture(renderLayer layer) { return (layer == renderLayer::BACK ? &_back : &_front); }
 Texture2D tetrisUI::getTetrominoTexture() { return _textureLoader.getTexture(textureId::TETROMINO_TILEMAP); }

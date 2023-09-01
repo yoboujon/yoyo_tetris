@@ -31,9 +31,9 @@ main
     float elapsedTime = 0.0f;
 
     // TODO : Multi-threading for event, ui elements and score.
-    auto gameUI = tetrisUI(&elapsedTime);
+    auto gameUI = tetrisUI();
     auto gameScore = tetrisScore();
-    auto game = tetrisGame(&gameUI, &gameScore);
+    auto game = tetrisGame(&elapsedTime);
     auto gameEventHandler = GameEvent(&gameUI, &gameScore, &game);
 
     // Step
@@ -52,12 +52,13 @@ main
         if (actualStage != gameStage::TITLE_SCREEN)
         {
             game.Loop();
+            gameScore.updateScore();
         }
         // Checking if the game need to be reset
         if (gameUI.checkGameState(gameState::RESET))
         {
             gameScore.resetScore();
-            game.reset(&gameUI, &gameScore);
+            game.reset(&elapsedTime);
             // Loading the textures only if we stay on stages that needs these textures.
             // As a matter of fact, when starting a game from the titlescreen : this function will be called again.
             if(actualStage != gameStage::TITLE_SCREEN)

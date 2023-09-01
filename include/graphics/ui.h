@@ -47,7 +47,7 @@ enum class gameState {
 class tetrisUI : public BaseComponent
 {
 public:
-    tetrisUI(float* elapsedPtr);
+    tetrisUI();
     ~tetrisUI();
     void Display(renderLayer layer);
     void DisplayTexture();
@@ -60,7 +60,6 @@ public:
     // Getters
     gameStage getStage();
     Rectangle* getTetrisStage();
-    float* getElapsedTime();
     bool quitGame();
     // Check a particular game state (resetting, ending...)
     bool checkGameState(gameState state);
@@ -85,7 +84,6 @@ private:
 
     // Stage
     gameStage _stage;
-    float* _elapsedPtr;
 
     // Compositions
     Rectangle _Rect_tetrisStage;

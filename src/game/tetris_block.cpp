@@ -9,11 +9,11 @@ using namespace tetromino;
 /* ========================== */
 
 tetrisFloatBlock::tetrisFloatBlock()
-    : tetrisFloatBlock(tetrominoNames::LightBlue_I, NULL, NULL)
+    : tetrisFloatBlock(tetrominoNames::LightBlue_I, {0}, NULL)
 {
 }
 
-tetrisFloatBlock::tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle* tetrisStage, tetrisControls* gameControls)
+tetrisFloatBlock::tetrisFloatBlock(tetromino::tetrominoNames name, Rectangle tetrisStage, tetrisControls* gameControls)
     : _name(name)
     , _color(getColorTetromino(name))
     , _position({ TETRIS_STAGE.x, TETRIS_STAGE.y })
@@ -125,7 +125,7 @@ bool tetrisFloatBlock::checkGameRectangle(const std::vector<Rectangle>& newRecta
 {
     float area(0);
     for (auto& newRect : newRectangles) {
-        auto rectCollide = GetCollisionRec(newRect, *_tetrisStage);
+        auto rectCollide = GetCollisionRec(newRect, _tetrisStage);
         area += rectCollide.height * rectCollide.width;
     }
     return (area == _area_object);

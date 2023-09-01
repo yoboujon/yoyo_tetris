@@ -6,18 +6,15 @@
 #include "event/component.h"
 
 #include "game/tetris_block.h"
-#include "graphics/button.h"
-#include "graphics/ui.h"
-#include "game/score.h"
 
 constexpr float FALLING_TICK_DURATION = 0.01f;
 
 class tetrisGame : public BaseComponent
 {
 public:
-    tetrisGame(tetrisUI* gameUI, tetrisScore* gameScore);
+    tetrisGame(float* _elapsedPtr);
     ~tetrisGame();
-    void reset(tetrisUI *gameUI, tetrisScore *gameScore);
+    void reset(float* _elapsedPtr);
     void Loop();
     void setTetrominoTexture(Texture2D texture);
     bool gameFinished();
@@ -40,12 +37,6 @@ private:
 
     // The next tetromino
     tetromino::tetrominoNames _actualName;
-
-    // The UI pointer
-    tetrisUI* _gameUI;
-
-    // The score pointer
-    tetrisScore* _gameScore;
     
     // The falling tick
     float _fallingTick;
