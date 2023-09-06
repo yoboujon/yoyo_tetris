@@ -102,6 +102,8 @@ void tetrisGame::Loop()
 
 void tetrisGame::setTetrominoTexture(Texture2D texture)
 {
+    // Clearing first the _textureMap from the game in case there are remainings.
+    _textureMap.clear();
     // Setting the texture on static block because each block is 1:1
     // So the texture mapping should work directly
     _staticBlocks.setTexture(texture);

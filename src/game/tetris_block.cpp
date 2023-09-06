@@ -160,7 +160,13 @@ std::vector<Rectangle> tetrisFloatBlock::moveY(int y)
     return newRec;
 }
 
-void tetrisFloatBlock::setTextures(std::vector<Texture2D> textures) { _tetrominoTextureVect = textures; }
+void tetrisFloatBlock::setTextures(std::vector<Texture2D> textures)
+{
+    // Clearing the texture vector before putting the new textures;
+    _tetrominoTextureVect.clear();
+    _tetrominoTextureVect = textures;
+}
+
 Rectangle* tetrisFloatBlock::getRectangle(int index) { return &(_object.at(index)); }
 const std::vector<Rectangle>& tetrisFloatBlock::getRectangles() { return _object; }
 bool tetrisFloatBlock::Placed() { return _placed; }
