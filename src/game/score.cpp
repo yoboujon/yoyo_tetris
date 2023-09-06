@@ -32,16 +32,15 @@ void tetrisScore::updateScore()
     {
         _score += 100;
         _scoreTime -= 1.0f;
+        this->_eventHandler->sendEvent(this, EventType::SEND_SCORE, _score);
     }
     if (_activeMultiplcator && (_multiplicatorTime >= 10.0f))
     {
         _multiplicatorTime = 0.0f;
         _multiplicator = 1;
         _activeMultiplcator = false;
+        this->_eventHandler->sendEvent(this, EventType::SEND_MULTIPLICATOR, _multiplicator);
     }
-
-    this->_eventHandler->sendEvent(this, EventType::SEND_SCORE, _score);
-    this->_eventHandler->sendEvent(this, EventType::SEND_MULTIPLICATOR, _multiplicator);
 }
 
 void tetrisScore::lineComplete()
@@ -57,6 +56,9 @@ void tetrisScore::lineComplete()
     _score += 1000 * _multiplicator;
     _activeMultiplcator = true;
     _multiplicatorTime = 0.0f;
+
+    this->_eventHandler->sendEvent(this, EventType::SEND_SCORE, _score);
+    this->_eventHandler->sendEvent(this, EventType::SEND_MULTIPLICATOR, _multiplicator);
 }
 
 uint64_t tetrisScore::getScore() { return _score; }

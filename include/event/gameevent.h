@@ -19,6 +19,7 @@ private:
     void gameEvents(EventType type, const std::any& data = std::any());
     void staticBlockEvents(EventType type, const std::any& data = std::any());
     void rendererEvents(EventType type, const std::any& data = std::any());
+    void mainEvents(EventType type, const std::any& data = std::any());
 
     tetrisUI* _tetrisUI;
     tetrisScore* _tetrisScore;

@@ -1,4 +1,7 @@
 #include "event/gameevent.h"
+#include "event/component.h"
+#include "lib.h"
+#include <cstddef>
 #include <iostream>
 GameEvent::GameEvent(tetrisUI* ui, tetrisScore* score, tetrisGame* game, float *elapstedPtr)
     : _tetrisUI(ui), _tetrisScore(score), _tetrisGame(game), _staticBlocks(game->getStaticBlock()), _renderer(TetrisRenderer::GetInstance()), _elapsedPtr(elapstedPtr)
@@ -26,6 +29,8 @@ void GameEvent::sendEvent(BaseComponent *sender, EventType type, const std::any 
         staticBlockEvents(type, data);
     if (sender == &_renderer)
         rendererEvents(type, data);
+    if (sender == nullptr)
+        mainEvents(type, data);
 }
 
 void GameEvent::uIEvents(EventType type, const std::any &data)
@@ -54,11 +59,17 @@ void GameEvent::uIEvents(EventType type, const std::any &data)
 
 void GameEvent::scoreEvents(EventType type, const std::any &data)
 {
-    // Score gathering
+    // Score gathering && render tileset.
     if ((type == SEND_SCORE) && (data.type() == typeid(uint64_t)))
+    {
         _tetrisUI->setScore(std::any_cast<uint64_t>(data));
+        _tetrisUI->RenderTile();
+    }
     if ((type == SEND_MULTIPLICATOR) && (data.type() == typeid(uint8_t)))
+    {
         _tetrisUI->setMultiplicator(std::any_cast<uint8_t>(data));
+        _tetrisUI->RenderTile();
+    }
 }
 
 void GameEvent::gameEvents(EventType type, const std::any &data)
@@ -85,6 +96,15 @@ void GameEvent::staticBlockEvents(EventType type, const std::any &data)
 
 void GameEvent::rendererEvents(EventType type, const std::any &data)
 {
+    // Whenever the stage change, clear the tile buffer and render it
     if(type == STAGE_CHANGED)
+        _tetrisUI->RenderTile();
+}
+
+void GameEvent::mainEvents(EventType type, const std::any& data)
+{
+    // When the user move his mouse, the tileset has to be rendered.
+    bool inMenu = (_renderer.GetStage() == gameStage::MENU_SCREEN) || (_renderer.GetStage() == gameStage::GAME_OVER);
+    if((type == MOUSE_MOVED) && !inMenu)
         _tetrisUI->RenderTile();
 }

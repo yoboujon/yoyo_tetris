@@ -15,7 +15,8 @@ enum EventType
     SEND_MULTIPLICATOR,
     GAME_OVER,
     START_GAME,
-    NEW_GAME
+    NEW_GAME,
+    MOUSE_MOVED
 };
 
 class BaseComponent;

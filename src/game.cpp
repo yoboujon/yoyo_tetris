@@ -4,6 +4,8 @@
 #include "game/tetromino.h"
 #include "graphics/render.h"
 #include "event/gameevent.h"
+#include "raylib.h"
+#include "raymath.h"
 
 using namespace tetromino;
 
@@ -29,6 +31,7 @@ main
     SetTargetFPS(60);
     SetExitKey(KEY_NULL);
     float elapsedTime = 0.0f;
+    Vector2 mousePosition = { 0 };
 
     // TODO : Multi-threading for event, ui elements and score.
     auto& renderer = TetrisRenderer::GetInstance();
@@ -40,6 +43,11 @@ main
     // Step
     while (!WindowShouldClose() && !(gameUI.quitGame()))
     {
+        if( !Vector2Equals(mousePosition, GetMousePosition()) )
+        {
+            gameEventHandler.sendEvent(nullptr, EventType::MOUSE_MOVED);
+            mousePosition = GetMousePosition();
+        }
         elapsedTime += GetFrameTime();
         RendererLayer layer = RendererLayer::BACK;
 
