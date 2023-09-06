@@ -107,4 +107,6 @@ void GameEvent::mainEvents(EventType type, const std::any& data)
     bool inMenu = (_renderer.GetStage() == gameStage::MENU_SCREEN) || (_renderer.GetStage() == gameStage::GAME_OVER);
     if((type == MOUSE_MOVED) && !inMenu)
         _tetrisUI->RenderTile();
+    if((type == LEFT_CLICK) && !inMenu)
+        _tetrisUI->RenderTile();
 }

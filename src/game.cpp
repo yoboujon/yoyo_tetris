@@ -1,3 +1,4 @@
+#include "event/component.h"
 #include "lib.h"
 
 #include "game/tetris.h"
@@ -47,6 +48,10 @@ main
         {
             gameEventHandler.sendEvent(nullptr, EventType::MOUSE_MOVED);
             mousePosition = GetMousePosition();
+        }
+        if(IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+        {
+            gameEventHandler.sendEvent(nullptr, EventType::LEFT_CLICK);
         }
         elapsedTime += GetFrameTime();
         RendererLayer layer = RendererLayer::BACK;

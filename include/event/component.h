@@ -16,7 +16,8 @@ enum EventType
     GAME_OVER,
     START_GAME,
     NEW_GAME,
-    MOUSE_MOVED
+    MOUSE_MOVED,
+    LEFT_CLICK
 };
 
 class BaseComponent;
