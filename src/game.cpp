@@ -63,12 +63,12 @@ main
         layer = RendererLayer::GAME;
         renderer.BeginDisplay(layer);
         // Game Display and Update
-        // TODO : Modify the escape key check in the tetrisGame to be here with the gameControls object
-        // TODO : This could lead to a huge if statement when adding scenes in the future
-        if (renderer.GetStage() != gameStage::TITLE_SCREEN)
+        if (renderer.GetStage() == gameStage::GAME || renderer.GetStage() == gameStage::MENU_SCREEN)
         {
             game.Loop();
-            gameScore.updateScore();
+            // Only updating the score if the stage is the game.
+            if(renderer.GetStage() == gameStage::GAME)
+                gameScore.updateScore();
         }
         renderer.EndDisplay();
 

@@ -45,7 +45,8 @@ void GameEvent::uIEvents(EventType type, const std::any &data)
     // When reseting the game (restart, exit, etc...)
     if (type == NEW_GAME)
     {
-        _tetrisScore->resetScore();
+        // Reseting the score and the ui elements
+        _tetrisScore->resetScore(true);
         _tetrisGame->reset(_elapsedPtr);
         // Loading the textures only if we stay on stages that needs these textures.
         // As a matter of fact, when starting a game from the titlescreen : this function will be called again.

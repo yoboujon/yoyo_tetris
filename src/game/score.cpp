@@ -11,13 +11,18 @@ tetrisScore::~tetrisScore()
 {
 }
 
-void tetrisScore::resetScore()
+void tetrisScore::resetScore(bool display)
 {
     _score = 0;
     _multiplicator = 1;
     _activeMultiplcator = false;
     _multiplicatorTime = 0.0f;
     _scoreTime = 0.0f;
+    if(display)
+    {
+        this->_eventHandler->sendEvent(this, EventType::SEND_SCORE, _score);
+        this->_eventHandler->sendEvent(this, EventType::SEND_MULTIPLICATOR, _multiplicator);
+    }
 }
 
 void tetrisScore::updateScore()
