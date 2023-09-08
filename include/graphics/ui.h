@@ -41,12 +41,16 @@ public:
     bool quitGame();
 
 private:
+    // UI Functions
+    textureId textureFromStage(gameStage stage);
+    Color colorFromStage(gameStage stage);
     // Scenes
-    void TileSet();
+    void TileSet(textureId texture, Color backColor={ 255, 255, 255, 128 });
     void TitleScreen();
     void Game();
     void GameOver();
     void MenuScreen();
+    void Settings();
 
     // Labels/Consts
     const std::string _versionNumber;
@@ -56,12 +60,16 @@ private:
 
     // Compositions
     Rectangle _Rect_tetrisStage;
+    // Pause/GameOver
     tetrisButton _Btn_restart;
     tetrisButton _Btn_titleScreen;
+    tetrisButton _Btn_resume;
+    // TitleScreen
     tetrisButton _Btn_Start;
     tetrisButton _Btn_Settings;
     tetrisButton _Btn_Exit;
-    tetrisButton _Btn_resume;
+    // Settings
+    tetrisButton _Btn_Back;
 
     // Textures
     textureLoader& _textureLoader;

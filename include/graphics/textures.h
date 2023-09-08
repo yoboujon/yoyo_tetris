@@ -23,7 +23,8 @@ enum class textureId
     TILESET_SETTINGS_WHITE,
     TILESET_SETTINGS_BLACK,
     LOGO,
-    TETROMINO_TILEMAP
+    TETROMINO_TILEMAP,
+    BUTTON_RETURN
 };
 
 enum class unloadState
@@ -52,7 +53,8 @@ const std::map<textureId, std::string> texturePath =
         {textureId::TILESET_SETTINGS_WHITE, "res/settings_w.png"},
         {textureId::TILESET_SETTINGS_BLACK, "res/settings_b.png"},
         {textureId::LOGO, "res/yoyotetris.png"},
-        {textureId::TETROMINO_TILEMAP, "res/tetromino.png"}};
+        {textureId::TETROMINO_TILEMAP, "res/tetromino.png"},
+        {textureId::BUTTON_RETURN, "res/button_return.png"}};
 
 class textureLoader
 {

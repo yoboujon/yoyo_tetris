@@ -18,6 +18,7 @@ tetrisUI::tetrisUI()
     _textureLoader.load(textureId::TILESET_WHITE,unloadState::NEVER);
 
     // Init UI Objects
+    // TitleScreen Buttons
     _Btn_Start = tetrisButton({ 20, 180 }, { 160.0f, 90.0f }, textureStyle::CUSTOM_SHAPE, { 32.0f, 18.0f });
     _Btn_Start.SetText("Start");
     _Btn_Settings = tetrisButton({ 20, 180 + 90.0f + 10 }, { 160.0f, 90.0f }, textureStyle::CUSTOM_SHAPE, { 32.0f, 18.0f });
@@ -25,6 +26,11 @@ tetrisUI::tetrisUI()
     _Btn_Exit = tetrisButton({ 20, 180 + (90.0f + 10) * 2 }, { 160.0f, 90.0f }, textureStyle::CUSTOM_SHAPE, { 32.0f, 18.0f });
     _Btn_Exit.SetText("Exit");
 
+    // Settings Buttons
+    _Btn_Back = tetrisButton({ 20, 180 + (90.0f + 10) * 2 }, { 160.0f, 90.0f }, textureStyle::CUSTOM_SHAPE, { 32.0f, 18.0f });
+    _Btn_Back.SetText("Back");
+
+    // Menu Buttons
     const Size2 menuSize = { 160.0f, 50.f };
     const float menuTotalWidth = tetrisButtongetTotalWidth(menuSize);
     _menuCenter = { (SCREEN_WIDTH - menuTotalWidth) / 2, (SCREEN_HEIGHT - menuSize.height) / 2 };
@@ -42,12 +48,17 @@ tetrisUI::~tetrisUI()
 
 void tetrisUI::Display(RendererLayer layer)
 {
+    // Gathering actual stage
+    auto stage = TetrisRenderer::GetInstance().GetStage();
+    // Updating tiles only when asked by the event.
     if(_showTiles && layer == RendererLayer::BACK)
     {
-        TileSet();
+        TileSet(textureFromStage(stage),colorFromStage(stage));
         _showTiles = false;
     }
-    switch (TetrisRenderer::GetInstance().GetStage()) {
+
+    // Displaying depending on the stage
+    switch (stage) {
     case gameStage::TITLE_SCREEN:
         if (layer == RendererLayer::BACK)
             TitleScreen();
@@ -63,17 +74,21 @@ void tetrisUI::Display(RendererLayer layer)
     case gameStage::MENU_SCREEN:
         if (layer == RendererLayer::FRONT)
             MenuScreen();
+    case gameStage::SETTINGS:
+        if(layer == RendererLayer::BACK)
+            Settings();
+        break;
     default:
         break;
     }
 }
 
-void tetrisUI::TileSet()
+void tetrisUI::TileSet(textureId texture, Color backColor)
 {
     // Offseting the texture by 5px in x, and 5px in y. (ratio multiplied by the actual pixels of the texture)
-    auto tileSetTexture = _textureLoader.getTexture(textureId::TILESET_WHITE);
+    auto tileSetTexture = _textureLoader.getTexture(texture);
     DrawTextureRatio(tileSetTexture, { 0.0f, 0.0f }, TILE_DESTINATION, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
-    DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, { 255, 255, 255, 128 });
+    DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, backColor);
 }
 
 void tetrisUI::TitleScreen()
@@ -94,7 +109,10 @@ void tetrisUI::TitleScreen()
     }
 
     _Btn_Settings.Update(buttonSettings);
-    // Settings scene
+    if (_Btn_Settings.Clicked())
+    {
+        TetrisRenderer::GetInstance().ChangeStage(gameStage::SETTINGS);
+    }
 
     _Btn_Exit.Update(buttonExit);
     if (_Btn_Exit.Clicked())
@@ -186,9 +204,36 @@ void tetrisUI::MenuScreen()
     }
 }
 
+void tetrisUI::Settings()
+{
+    auto buttonback = _textureLoader.getTexture(textureId::BUTTON_RETURN);
+
+    _Btn_Back.Update(buttonback);
+    if(_Btn_Back.Clicked())
+    {
+        TetrisRenderer::GetInstance().ChangeStage(gameStage::TITLE_SCREEN);
+    }
+}
+
 void tetrisUI::RenderTile()
 {
     _showTiles = true;
+}
+
+textureId tetrisUI::textureFromStage(gameStage stage)
+{
+    if(stage == gameStage::SETTINGS)
+        return textureId::TILESET_SETTINGS_WHITE;
+    else
+        return textureId::TILESET_WHITE;
+}
+
+Color tetrisUI::colorFromStage(gameStage stage)
+{
+    if(stage == gameStage::SETTINGS)
+        return { 0, 0, 0, 128 };
+    else
+        return { 255, 255, 255, 128 };
 }
 
 // Setters

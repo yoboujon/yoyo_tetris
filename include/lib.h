@@ -43,7 +43,8 @@ enum class gameStage {
     TITLE_SCREEN,
     GAME,
     GAME_OVER,
-    MENU_SCREEN
+    MENU_SCREEN,
+    SETTINGS
 };
 
 // ? Idk about this one...
