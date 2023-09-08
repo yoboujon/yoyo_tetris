@@ -13,6 +13,10 @@
 // All the private elements inside the tetris renderer will be rendered one time.
 // Each UI/Game elements will be rendered every frame.
 
+// ! The renderer should be rewritten in some ways...
+// ! The optimisations i added can cause the textures layers to not be cleared completly.
+// ! This could lead to weird artefacts and some ui elements not working because of buffering.
+
 class TetrisRenderer : public BaseComponent
 {
 public:

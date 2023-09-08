@@ -79,8 +79,11 @@ void TetrisRenderer::ChangeStage(gameStage stage)
             _textureLoader.load(textureId::BUTTON_BASE,unloadState::ONCE);
             break;
         case gameStage::SETTINGS:
+            ClearRenderTexture(_front);
+            ClearRenderTexture(_back);
             _textureLoader.load(textureId::TILESET_SETTINGS_WHITE, unloadState::ONCE);
             _textureLoader.load(textureId::BUTTON_RETURN, unloadState::ONCE);
+            _textureLoader.load(textureId::TEXT_BOX, unloadState::ONCE);
             break;
     }    
 }

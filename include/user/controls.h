@@ -12,6 +12,7 @@ enum class keyState {
 
 class tetrisControls {
     public:
+        tetrisControls();
         tetrisControls(float* elapsedPtr);
         ~tetrisControls();
         bool IsKeyDownTiming(int key, float timing);

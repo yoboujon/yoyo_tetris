@@ -6,6 +6,7 @@
 #include "event/component.h"
 
 #include "graphics/button.h"
+#include "graphics/text_input.h"
 #include "graphics/textures.h"
 
 
@@ -70,6 +71,7 @@ private:
     tetrisButton _Btn_Exit;
     // Settings
     tetrisButton _Btn_Back;
+    tetrisTextInput _TxtInp_FrameRate;
 
     // Textures
     textureLoader& _textureLoader;

@@ -2,6 +2,10 @@
 
 #include <iostream>
 
+tetrisControls::tetrisControls()
+    : tetrisControls(nullptr)
+{}
+
 tetrisControls::tetrisControls(float* elapsedPtr)
     : _elapsedPtr(elapsedPtr)
     , _timingCommand(0.0f)
