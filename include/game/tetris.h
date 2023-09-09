@@ -21,6 +21,7 @@ public:
     bool getPause();
     void setPause(bool state);
     tetrisStaticBlocks* getStaticBlock();
+    void StartGame();
 private:
     void DisplayTetrisNext();
 
@@ -44,6 +45,7 @@ private:
     //Game States
     bool _isGameOver;
     bool _pauseMenu;
+    bool _start;
 };
 
 #endif // HEADER_TETRIS_GAME

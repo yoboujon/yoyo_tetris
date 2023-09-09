@@ -78,7 +78,6 @@ void TetrisRenderer::UpdateTexturesStage()
     switch(_stage)
     {
         case gameStage::TITLE_SCREEN:
-            ClearRenderTexture(_front);
             _textureLoader.unload(textureId::TETROMINO_TILEMAP);
             _textureLoader.unload(textureId::TILESET_BLACK);
             _textureLoader.unload(textureId::TILESET_BLACK_BORDERLESS);
@@ -88,7 +87,6 @@ void TetrisRenderer::UpdateTexturesStage()
             _textureLoader.load(textureId::LOGO,unloadState::ONCE);
             break;
         case gameStage::GAME:
-            ClearRenderTexture(_front);
             _textureLoader.load(textureId::TILESET_BLACK,unloadState::NEVER);
             _textureLoader.load(textureId::TILESET_BLACK_BORDERLESS,unloadState::NEVER);
             _textureLoader.load(textureId::TETROMINO_TILEMAP,unloadState::NEVER);
@@ -98,8 +96,6 @@ void TetrisRenderer::UpdateTexturesStage()
             _textureLoader.load(textureId::BUTTON_BASE,unloadState::ONCE);
             break;
         case gameStage::SETTINGS:
-            ClearRenderTexture(_front);
-            ClearRenderTexture(_back);
             _textureLoader.load(textureId::TILESET_SETTINGS_WHITE, unloadState::ONCE);
             _textureLoader.load(textureId::BUTTON_RETURN, unloadState::ONCE);
             _textureLoader.load(textureId::TEXT_BOX, unloadState::ONCE);

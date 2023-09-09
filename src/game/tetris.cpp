@@ -3,7 +3,7 @@
 #include <iostream>
 
 tetrisGame::tetrisGame(float* _elapsedPtr)
-    : _gameControls(tetrisControls(_elapsedPtr)), _staticBlocks(), _fallingTick(0.0f), _isGameOver(false), _pauseMenu(false)
+    : _gameControls(tetrisControls(_elapsedPtr)), _staticBlocks(), _fallingTick(0.0f), _isGameOver(false), _pauseMenu(false), _start(false)
 {
     // Reserving the vector to the maximum tetromino name count.
     _textureMap.reserve(static_cast<int>(tetromino::tetrominoNames::Count));
@@ -41,6 +41,8 @@ void tetrisGame::reset(float* _elapsedPtr)
 
 void tetrisGame::Loop()
 {
+    if(!_start)
+        return;
     if (!_pauseMenu)
         _fallingTick += GetFrameTime();
 
@@ -126,3 +128,4 @@ bool tetrisGame::gameFinished() { return _isGameOver; }
 tetrisStaticBlocks* tetrisGame::getStaticBlock() { return &_staticBlocks; }
 bool tetrisGame::getPause() { return _pauseMenu; }
 void tetrisGame::setPause(bool state) { _pauseMenu = state; }
+void tetrisGame::StartGame() { _start = true; }

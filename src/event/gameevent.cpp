@@ -35,9 +35,6 @@ void GameEvent::sendEvent(BaseComponent *sender, EventType type, const std::any 
 
 void GameEvent::uIEvents(EventType type, const std::any &data)
 {
-    // When Starting the game, loading the textures for tetrominos
-    if (type == START_GAME)
-        _tetrisGame->setTetrominoTexture(_renderer.GetTexture(textureId::TETROMINO_TILEMAP));
     // If the user prompted 'Resume' or 'Restart' buttons, the pause status is set to false.
     if (type == BUTTON_PRESSED_CLOSE_MENU)
         _tetrisGame->setPause(false);
@@ -97,6 +94,8 @@ void GameEvent::staticBlockEvents(EventType type, const std::any &data)
 
 void GameEvent::rendererEvents(EventType type, const std::any &data)
 {
+    auto actualStage = _renderer.GetStage();
+
     // Set loading to true. No rendering has to occur until the textures are fully loaded
     if(type == CHANGING_STAGE)
         _loading = true;
@@ -105,7 +104,14 @@ void GameEvent::rendererEvents(EventType type, const std::any &data)
         _renderer.UpdateTexturesStage();
     // Textures are loaded, we can display the new scene
     if(type == TEXTURES_LOADED)
+    {
         _loading = false;
+        if (actualStage == gameStage::GAME)
+        {
+            _tetrisGame->setTetrominoTexture(_renderer.GetTexture(textureId::TETROMINO_TILEMAP));
+            _tetrisGame->StartGame();
+        }
+    }
 }
 
 void GameEvent::mainEvents(EventType type, const std::any& data)
