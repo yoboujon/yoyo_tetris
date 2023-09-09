@@ -1,9 +1,11 @@
 #include "graphics/render.h"
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 TetrisRenderer::TetrisRenderer()
     : _stage(gameStage::TITLE_SCREEN)
-    , _stageChanged(false)
+    , _displaying(false)
 {
     //Init Shader
     ShaderInit();
@@ -13,9 +15,12 @@ TetrisRenderer::TetrisRenderer()
     _game = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     _texture_buffer = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    _rendererTexture = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    // Loading base texture on the actual scene
+    // Changing the actual stage
+    // And loading the correct textures
     ChangeStage(_stage);
+    UpdateTexturesStage();
 }
 
 TetrisRenderer::~TetrisRenderer()
@@ -25,6 +30,7 @@ TetrisRenderer::~TetrisRenderer()
     UnloadRenderTexture(_game);
     UnloadRenderTexture(_front);
     UnloadRenderTexture(_texture_buffer);
+    UnloadRenderTexture(_rendererTexture);
 }
 
 void TetrisRenderer::ShaderInit()
@@ -37,26 +43,39 @@ void TetrisRenderer::ShaderInit()
     SetShaderValue(_Shader_blur, GetShaderLocation(_Shader_blur, "height"), &SCREEN_HEIGHT, SHADER_UNIFORM_INT);
 }
 
-void TetrisRenderer::BeginDisplay(RendererLayer layer)
+void TetrisRenderer::BeginDisplay(bool loading)
 {
     // Before, we can detect if the layer needs to be updated or not.
-    BeginTextureMode(*getRenderTextureFromLayer(layer));
+    //BeginTextureMode(*getRenderTextureFromLayer(layer));
+    if(!loading)
+        BeginTextureMode(_rendererTexture);
 }
 
-void TetrisRenderer::EndDisplay()
+void TetrisRenderer::EndDisplay(bool loading)
 {
-    EndTextureMode();
+    if(!loading)
+        EndTextureMode();
+    BeginDrawing();
+    DrawTextureRec(_rendererTexture.texture, { 0, 0, (float)_rendererTexture.texture.width, (float)-_rendererTexture.texture.height }, { 0, 0 }, WHITE);
+    EndDrawing();
+    // If loading state, we finish displaying the texture before ACTUALLY loading textures.
+    if(loading)
+        _eventHandler->sendEvent(this,EventType::END_DISPLAY_LOADING);
 }
 
 void TetrisRenderer::ChangeStage(gameStage stage)
 {
     _stage = stage;
-    _stageChanged = true;
     if(_eventHandler != nullptr)
-        _eventHandler->sendEvent(this,EventType::STAGE_CHANGED);
+        _eventHandler->sendEvent(this,EventType::CHANGING_STAGE);
+}
+
+void TetrisRenderer::UpdateTexturesStage()
+{
+
     // Clearing all the textures that have the unloadState set to ONCE.
     _textureLoader.clearTextureBuffer();
-    switch(stage)
+    switch(_stage)
     {
         case gameStage::TITLE_SCREEN:
             ClearRenderTexture(_front);
@@ -85,7 +104,10 @@ void TetrisRenderer::ChangeStage(gameStage stage)
             _textureLoader.load(textureId::BUTTON_RETURN, unloadState::ONCE);
             _textureLoader.load(textureId::TEXT_BOX, unloadState::ONCE);
             break;
-    }    
+    }
+    // When finishing loading the textures, inform the GameComponent
+    if(_eventHandler != nullptr)
+        _eventHandler->sendEvent(this, EventType::TEXTURES_LOADED);
 }
 
 void TetrisRenderer::Render(void)

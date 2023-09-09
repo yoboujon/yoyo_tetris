@@ -54,15 +54,13 @@ main
             gameEventHandler.sendEvent(nullptr, EventType::LEFT_CLICK);
         }
         elapsedTime += GetFrameTime();
-        RendererLayer layer = RendererLayer::BACK;
 
-        renderer.BeginDisplay(layer);
-        gameUI.Display(layer);
-        renderer.EndDisplay();
+        // Displaying only if not loading a scene (see getLoading on gameEvent)
+        renderer.BeginDisplay(gameEventHandler.getLoading());
+        gameUI.Display(RendererLayer::BACK);
 
-        layer = RendererLayer::GAME;
-        renderer.BeginDisplay(layer);
         // Game Display and Update
+        // RendererLayer::GAME
         if (renderer.GetStage() == gameStage::GAME || renderer.GetStage() == gameStage::MENU_SCREEN)
         {
             game.Loop();
@@ -70,14 +68,11 @@ main
             if(renderer.GetStage() == gameStage::GAME)
                 gameScore.updateScore();
         }
-        renderer.EndDisplay();
 
-        layer = RendererLayer::FRONT;
-        renderer.BeginDisplay(layer);
-        gameUI.Display(layer);
-        renderer.EndDisplay();
+        gameUI.Display(RendererLayer::FRONT);
 
-        renderer.Render();
+        //renderer.Render();
+        renderer.EndDisplay(gameEventHandler.getLoading());
     }
 
     // Stop

@@ -6,7 +6,7 @@
 enum EventType
 {
     NONE = 0,
-    STAGE_CHANGED,
+    CHANGING_STAGE,
     OPEN_MENU,
     BUTTON_PRESSED_CLOSE_MENU,
     ESCAPE_PRESSED_CLOSE_MENU,
@@ -17,7 +17,9 @@ enum EventType
     START_GAME,
     NEW_GAME,
     MOUSE_MOVED,
-    LEFT_CLICK
+    LEFT_CLICK,
+    TEXTURES_LOADED,
+    END_DISPLAY_LOADING
 };
 
 class BaseComponent;

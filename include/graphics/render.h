@@ -28,9 +28,10 @@ public:
     }
 
     void ShaderInit();  // ! Temporary -> Will be moved to shader.cpp
-    void BeginDisplay(RendererLayer layer);
-    void EndDisplay();
+    void BeginDisplay(bool loading=false);
+    void EndDisplay(bool loading=false);
     void ChangeStage(gameStage stage);
+    void UpdateTexturesStage();
     void Render();
     textureLoader& GetTextureLoader();
     Texture2D GetTexture(textureId id);
@@ -42,6 +43,7 @@ private:
     TetrisRenderer(const TetrisRenderer&) = delete;
     TetrisRenderer& operator=(const TetrisRenderer&) = delete;
     // Private Functions
+    void ThreadedChangeStage(gameStage stage);
     RenderTexture2D* getRenderTextureFromLayer(RendererLayer layer);
 
     // Global Stage
@@ -56,9 +58,9 @@ private:
     RenderTexture2D _back;
     RenderTexture2D _game;
     RenderTexture2D _front;
-
-    // Variables
-    bool _stageChanged;
+    // Test
+    RenderTexture2D _rendererTexture;
+    bool _displaying;
 };
 
 #endif // HEADER_TETRIS_RENDER

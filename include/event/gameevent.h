@@ -13,6 +13,7 @@ public:
     GameEvent(tetrisUI* ui, tetrisScore* score, tetrisGame* game, float* elapsedPtr);
     ~GameEvent();
     void sendEvent(BaseComponent* sender, EventType type, const std::any& data = std::any());
+    bool getLoading();
 private:
     void uIEvents(EventType type, const std::any& data = std::any());
     void scoreEvents(EventType type, const std::any& data = std::any());
@@ -29,6 +30,7 @@ private:
 
     // Main Variables
     float* _elapsedPtr;
+    bool _loading;
 };
 
 #endif //HEADER_TETRIS_GAME_EVENT

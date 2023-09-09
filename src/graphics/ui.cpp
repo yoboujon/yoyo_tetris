@@ -54,9 +54,10 @@ void tetrisUI::Display(RendererLayer layer)
     // Updating tiles only when asked by the event.
     if(_showTiles && layer == RendererLayer::BACK)
     {
-        TileSet(textureFromStage(stage),colorFromStage(stage));
         _showTiles = false;
     }
+    if(layer == RendererLayer::BACK)
+        TileSet(textureFromStage(stage),colorFromStage(stage));
 
     // Displaying depending on the stage
     switch (stage) {

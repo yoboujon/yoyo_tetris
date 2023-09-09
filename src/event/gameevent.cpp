@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <iostream>
 GameEvent::GameEvent(tetrisUI* ui, tetrisScore* score, tetrisGame* game, float *elapstedPtr)
-    : _tetrisUI(ui), _tetrisScore(score), _tetrisGame(game), _staticBlocks(game->getStaticBlock()), _renderer(TetrisRenderer::GetInstance()), _elapsedPtr(elapstedPtr)
+    : _tetrisUI(ui), _tetrisScore(score), _tetrisGame(game), _staticBlocks(game->getStaticBlock()), _renderer(TetrisRenderer::GetInstance()), _elapsedPtr(elapstedPtr), _loading(false)
 {
     _tetrisUI->setEventHandler(this);
     _tetrisScore->setEventHandler(this);
@@ -97,9 +97,15 @@ void GameEvent::staticBlockEvents(EventType type, const std::any &data)
 
 void GameEvent::rendererEvents(EventType type, const std::any &data)
 {
-    // Whenever the stage change, clear the tile buffer and render it
-    if(type == STAGE_CHANGED)
-        _tetrisUI->RenderTile();
+    // Set loading to true. No rendering has to occur until the textures are fully loaded
+    if(type == CHANGING_STAGE)
+        _loading = true;
+    // If it's loading and finished display loading, we can load the textures.
+    if((type == END_DISPLAY_LOADING) && _loading)
+        _renderer.UpdateTexturesStage();
+    // Textures are loaded, we can display the new scene
+    if(type == TEXTURES_LOADED)
+        _loading = false;
 }
 
 void GameEvent::mainEvents(EventType type, const std::any& data)
@@ -111,3 +117,5 @@ void GameEvent::mainEvents(EventType type, const std::any& data)
     if((type == LEFT_CLICK) && !inMenu)
         _tetrisUI->RenderTile();
 }
+
+bool GameEvent::getLoading() { return _loading; }
