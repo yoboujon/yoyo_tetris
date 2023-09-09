@@ -55,9 +55,9 @@ void tetrisUI::Display(RendererLayer layer)
     if(_showTiles && layer == RendererLayer::BACK)
     {
         _showTiles = false;
-    }
-    if(layer == RendererLayer::BACK)
         TileSet(textureFromStage(stage),colorFromStage(stage));
+    }
+    //if(layer == RendererLayer::BACK)  
 
     // Displaying depending on the stage
     switch (stage) {
@@ -76,6 +76,7 @@ void tetrisUI::Display(RendererLayer layer)
     case gameStage::MENU_SCREEN:
         if (layer == RendererLayer::FRONT)
             MenuScreen();
+        break;
     case gameStage::SETTINGS:
         if(layer == RendererLayer::BACK)
             Settings();

@@ -106,6 +106,8 @@ void GameEvent::rendererEvents(EventType type, const std::any &data)
     if(type == TEXTURES_LOADED)
     {
         _loading = false;
+        // Rendering tiles each time we change scene and textures are loaded.
+        _tetrisUI->RenderTile();
         if (actualStage == gameStage::GAME)
         {
             _tetrisGame->setTetrominoTexture(_renderer.GetTexture(textureId::TETROMINO_TILEMAP));
