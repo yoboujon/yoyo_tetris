@@ -41,11 +41,15 @@ void tetrisGame::reset(float* _elapsedPtr)
 
 void tetrisGame::Loop()
 {
+    // While the game isn't started, don't loop.
     if(!_start)
         return;
-    if (!_pauseMenu)
-        _fallingTick += GetFrameTime();
 
+    // Only display static blocks/next blocks when in game
+    if (!_pauseMenu)
+    {
+        _fallingTick += GetFrameTime();
+    }
     // static display > next display > Falling block
     _staticBlocks.Display();
     _nextBlock->DisplayNext();
@@ -60,8 +64,7 @@ void tetrisGame::Loop()
             this->_eventHandler->sendEvent(this, ESCAPE_PRESSED_CLOSE_MENU);
     }
 
-    // If game over/ pause menu -> Only display the game
-    // No collision or falling detection
+    // If game over/ pause menu -> return
     if (_isGameOver || _pauseMenu)
     {
         if (_pauseMenu)

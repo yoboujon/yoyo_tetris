@@ -31,6 +31,7 @@ private:
     // Main Variables
     float* _elapsedPtr;
     bool _loading;
+    gameStage _changingStage;
 };
 
 #endif //HEADER_TETRIS_GAME_EVENT

@@ -44,6 +44,7 @@ main
     // Step
     while (!WindowShouldClose() && !(gameUI.quitGame()))
     {
+        const bool loadingState = gameEventHandler.getLoading();
         if( !Vector2Equals(mousePosition, GetMousePosition()) )
         {
             gameEventHandler.sendEvent(nullptr, EventType::MOUSE_MOVED);
@@ -56,7 +57,8 @@ main
         elapsedTime += GetFrameTime();
 
         // Displaying only if not loading a scene (see getLoading on gameEvent)
-        renderer.BeginDisplay(gameEventHandler.getLoading());
+        renderer.BeginDisplay(loadingState);
+        renderer.RenderTexture(RendererLayer::BACK);
         gameUI.Display(RendererLayer::BACK);
 
         // Game Display and Update
@@ -68,11 +70,13 @@ main
             if(renderer.GetStage() == gameStage::GAME)
                 gameScore.updateScore();
         }
+        renderer.RenderTexture(RendererLayer::GAME);
 
+        renderer.RenderTexture(RendererLayer::FRONT);
         gameUI.Display(RendererLayer::FRONT);
 
         //renderer.Render();
-        renderer.EndDisplay(gameEventHandler.getLoading());
+        renderer.EndDisplay(loadingState);
     }
 
     // Stop

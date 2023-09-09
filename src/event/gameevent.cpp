@@ -98,10 +98,13 @@ void GameEvent::rendererEvents(EventType type, const std::any &data)
 
     // Set loading to true. No rendering has to occur until the textures are fully loaded
     if(type == CHANGING_STAGE)
+    {
         _loading = true;
+        _changingStage = std::any_cast<gameStage>(data);
+    }
     // If it's loading and finished display loading, we can load the textures.
     if((type == END_DISPLAY_LOADING) && _loading)
-        _renderer.UpdateTexturesStage();
+        _renderer.UpdateTexturesStage(_changingStage);
     // Textures are loaded, we can display the new scene
     if(type == TEXTURES_LOADED)
     {

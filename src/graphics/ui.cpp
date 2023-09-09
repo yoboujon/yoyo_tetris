@@ -88,6 +88,9 @@ void tetrisUI::Display(RendererLayer layer)
 
 void tetrisUI::TileSet(textureId texture, Color backColor)
 {
+    auto stage = TetrisRenderer::GetInstance().GetStage();
+    if(stage == gameStage::GAME_OVER || stage == gameStage::MENU_SCREEN)
+        return;
     // Offseting the texture by 5px in x, and 5px in y. (ratio multiplied by the actual pixels of the texture)
     auto tileSetTexture = _textureLoader.getTexture(texture);
     DrawTextureRatio(tileSetTexture, { 0.0f, 0.0f }, TILE_DESTINATION, TILE_RATIO, { 0.0f, 0.0f }, WHITE);
@@ -153,7 +156,6 @@ void tetrisUI::GameOver()
     _Btn_titleScreen.setPosition(Vector2Add(_menuCenter, OFFSET_MENU(1)));
 
     // Drawing UI
-    DrawRectangleRec({ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT }, PAUSE_COLOR);
     DrawText("Game Over", (SCREEN_WIDTH - gameOvertext) / 2, (SCREEN_HEIGHT / 2) - 150, 30, RAYWHITE);
     const std::string scoreText = "Final score: " + std::to_string(_score);
     DrawText(scoreText.c_str(), (SCREEN_WIDTH - MeasureText(scoreText.c_str(), 20)) / 2, (SCREEN_HEIGHT / 2) - 100, 20, GOLD);
@@ -183,7 +185,6 @@ void tetrisUI::MenuScreen()
     _Btn_restart.setPosition(Vector2Add(_menuCenter, OFFSET_MENU(1)));
     _Btn_titleScreen.setPosition(Vector2Add(_menuCenter, OFFSET_MENU(2)));
 
-    DrawRectangleRec({ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT }, PAUSE_COLOR);
     DrawText("Menu", (SCREEN_WIDTH - menuText) / 2, (SCREEN_HEIGHT / 2) - 100, 30, RAYWHITE);
 
     auto buttonBase = _textureLoader.getTexture(textureId::BUTTON_BASE);

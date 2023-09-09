@@ -30,7 +30,7 @@ constexpr int VERTICAL_GRID_SIZE = 20;
 // ! +6 for the height to correspond perfectly to the tile
 constexpr Rectangle TETRIS_STAGE = {246, 40, BLOCK_SIZE*HORIZONTAL_GRID_SIZE, BLOCK_SIZE*VERTICAL_GRID_SIZE+6};
 
-constexpr Color PAUSE_COLOR = { 39, 40, 41, 120 };
+constexpr Color PAUSE_COLOR = { 39, 40, 41, 64 };
 
 // Size2, 2 components
 typedef struct Size2 {

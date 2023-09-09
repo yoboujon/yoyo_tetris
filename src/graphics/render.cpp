@@ -10,25 +10,19 @@ TetrisRenderer::TetrisRenderer()
     //Init Shader
     ShaderInit();
 
-    // Target textures
-    _back = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
-    _game = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
-    _front = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
-    _texture_buffer = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    // Render Texture
     _rendererTexture = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    _texture_buffer = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     // Changing the actual stage
     // And loading the correct textures
     ChangeStage(_stage);
-    UpdateTexturesStage();
+    UpdateTexturesStage(_stage);
 }
 
 TetrisRenderer::~TetrisRenderer()
 {
     UnloadShader(_Shader_blur);
-    UnloadRenderTexture(_back);
-    UnloadRenderTexture(_game);
-    UnloadRenderTexture(_front);
     UnloadRenderTexture(_texture_buffer);
     UnloadRenderTexture(_rendererTexture);
 }
@@ -65,17 +59,16 @@ void TetrisRenderer::EndDisplay(bool loading)
 
 void TetrisRenderer::ChangeStage(gameStage stage)
 {
-    _stage = stage;
     if(_eventHandler != nullptr)
-        _eventHandler->sendEvent(this,EventType::CHANGING_STAGE);
+        _eventHandler->sendEvent(this,EventType::CHANGING_STAGE, stage);
 }
 
-void TetrisRenderer::UpdateTexturesStage()
+void TetrisRenderer::UpdateTexturesStage(gameStage stage)
 {
 
     // Clearing all the textures that have the unloadState set to ONCE.
     _textureLoader.clearTextureBuffer();
-    switch(_stage)
+    switch(stage)
     {
         case gameStage::TITLE_SCREEN:
             _textureLoader.unload(textureId::TETROMINO_TILEMAP);
@@ -94,6 +87,12 @@ void TetrisRenderer::UpdateTexturesStage()
         case gameStage::MENU_SCREEN:
         case gameStage::GAME_OVER:
             _textureLoader.load(textureId::BUTTON_BASE,unloadState::ONCE);
+            // Loading the shadered texture
+            BeginTextureMode(_texture_buffer);
+            BeginShaderMode(_Shader_blur);
+            DrawTextureRec(_rendererTexture.texture, { 0, 0, (float)_rendererTexture.texture.width, (float)-_rendererTexture.texture.height }, { 0, 0 }, WHITE);
+            EndShaderMode();
+            EndTextureMode();
             break;
         case gameStage::SETTINGS:
             _textureLoader.load(textureId::TILESET_SETTINGS_WHITE, unloadState::ONCE);
@@ -101,81 +100,30 @@ void TetrisRenderer::UpdateTexturesStage()
             _textureLoader.load(textureId::TEXT_BOX, unloadState::ONCE);
             break;
     }
+    _stage = stage;
     // When finishing loading the textures, inform the GameComponent
     if(_eventHandler != nullptr)
         _eventHandler->sendEvent(this, EventType::TEXTURES_LOADED);
 }
 
-void TetrisRenderer::Render(void)
+void TetrisRenderer::RenderTexture(RendererLayer layer)
 {
-    auto backPtr = &_back;
-    auto gamePtr = &_game;
-    auto frontPtr = &_front;
-
     switch (_stage) {
     case gameStage::MENU_SCREEN:
     case gameStage::GAME_OVER:
-        // Shader optimisation : creating a texture buffer everytime the scene is called
-        // The 'BeginShaderMode' in this exemple is only called once.
-        if (!_shader_buffer[0]) {
-            // Drawing the scene completly on a buffer
-            auto render_buffer = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
-            BeginTextureMode(render_buffer);
-            DrawTextureRec(_back.texture, { 0, 0, (float)_back.texture.width, (float)-_back.texture.height }, { 0, 0 }, WHITE);
-            DrawTextureRec(_game.texture, { 0, 0, (float)_game.texture.width, (float)-_game.texture.height }, { 0, 0 }, WHITE);
-            EndTextureMode();
-            // Then applying the shader
-            BeginTextureMode(_texture_buffer);
-            BeginShaderMode(_Shader_blur);
-            DrawTextureRec(render_buffer.texture, { 0, 0, (float)render_buffer.texture.width, (float)-render_buffer.texture.height }, { 0, 0 }, WHITE);
-            EndShaderMode();
-            EndTextureMode();
-            // Setting the shader buffer to true -> not rerendering the shader + not showing the game
-            _shader_buffer[0] = true;
+        if(layer == RendererLayer::GAME)
+        {
+            BeginBlendMode(BLEND_ALPHA);
+            DrawTextureRec(_texture_buffer.texture, { 0, 0, (float)_texture_buffer.texture.width, (float)-_texture_buffer.texture.height }, { 0, 0 }, WHITE);
+            DrawRectangleRec({0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, PAUSE_COLOR);
+            EndBlendMode();
         }
-        // We set the GAME pointer texture to the shader buffer created.
-        // Because it is the closest to the front which has to be displayed without any blur.
-        backPtr = &_texture_buffer;
         break;
     default:
-        for(auto& shader : _shader_buffer)
-            shader = false;
         break;
     }
-
-    // Begin to draw the scene
-    BeginDrawing();
-    // minus the height because the texture height is inverted in the RenderTexture2D.
-    DrawTextureRec(backPtr->texture, { 0, 0, (float)backPtr->texture.width, (float)-backPtr->texture.height }, { 0, 0 }, WHITE);
-    // Drawing the game isn't needed when the shader buffer is true.
-    if(_shader_buffer[0] == false)
-    {
-        DrawTextureRec(gamePtr->texture, { 0, 0, (float)gamePtr->texture.width, (float)-gamePtr->texture.height }, { 0, 0 }, WHITE);
-    }
-    DrawTextureRec(frontPtr->texture, { 0, 0, (float)frontPtr->texture.width, (float)-frontPtr->texture.height }, { 0, 0 }, WHITE);
-    EndDrawing();
-    // Clearing the game texture
-    ClearRenderTexture(_game);
 }
 
 textureLoader& TetrisRenderer::GetTextureLoader() { return _textureLoader; }
 Texture2D TetrisRenderer::GetTexture(textureId id) { return _textureLoader.getTexture(id); }
 gameStage TetrisRenderer::GetStage() { return _stage; }
-
-RenderTexture2D* TetrisRenderer::getRenderTextureFromLayer(RendererLayer layer)
-{
-    RenderTexture2D* textureModePtr;
-    switch(layer)
-    {
-        case RendererLayer::BACK:
-            textureModePtr = &_back;
-            break;
-        case RendererLayer::GAME:
-            textureModePtr = &_game;
-            break;
-        case RendererLayer::FRONT:
-            textureModePtr = &_front;
-            break;
-    }
-    return textureModePtr;
-}
