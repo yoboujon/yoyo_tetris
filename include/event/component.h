@@ -19,7 +19,8 @@ enum EventType
     MOUSE_MOVED,
     LEFT_CLICK,
     TEXTURES_LOADED,
-    END_DISPLAY_LOADING
+    END_DISPLAY_LOADING,
+    KEY_PRESSED
 };
 
 class BaseComponent;

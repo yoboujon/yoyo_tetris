@@ -6,6 +6,7 @@
 #include "game/tetris.h"
 #include "game/score.h"
 #include "graphics/render.h"
+#include "user/mouse.h"
 
 class GameEvent : public EventHandler
 {

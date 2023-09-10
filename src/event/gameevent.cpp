@@ -111,8 +111,12 @@ void GameEvent::rendererEvents(EventType type, const std::any &data)
         _loading = false;
         // Rendering tiles each time we change scene and textures are loaded.
         _tetrisUI->RenderTile();
+        TetrisMouse::GetInstance().ResetMouse();
+        if(IsCursorHidden())
+            EnableCursor();
         if (actualStage == gameStage::GAME)
         {
+            DisableCursor();
             _tetrisGame->setTetrominoTexture(_renderer.GetTexture(textureId::TETROMINO_TILEMAP));
             _tetrisGame->StartGame();
         }
@@ -121,11 +125,14 @@ void GameEvent::rendererEvents(EventType type, const std::any &data)
 
 void GameEvent::mainEvents(EventType type, const std::any& data)
 {
-    // When the user move his mouse, the tileset has to be rendered.
+    // When in a menu; no need to render the tiles
     bool inMenu = (_renderer.GetStage() == gameStage::MENU_SCREEN) || (_renderer.GetStage() == gameStage::GAME_OVER);
+    // When the user move his mouse, the tileset has to be rendered.
     if((type == MOUSE_MOVED) && !inMenu)
         _tetrisUI->RenderTile();
     if((type == LEFT_CLICK) && !inMenu)
+        _tetrisUI->RenderTile();
+    if((type == KEY_PRESSED) && !inMenu)
         _tetrisUI->RenderTile();
 }
 

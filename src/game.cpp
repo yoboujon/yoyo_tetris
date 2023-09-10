@@ -54,16 +54,14 @@ main
         // Mouse cursor style update
         mouse.UpdateMouse();
 
-        // Events for Mouse
+        // Events for Mouse/Keyboard
         if( !Vector2Equals(mousePosition, GetMousePosition()) )
         {
             gameEventHandler.sendEvent(nullptr, EventType::MOUSE_MOVED);
             mousePosition = GetMousePosition();
         }
         if(IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-        {
             gameEventHandler.sendEvent(nullptr, EventType::LEFT_CLICK);
-        }
 
         // Displaying only if not loading a scene (see getLoading on gameEvent)
         renderer.BeginDisplay(loadingState);

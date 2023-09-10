@@ -61,7 +61,7 @@ void tetrisButton::Update(Texture2D texture)
         TetrisMouse::GetInstance().SetMouse(MOUSE_CURSOR_POINTING_HAND);
     if((newState == buttonState::NONE) && (_state != buttonState::NONE))
         TetrisMouse::GetInstance().ResetMouse();
-    
+
     // Interaction
     if (newState == buttonState::HOVER || newState == buttonState::PRESS) {
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
@@ -70,8 +70,8 @@ void tetrisButton::Update(Texture2D texture)
             newState = buttonState::RELEASE;
     }
     // Drawing Text
-    DrawButton(texture);
     _state = newState;
+    DrawButton(texture);
 }
 
 void tetrisButton::DrawButton(Texture2D texture)
