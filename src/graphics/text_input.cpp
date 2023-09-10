@@ -62,8 +62,11 @@ void tetrisTextInput::Update(Texture2D texture)
             for (auto key : keys) {
                 // Checking for a correct ascii key.
                 // Checking if the contained text isn't bigger than the text input box.
-                if (((key > KEY_NULL) && (key < KEY_ESCAPE)) && (textSize < _inputRectangleVector[1].width))
-                    _text.push_back(key); // Add the ASCII character to _text.
+                if ((key > KEY_NULL) && (key < KEY_ESCAPE)) {
+                    const float pendingTextSize = static_cast<float>(MeasureText((_text + static_cast<char>(key)).c_str(), FONT_SIZE_TEXT_INPUT));
+                    if (pendingTextSize < _inputRectangleVector[1].width)
+                        _text.push_back(key);
+                }
                 // Checking for a backspace to erase the text. (Check before if text isn't empty.)
                 else if (key == KEY_BACKSPACE && !_text.empty())
                     _text.erase(_text.end() - 1);
