@@ -4,6 +4,8 @@
 #include "game/tetris.h"
  
 #include "graphics/render.h"
+#include "user/mouse.h"
+
 #include "event/gameevent.h"
 #include "raylib.h"
 #include "raymath.h"
@@ -36,6 +38,7 @@ main
 
     // TODO : Multi-threading for event, ui elements and score.
     auto& renderer = TetrisRenderer::GetInstance();
+    auto& mouse = TetrisMouse::GetInstance();
     auto gameUI = tetrisUI();
     auto gameScore = tetrisScore();
     auto game = tetrisGame(&elapsedTime);
@@ -44,7 +47,14 @@ main
     // Step
     while (!WindowShouldClose() && !(gameUI.quitGame()))
     {
+        // Loading state for textures
         const bool loadingState = gameEventHandler.getLoading();
+        // Elapsed time
+        elapsedTime += GetFrameTime();
+        // Mouse cursor style update
+        mouse.UpdateMouse();
+
+        // Events for Mouse
         if( !Vector2Equals(mousePosition, GetMousePosition()) )
         {
             gameEventHandler.sendEvent(nullptr, EventType::MOUSE_MOVED);
@@ -54,7 +64,6 @@ main
         {
             gameEventHandler.sendEvent(nullptr, EventType::LEFT_CLICK);
         }
-        elapsedTime += GetFrameTime();
 
         // Displaying only if not loading a scene (see getLoading on gameEvent)
         renderer.BeginDisplay(loadingState);

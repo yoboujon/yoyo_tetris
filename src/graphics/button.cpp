@@ -1,4 +1,5 @@
 #include "graphics/button.h"
+#include "user/mouse.h"
 
 #include <iostream>
 
@@ -53,16 +54,24 @@ void tetrisButton::setPosition(Vector2 position)
 void tetrisButton::Update(Texture2D texture)
 {
     // Checking State
-    _state = (checkCollisionPointRecArray(GetMousePosition(), &(_buttonRect)[0], static_cast<int>(_buttonRect.size())) ? buttonState::HOVER : buttonState::NONE);
+    auto newState = (checkCollisionPointRecArray(GetMousePosition(), &(_buttonRect)[0], static_cast<int>(_buttonRect.size())) ? buttonState::HOVER : buttonState::NONE);
+    
+    // Changing mouse style
+    if(newState != buttonState::NONE)
+        TetrisMouse::GetInstance().SetMouse(MOUSE_CURSOR_POINTING_HAND);
+    if((newState == buttonState::NONE) && (_state != buttonState::NONE))
+        TetrisMouse::GetInstance().ResetMouse();
+    
     // Interaction
-    if (_state == buttonState::HOVER || _state == buttonState::PRESS) {
+    if (newState == buttonState::HOVER || newState == buttonState::PRESS) {
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-            _state = buttonState::PRESS;
+            newState = buttonState::PRESS;
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-            _state = buttonState::RELEASE;
+            newState = buttonState::RELEASE;
     }
     // Drawing Text
     DrawButton(texture);
+    _state = newState;
 }
 
 void tetrisButton::DrawButton(Texture2D texture)

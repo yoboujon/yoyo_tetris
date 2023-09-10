@@ -214,8 +214,6 @@ void tetrisUI::Settings()
     std::string text;
 
     _TxtInp_FrameRate.Update(TetrisRenderer::GetInstance().GetTexture(textureId::TEXT_BOX));
-    if(!(text = _TxtInp_FrameRate.GetText()).empty())
-        std::cout << text << "\n";
 
     _Btn_Back.Update(buttonback);
     if(_Btn_Back.Clicked())

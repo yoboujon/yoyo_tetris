@@ -11,7 +11,8 @@
 constexpr Size2 TEXT_SIDES = {2.0f,16.0f};
 constexpr float TEXT_HEIGHT = 16.0f;
 constexpr float TEXT_WIDTH = 2*(TEXT_SIDES.width) + 1;
-constexpr float FONT_SIZE_TEXT_INPUT = 10.0f;
+constexpr float FONT_SIZE_TEXT_INPUT = 20.0f;
+constexpr float TEXTURE_OFFSET = 5.0f;
 
 class tetrisTextInput {
 public:
@@ -21,12 +22,12 @@ public:
     void Update(Texture2D texture);
     std::string GetText();
 private:
-    void DrawTextInput(Texture2D texture);
+    void DrawTextInput(Texture2D texture, float offset);
     std::vector<Rectangle> _inputRectangleVector;
     float _totalWidth;
     bool _selected;
+    bool _collide;
     std::string _text;
-    bool _debug_hideTexture;
 };
 
 #endif // HEADER_TETRIS_TEXT_INPUT
