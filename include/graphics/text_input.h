@@ -2,6 +2,7 @@
 #define HEADER_TETRIS_TEXT_INPUT
 
 #include "lib.h"
+#include "event/component.h"
 
 #include "user/controls.h"
 
@@ -14,7 +15,8 @@ constexpr float TEXT_WIDTH = 2*(TEXT_SIDES.width) + 1;
 constexpr float FONT_SIZE_TEXT_INPUT = 20.0f;
 constexpr float TEXTURE_OFFSET = 5.0f;
 
-class tetrisTextInput {
+class tetrisTextInput
+{
 public:
     tetrisTextInput();
     tetrisTextInput(Vector2 position, Size2 size);

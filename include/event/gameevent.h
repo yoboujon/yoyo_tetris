@@ -7,6 +7,7 @@
 #include "game/score.h"
 #include "graphics/render.h"
 #include "user/mouse.h"
+#include "user/input_manager.h"
 
 class GameEvent : public EventHandler
 {
@@ -21,6 +22,7 @@ private:
     void gameEvents(EventType type, const std::any& data = std::any());
     void staticBlockEvents(EventType type, const std::any& data = std::any());
     void rendererEvents(EventType type, const std::any& data = std::any());
+    void inputEvents(EventType type, const std::any& data = std::any());
     void mainEvents(EventType type, const std::any& data = std::any());
 
     tetrisUI* _tetrisUI;
@@ -28,6 +30,7 @@ private:
     tetrisGame* _tetrisGame;
     tetrisStaticBlocks* _staticBlocks;
     TetrisRenderer& _renderer;
+    TetrisInputManager& _inputManager;
 
     // Main Variables
     float* _elapsedPtr;

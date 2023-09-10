@@ -3,14 +3,16 @@
 #include "lib.h"
 #include <cstddef>
 #include <iostream>
+
 GameEvent::GameEvent(tetrisUI* ui, tetrisScore* score, tetrisGame* game, float *elapstedPtr)
-    : _tetrisUI(ui), _tetrisScore(score), _tetrisGame(game), _staticBlocks(game->getStaticBlock()), _renderer(TetrisRenderer::GetInstance()), _elapsedPtr(elapstedPtr), _loading(false)
+    : _tetrisUI(ui), _tetrisScore(score), _tetrisGame(game), _staticBlocks(game->getStaticBlock()), _renderer(TetrisRenderer::GetInstance()), _inputManager(TetrisInputManager::GetInstance()), _elapsedPtr(elapstedPtr), _loading(false)
 {
     _tetrisUI->setEventHandler(this);
     _tetrisScore->setEventHandler(this);
     _tetrisGame->setEventHandler(this);
     _staticBlocks->setEventHandler(this);
     _renderer.setEventHandler(this);
+    _inputManager.setEventHandler(this);
 }
 
 GameEvent::~GameEvent()
@@ -29,6 +31,8 @@ void GameEvent::sendEvent(BaseComponent *sender, EventType type, const std::any 
         staticBlockEvents(type, data);
     if (sender == &_renderer)
         rendererEvents(type, data);
+    if (sender == &_inputManager)
+        inputEvents(type, data);
     if (sender == nullptr)
         mainEvents(type, data);
 }
@@ -121,6 +125,13 @@ void GameEvent::rendererEvents(EventType type, const std::any &data)
             _tetrisGame->StartGame();
         }
     }
+}
+
+void GameEvent::inputEvents(EventType type, const std::any& data)
+{
+    // When a key is pressed, update the tile.
+    if(type == KEY_PRESSED)
+        _tetrisUI->RenderTile();
 }
 
 void GameEvent::mainEvents(EventType type, const std::any& data)

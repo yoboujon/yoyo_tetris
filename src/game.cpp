@@ -5,6 +5,7 @@
  
 #include "graphics/render.h"
 #include "user/mouse.h"
+#include "user/input_manager.h"
 
 #include "event/gameevent.h"
 #include "raylib.h"
@@ -39,6 +40,7 @@ main
     // TODO : Multi-threading for event, ui elements and score.
     auto& renderer = TetrisRenderer::GetInstance();
     auto& mouse = TetrisMouse::GetInstance();
+    auto& input = TetrisInputManager::GetInstance();
     auto gameUI = tetrisUI();
     auto gameScore = tetrisScore();
     auto game = tetrisGame(&elapsedTime);
@@ -53,6 +55,7 @@ main
         elapsedTime += GetFrameTime();
         // Mouse cursor style update
         mouse.UpdateMouse();
+        input.Update();
 
         // Events for Mouse/Keyboard
         if( !Vector2Equals(mousePosition, GetMousePosition()) )
