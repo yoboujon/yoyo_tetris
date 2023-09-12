@@ -7,6 +7,7 @@
 
 #include "graphics/button.h"
 #include "graphics/text_input.h"
+#include "graphics/number_input.h"
 #include "graphics/textures.h"
 
 
@@ -72,6 +73,7 @@ private:
     // Settings
     tetrisButton _Btn_Back;
     TetrisInputText _TxtInp_FrameRate;
+    TetrisInputNumber _NumInp_FrameRate;
 
     // Textures
     textureLoader& _textureLoader;
