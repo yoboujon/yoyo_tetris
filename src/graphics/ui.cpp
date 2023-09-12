@@ -29,7 +29,7 @@ tetrisUI::tetrisUI()
     // Settings Buttons
     _Btn_Back = tetrisButton({ 20, 180 + (90.0f + 10) * 2 }, { 160.0f, 90.0f }, textureStyle::CUSTOM_SHAPE, { 32.0f, 18.0f });
     _Btn_Back.SetText("Back");
-    _TxtInp_FrameRate = tetrisTextInput({20, 180}, { 100.0f, 50.0f });
+    _TxtInp_FrameRate = TetrisInputText({20, 180}, { 100.0f, 50.0f });
 
     // Menu Buttons
     const Size2 menuSize = { 160.0f, 50.f };

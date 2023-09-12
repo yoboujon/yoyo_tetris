@@ -71,7 +71,7 @@ private:
     tetrisButton _Btn_Exit;
     // Settings
     tetrisButton _Btn_Back;
-    tetrisTextInput _TxtInp_FrameRate;
+    TetrisInputText _TxtInp_FrameRate;
 
     // Textures
     textureLoader& _textureLoader;
