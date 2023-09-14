@@ -1,4 +1,5 @@
 #include "graphics/render.h"
+#include "graphics/textures.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -98,6 +99,7 @@ void TetrisRenderer::UpdateTexturesStage(gameStage stage)
             _textureLoader.load(textureId::TILESET_SETTINGS_WHITE, unloadState::ONCE);
             _textureLoader.load(textureId::BUTTON_RETURN, unloadState::ONCE);
             _textureLoader.load(textureId::TEXT_BOX, unloadState::ONCE);
+            _textureLoader.load(textureId::UP_DOWN, unloadState::ONCE);
             break;
     }
     _stage = stage;

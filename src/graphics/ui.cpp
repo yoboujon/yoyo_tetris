@@ -213,9 +213,10 @@ void tetrisUI::Settings()
 {
     auto buttonback = _textureLoader.getTexture(textureId::BUTTON_RETURN);
     std::string text;
+    auto& renderer = TetrisRenderer::GetInstance();
 
-    _TxtInp_FrameRate.Update(TetrisRenderer::GetInstance().GetTexture(textureId::TEXT_BOX));
-    _NumInp_FrameRate.Update(TetrisRenderer::GetInstance().GetTexture(textureId::TEXT_BOX));
+    _TxtInp_FrameRate.Update({renderer.GetTexture(textureId::TEXT_BOX)});
+    _NumInp_FrameRate.Update({renderer.GetTexture(textureId::TEXT_BOX),renderer.GetTexture(textureId::UP_DOWN)});
 
     _Btn_Back.Update(buttonback);
     if(_Btn_Back.Clicked())

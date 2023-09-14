@@ -18,7 +18,7 @@ class TetrisInputContainer {
     public:
         TetrisInputContainer(Vector2 position, Size2 size, std::function<bool(int)> keyCondition);
         ~TetrisInputContainer();
-        virtual void Update(Texture2D texture);
+        virtual void Update(const std::vector<Texture2D>& texture);
     protected:
         //void Update(Texture2D texture);
         virtual void DrawTextInput(Texture2D texture, float offset);
