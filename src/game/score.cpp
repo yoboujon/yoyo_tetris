@@ -56,7 +56,7 @@ void tetrisScore::lineComplete()
     if (_activeMultiplcator && (_multiplicatorTime < 10.0f))
     {
         _multiplicator = (_multiplicator == 0x80 ? UINT8_MAX : _multiplicator);
-        _multiplicator = (_multiplicator <= 0x80 ? _multiplicator *= 2 : _multiplicator);
+        _multiplicator = (_multiplicator < 0x80 ? _multiplicator*2 : _multiplicator);
     }
     _score += 1000 * _multiplicator;
     _activeMultiplcator = true;
