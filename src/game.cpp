@@ -13,17 +13,11 @@
 
 using namespace tetromino;
 
-#ifdef _WIN32
-#ifdef NDEBUG
-#define main int WinMain(void)
-#else
-#define main int main(void)
-#endif
-#else
-#define main int main(void)
+#if defined(_MSC_VER) && !defined(_DEBUG)
+#define main WinMain
 #endif
 
-main
+int main()
 {
     // Init
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "yoyoTetris");

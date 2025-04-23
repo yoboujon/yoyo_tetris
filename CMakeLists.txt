@@ -35,12 +35,6 @@ file(GLOB GAME "${PROJECT_SOURCE_DIR}/src/*/*.cpp")
 
 # yoyoTetris Project (source, header)
 add_executable(${TARGET_NAME} ${BASE} ${GAME})
-# If release on Windows, set executable win32 to true
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-  set_target_properties(${TARGET_NAME} PROPERTIES
-  WIN32_EXECUTABLE TRUE
-  )
-endif()
 target_include_directories(${TARGET_NAME} PUBLIC "include")
 
 # Adding Librairies
@@ -79,16 +73,16 @@ if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
 endif()
 
-# Adding compilation option depending on the OS 
+# Compilation depending on the platform
 if(MSVC)
+  # Build the program as a window-only (no cmd)
   if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_link_options(${TARGET_NAME} PUBLIC "/SUBSYSTEM:WINDOWS")
+    target_link_options(${TARGET_NAME} PRIVATE "/SUBSYSTEM:WINDOWS")
+    target_compile_options(${TARGET_NAME} PRIVATE /W3 /WX )
+  else()
+    target_compile_options(${TARGET_NAME} PRIVATE /W3 /WX /DEBUG )
   endif()
-  target_compile_options(${TARGET_NAME} PUBLIC /W3 /WX /DEBUG )
 else()
-  if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_link_options(${TARGET_NAME} PUBLIC "-mwindows")
-  endif()
-  target_compile_options(${TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror "-Wno-unused-parameter" "-Wno-missing-field-initializers")
+  target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
 

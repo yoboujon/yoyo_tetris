@@ -75,7 +75,7 @@ void TetrisInputContainer::Update(const std::vector<Texture2D>& texture)
 
     DrawTextInput(texture.at(0), offset);
     if (textSize > 0)
-        DrawText(_text.c_str(), static_cast<int>(_inputRectangleVector[0].x + (_totalWidth - textSize) / 2), static_cast<int>(_inputRectangleVector[0].y + (_inputRectangleVector[0].height - FONT_SIZE_TEXT_INPUT) / 2), FONT_SIZE_TEXT_INPUT, { 0, 0, 0, 255 });
+        DrawText(_text.c_str(), static_cast<int>(_inputRectangleVector[0].x + (_totalWidth - textSize) / 2), static_cast<int>(_inputRectangleVector[0].y + (_inputRectangleVector[0].height - static_cast<float>(FONT_SIZE_TEXT_INPUT)) / 2), FONT_SIZE_TEXT_INPUT, { 0, 0, 0, 255 });
     _collide = collide;
     _selected = selected;
 }
